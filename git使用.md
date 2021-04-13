@@ -35,14 +35,16 @@
 - `git checkout <分支名>` #切换到某个分支
 - `git checkout -b <新分支名>` #创建并切换
 
-#### 从working tree到stage
+#### 从working tree到stage和本地库
 
 - `git add <文件名>`
   - 将修改从working tree提交到stage（暂存）
   - 可直接在vscode中点`+`号
 - `git commit -m <commit信息>`
+  - `git commit`将修改提交到本地库
   - 为从working tree到stage的每次提交写commit 信息
   - 更推荐直接在vscode的左上角文本框中写commit信息
+- `git diff`：比较工作区和暂存区的区别
 
 #### 从stage到remote
 

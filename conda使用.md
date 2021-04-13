@@ -26,7 +26,7 @@
   - 例如：conda create -n python2 python=python2.7 numpy pandas，创建了python2环境，python版本为2.7，同时还安装了numpy pandas包
 - source activate env_name #切换至env_name环境
 - source deactivate #退出环境
-- conda info -e #显示所有已经创建的环境
+- `conda info --envs` #显示所有已经创建的环境
 - conda create --name new_env_name --clone old_env_name #复制old_env_name为new_env_name
 - conda remove -n env_name –-all #删除环境
 - conda config --show-sources #查看添加的镜像源
