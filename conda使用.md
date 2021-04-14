@@ -22,19 +22,25 @@
 - conda update conda #更新至最新版本，也会更新其它相关包
 - conda update --all #更新所有包
 - conda update package_name #更新指定的包
-- conda create -n <env_name> python=<版本> #创建名为env_name的新环境
-  - 例如：conda create -n python2 python=python2.7 numpy pandas，创建了python2环境，python版本为2.7，同时还安装了numpy pandas包
-- source activate env_name #切换至env_name环境
-- source deactivate #退出环境
-- `conda info --envs` #显示所有已经创建的环境
-- conda create --name new_env_name --clone old_env_name #复制old_env_name为new_env_name
-- conda remove -n env_name –-all #删除环境
-- conda config --show-sources #查看添加的镜像源
-- conda list #查看所有已经安装的包
 
-- conda install --name env_name package_name #在指定环境中安装包
-- conda remove -- name env_name package #删除指定环境中的包
-- conda remove package #删除当前环境中的包
+#### 创建环境
+
+- `conda create --name <env_name> python=<版本>` #创建名为env_name的新环境
+  - 例如：conda create -n python2 python=python2.7 numpy pandas，创建了python2环境，python版本为2.7，同时还安装了numpy pandas包
+  - `-n`等同于`--name`
+- `conda create --name new_env_name --clone old_env_name` #由旧环境拷贝出新环境
+- `conda activate env_name` #进入env_name环境
+- `conda deactivate` #退出环境
+- `conda info --envs` #显示所有已经创建的环境
+- `conda create --name new_env_name --clone old_env_name` #复制old_env_name为new_env_name
+- `conda config --show channels`源
+
+#### 删除
+
+- `conda install --name env_name package_name` #在指定环境中安装包
+- `conda remove --name env_name package` #删除指定环境中的包
+- `conda remove --name env_name --all` # 删除整个环境 
+- `conda remove package` #删除当前环境中的包
 
 ### 提高
 
@@ -50,11 +56,13 @@
 
 # Pip使用
 
-- pip freeze #查看当前安装的包
-- pip install package_name #在当前环境中安装包
-- pip install --upgrade pakage_name #升级包
-- pip uninstall package_name #删除包
-- pip --help #查看帮助
+- conda环境中默认装pip，一般在conda环境中使用pip指令装库（更靠谱）
+
+- `pip freeze` #查看当前安装的包
+- `pip install package_name` #在当前环境中安装包
+- `pip install --upgrade pakage_name` #升级包
+- `pip uninstall package_name` #删除包
+- `pip --help` #查看帮助
 
 ## 手动安装包
 

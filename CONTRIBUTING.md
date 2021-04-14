@@ -1,3 +1,5 @@
+<!-- This file is copied from Bobankh -->
+
 # CONTRIBUTING
 
 We'd be glad for you to contribute to our source code and to make this project better!

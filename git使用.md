@@ -39,6 +39,8 @@
 
 - `git add <文件名>`
   - 将修改从working tree提交到stage（暂存）
+  - `git add .`：提交所有文件进stage，考虑gitignore
+  - `git add *`：提交所有文件进stage，忽略gitignore
   - 可直接在vscode中点`+`号
 - `git commit -m <commit信息>`
   - `git commit`将修改提交到本地库
