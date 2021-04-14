@@ -42,9 +42,9 @@
   - `git add .`：提交所有文件进stage，考虑gitignore
   - `git add *`：提交所有文件进stage，忽略gitignore
   - 可直接在vscode中点`+`号
-- `git commit -m <commit信息>`
+- `git commit -m "<commit信息>"`
   - `git commit`将修改提交到本地库
-  - 为从working tree到stage的每次提交写commit 信息
+  - 为从working tree到stage的每次提交写commit 信息，加双引号代表这是1个参数
   - 更推荐直接在vscode的左上角文本框中写commit信息
 - `git diff`：比较工作区和暂存区的区别
 
