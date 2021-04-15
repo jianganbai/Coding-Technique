@@ -1,19 +1,5 @@
 # Anaconda使用
 
-## 环境记录
-
-### pyft
-
-- 初始库
-
-### pyrobot
-
-- 智能机器人课专用环境
-
-
-
-
-
 ## 用语
 
 ### 基础
@@ -42,26 +28,19 @@
 - `conda remove --name env_name --all` # 删除整个环境 
 - `conda remove package` #删除当前环境中的包
 
-### 提高
-
-- conda create -n tensorflow_env tensorflow
-
-- conda activate tensorflow_env #conda 安装tensorflow的CPU版本
-
-- conda create -n tensorflow_gpuenv tensorflow-gpu
-
-- conda activate tensorflow_gpuenv #conda安装tensorflow的GPU版本
-
 - conda env remove -n env_name #采用第10条的方法删除环境失败时，可采用这种方法
 
 # Pip使用
 
 - conda环境中默认装pip，一般在conda环境中使用pip指令装库（更靠谱）
-
-- `pip freeze` #查看当前安装的包
 - `pip install package_name` #在当前环境中安装包
+  - `pip install package_name=1.0.1`：指定安装版本，默认为最新版
+  - `pip install -r requirements.txt`：在`requirements.txt`中写全部库名，可批量安装
 - `pip install --upgrade pakage_name` #升级包
 - `pip uninstall package_name` #删除包
+- `pip freeze` #查看当前安装的包
+  - `pip freeze > "requirements.txt"`：将环境中库列表写入文件
+- `pip show package_name`：显示包的安装信息等
 - `pip --help` #查看帮助
 
 ## 手动安装包
