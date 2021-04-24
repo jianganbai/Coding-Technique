@@ -1,5 +1,7 @@
 # git使用
 
+- 详见Missing Semester笔记
+
 ## git工作区
 
 - 工作目录：修改文件
