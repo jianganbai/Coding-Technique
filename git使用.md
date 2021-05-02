@@ -1,6 +1,6 @@
 # git使用
 
-- 详见Missing Semester笔记
+- 详见Missing Semester笔记（互相补充看）
 
 ## git工作区
 
