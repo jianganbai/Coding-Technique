@@ -34,6 +34,8 @@
   - 将别人的仓库添加为upstream类型（当然也可以把upstream改成origin）
   - 这样发pull request可直接对比origin仓库和upstream仓库
 - `git branch <新分支名>`  #创建新分支
+  - `git branch -m <新名字>`：本地当前分支改名
+  - `git push origin :old_branch`：删除远程分支
 - `git checkout <分支名>` #切换到某个分支
 - `git checkout -b <新分支名>` #创建并切换
 
