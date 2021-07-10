@@ -222,6 +222,23 @@
     - `func(*args)`将args元组中的参数按顺序分配给形参
     - `func(**kwargs)`将kwargs字典中的key与形参一一对应地传
 
+#### 函数装饰器
+
+- ```python
+  def funcA(args):
+      print('This is decorator')
+  
+  @funcA
+  def funcB():
+      print('This is main')
+  
+  >>> This is decorator
+  ```
+
+- funcA是装饰器，`@funcA`进行了隐式调用
+
+  - funB函数指针作为funcA，系统执行`funcA(funcB)`
+
 ### import
 
 - import用于导入其它**模块**中定义的类、函数

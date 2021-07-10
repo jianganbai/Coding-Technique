@@ -20,8 +20,10 @@
 - `numpy.reshape(origin, newshape, order='C')`
   - `newshape`有多少项，reshape结果就有多少维
     - `newshape`可为int可为tuple，为int代表reshape成1维
-  - `D:\清华\大三下\媒认\作业\小作业\第3次：卷积层\code\conv-copy.pynewshape`允许1项为-1，表示该维有多少项最后确定（根据张量元素个数相等确定）
+  - `newshape`允许1项为-1，表示该维有多少项最后确定（根据张量元素个数相等确定）
     - 若`newshape=-1`，代表直接展开成1维向量
+  - 调整大小的逻辑：先拉平成一维，再调整为预期大小
+    - 拉平时从左侧维度到右侧维度逐一填补
 - `numpy.transpose(newdim0, newdim1, newdim2, ...)`
   - 交换数组某些维
     - 本质上是改变同一块内存的索引方式（slice方式）
