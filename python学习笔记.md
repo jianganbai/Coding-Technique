@@ -86,7 +86,6 @@
 **技巧**
 
 - for num in range(10,20) 迭代10到19之间的数字，不含右边界
-- 
 
 ### 数值型变量
 
@@ -231,6 +230,19 @@
 
 ![image-20201019211628853](C:\Users\jab\AppData\Roaming\Typora\typora-user-images\image-20201019211628853.png)
 
+### 异常处理
+
+```python
+try:
+  command1
+except IOerror:  # 出现IOerror时跳转至此执行
+  command2
+else:  # 正常运行结束跳转至此执行
+  command3
+finally:  # 无论正常or错误，都会运行finally中的命令
+  command4
+```
+
 
 
 ## 常用函数
@@ -330,4 +342,28 @@
 
 - isinstance(a, b)：判断a与b是否是同一类型
   - 此处所有派生类与基类属于同一类型
+
+### yield
+
+- 带有yield的函数被称为generator（类似于迭代器），仅当需要的时候才会计算并返回
+
+  - 以时间换空间
+
+- ```python
+  def fab(max): 
+      n, a, b = 0, 0, 1 
+      while n < max: 
+          yield b      # 使用 yield
+          # print b 
+          a, b = b, a + b 
+          n = n + 1
+   
+  for n in fab(5): 
+      print n
+  # 也可使用fab(5).next()
+  ```
+
+
+
+
 

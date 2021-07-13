@@ -68,6 +68,7 @@
 - `required`为该参数是否能被省略
 - `help`为该属性的功能，使用-h显示帮助时会显示出来
 - `dest`为该属性存储在分析结果对象`args`中的名称
+- `metavar`：输入-h参数后，变量名使用metavar对应的值替代
 - 基础属性`-h`：显示帮助
 
 ### `args = parser.parse_args()`

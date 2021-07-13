@@ -6,7 +6,7 @@
 - `command+C`：复制
 - `command+V`：粘贴
 - `command+x`：文字剪切
-- `command+option+v`：文件移动/剪切
+- `command+option+v`：文件和文件夹移动/剪切
 - `command+Z`：撤销
 - `command+f`：搜索
 - `command+m`：将当前页面最小化
@@ -25,3 +25,9 @@
 
 - 三指左右划：横向切换窗口
 - 三指向上划：显示全部窗口
+
+## Mac 命令行
+
+- MacOS是类UNIX操作系统，兼容大部分UNIX命令
+- 特殊
+  - `open .`：在finder中打开命令行所在文件夹
