@@ -75,5 +75,11 @@
     - 强制push，即将远端仓库删光，再拷贝本地仓库
     - 不要乱用，一般只用于reset到远端旧版本后的push
 
+
+## 其它
+
+- git代理：
+  - 查看已设置的代理：`git config --global --list`
+  - 添加代理：`git config --global [代理地址]`
 - 
 
