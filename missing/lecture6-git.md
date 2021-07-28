@@ -62,9 +62,11 @@
 - git分支
   - `git branch`：展示所有分支名
     - `git branch -vv`：展示各个分支的一些信息
+    - `git branch -r`：查看远端仓库的所有分支
   - `git branch [name]`：创建名为name的分支
   - `git checkout [name]`：切换进名为name的分支
   - `git checkout -b [name]`：创建名为name的分支并切换进
+  - `git branch -d [分支名]`：删除本地已合并的分支，若未合并，将`-d`替换为`-D`
 
 ### git分支整理
 
@@ -82,7 +84,7 @@
   - **Merge Conflict**：一般是由于语法
     - `git merge --abort`：返回merge前的状态
     - 出现冲突标识`<<`，`==`，`>>`
-    - 修改时直接delete标识，然后手动更改代码
+    - 修改时直接delete文件中的标识，然后手动更改代码
     - `git merge --continue`：继续合并
 
 ### git多人合作
