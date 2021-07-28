@@ -45,6 +45,7 @@
 ## profiler
 
 - profiler用于统计用时、资源占用
+  - profiler的意思是分析器
 
 ### cProfile
 
@@ -60,7 +61,7 @@
 - `kernprof`
   - `kernprof -l -v xxx.py`
     - 分析结果默认写入aaa.py.lprof文件，加入`-v`参数是为了在命令行显示
-  - 需要在代码头部写上`@profile`
+  - 需要在代码头部写上`@profile`装饰器
 
 ### memory_profiler
 
@@ -69,7 +70,18 @@
 
 ### perf
 
+- 统计程序的CPU时钟数、缺页数
+- 使用：`sudo perf stat stress -c 1`
+  - stress是待测程序
 
+## 资源监视器
+
+- `htop`：实时更新的资源监视器，统计cpu利用、内存利用等
+- `du`命令：查看硬盘使用大小（disk usage）
+  - `du -h [目录]`
+- `lsof`命令：整合了netstat和ps，常用于网络数据分析
+- `kill`命令：终止进程
+  - `kill [进程号]`
 
 
 
