@@ -21,7 +21,7 @@
 
 - 以下指令在git bash和vscode中均可执行
 
-#### 克隆与新建
+### 克隆与新建
 
 - `git clone <远端仓库网址>`
   - 将远端仓库clone到本地
@@ -39,7 +39,7 @@
 - `git checkout <分支名>` #切换到某个分支
 - `git checkout -b <新分支名>` #创建并切换
 
-#### 从working tree到stage和本地库
+### 从working tree到stage和本地库
 
 - `git add <文件名>`
   - 将修改从working tree提交到stage（暂存）
@@ -52,7 +52,7 @@
   - 更推荐直接在vscode的左上角文本框中写commit信息
 - `git diff`：比较工作区和暂存区的区别
 
-#### 从stage到remote
+### 从stage到remote
 
 - `git pull upstream <分支名> --rebase`
   - 从upstream下载远端文件，并与本地已有文件采用rebase方式比较
@@ -75,11 +75,22 @@
     - 强制push，即将远端仓库删光，再拷贝本地仓库
     - 不要乱用，一般只用于reset到远端旧版本后的push
 
+### reset
+
+- 2种reset：soft和hard
+  - soft：保留新代码，相当于撤销commit但不撤销add
+  - hard：回滚至之前的代码，相当于撤销add和0commit
+
+- reset本地：`git reset --soft [希望rest到的commit的hash值]`
+  - `git reset --soft HEAD^`：返回上一次commit
+- reset远端：
+  - `git reset --hard [希望reset到的commit的hash值]`
+  - `git push origin HEAD --force`
 
 ## 其它
 
 - git代理：
   - 查看已设置的代理：`git config --global --list`
   - 添加代理：`git config --global [代理地址]`
-- 
+
 

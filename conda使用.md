@@ -12,8 +12,8 @@
 #### 创建环境
 
 - `conda create --name <env_name> python=<版本>` #创建名为env_name的新环境
-  - 例如：conda create -n python2 python=python2.7 numpy pandas，创建了python2环境，python版本为2.7，同时还安装了numpy pandas包
   - `-n`等同于`--name`
+  - 加入`-i`参数，标识使用临时代理
 - `conda create --name new_env_name --clone old_env_name` #由旧环境拷贝出新环境
 - `conda activate env_name` #进入env_name环境
 - `conda deactivate` #退出环境
