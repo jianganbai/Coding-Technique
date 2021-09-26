@@ -18,7 +18,6 @@
 - `conda activate env_name` #进入env_name环境
 - `conda deactivate` #退出环境
 - `conda info --envs` #显示所有已经创建的环境
-- `conda create --name new_env_name --clone old_env_name` #复制old_env_name为new_env_name
 - `conda config --show channels`源
 
 #### 删除
