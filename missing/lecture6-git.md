@@ -31,6 +31,38 @@
 
 ## git语法
 
+### git分支相关
+
+- `git branch`：展示所有分支名
+  - `git branch -vv`：展示各个分支的一些信息
+  - `git branch -r`：查看远端仓库的所有分支
+  - `git branch [name]`：创建名为name的分支
+  - `git branch -d [分支名]`：删除本地已合并的分支，若未合并，将`-d`替换为`-D`
+- `git checkout [name]`：切换进名为name的分支
+  - `git checkout -b [name]`：创建名为name的分支并切换进
+  - `git checkout [hash]`：输入某个节点的hash值，切换至该分支
+    - hash值不需要输入全，可输入前缀
+  - `git checkout [branch_name]`：输入某个节点的名字，切换至该分支
+    - 可查看之前的文件，但不能修改
+  - `checkout`将`HEAD`指针移动到某个分支
+
+- git查看历史
+  - `git log`：给出文字版的提交记录
+    - `git log --all --graph --decorate`：更好看的文字提交记录
+    - `git log --all --graph --decorate --oneline`：显示继承关系
+  - `git diff`：对比未提交与已提交
+    - `git diff [file_name]`：查看某文件的提交记录
+    - `git diff [hash] [file_name]`：查看某文件在hash分支与当前分支的区别
+    - `git diff origin/<远程分支名>`：比较本地当前分支与远程分支的区别
+  
+- `git merge`：合并分支
+  - `git merge [name]`：将名为name的分支合并入当前head分支
+  - **Merge Conflict**：一般是由于语法
+    - `git merge --abort`：返回merge前的状态
+    - 出现冲突标识`<<`，`==`，`>>`
+    - 修改时直接delete文件中的标识，然后手动更改代码
+    - `git merge --continue`：继续合并
+
 ### git本地缓存
 
 - `git stash`
@@ -54,38 +86,6 @@
     - `git commit`：会打开vim编辑提交信息
     - `git commit -m "xxx"`：直接将xxx作为提交信息
   - `git checkout`：切换进别的分支/之前提交记录
-    - `git checkout [hash]`：输入某个节点的hash值，切换至该分支
-      - hash值不需要输入全，可输入前缀
-    - `git checkout [branch_name]`：输入某个节点的名字，切换至该分支
-      - 可查看之前的文件，但不能修改
-    - `checkout`将`HEAD`指针移动到某个分支
-- git分支
-  - `git branch`：展示所有分支名
-    - `git branch -vv`：展示各个分支的一些信息
-    - `git branch -r`：查看远端仓库的所有分支
-  - `git branch [name]`：创建名为name的分支
-  - `git checkout [name]`：切换进名为name的分支
-  - `git checkout -b [name]`：创建名为name的分支并切换进
-  - `git branch -d [分支名]`：删除本地已合并的分支，若未合并，将`-d`替换为`-D`
-
-### git分支整理
-
-- git查看历史
-  - `git log`：给出文字版的提交记录
-    - `git log --all --graph --decorate`：更好看的文字提交记录
-    - `git log --all --graph --decorate --oneline`：显示继承关系
-  - `git diff`：对比未提交与已提交
-    - `git diff [file_name]`：查看某文件的提交记录
-    - `git diff [hash] [file_name]`：查看某文件在hash分支与当前分支的区别
-    - `git diff origin/<远程分支名>`：比较本地当前分支与远程分支的区别
-  
-- `git merge`：合并分支
-  - `git merge [name]`：将名为name的分支合并入当前head分支
-  - **Merge Conflict**：一般是由于语法
-    - `git merge --abort`：返回merge前的状态
-    - 出现冲突标识`<<`，`==`，`>>`
-    - 修改时直接delete文件中的标识，然后手动更改代码
-    - `git merge --continue`：继续合并
 
 ### git多人合作
 
@@ -110,6 +110,8 @@
 - `git fetch [remote]`：在本地创建1个新分支，并将远端分支下载到该分支
 - `git pull`：`git fetch`+`git merge`
   - 下载远端分支+将下载结果与本地结果合并
+  - `git pull origin [远程分支]:[本地分支]`：将远程指定分支拉取到本地指定分支
+  - `git pull origin [远程分支]`：将远程指定分支拉取到本地当前分支
 
 ## git文件
 
