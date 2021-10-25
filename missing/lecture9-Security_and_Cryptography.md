@@ -1,0 +1,33 @@
+# 安全与密码学
+
+- 熵：衡量密码强度
+  - $\log_2(\text{可能种数})$
+- 哈希
+  - 例：sha1：任意长度（可对文件）->160 bit
+  - 在密码学中使用哈希：无法反推、不会冲突
+  - 服务器不保存密码，保存密码的哈希值
+- 密钥导出函数：Key Deviation Function
+  - KDF：主密钥+非秘密参数 -> 派生密钥
+    - 非秘密参数称为salt
+  - 更慢的哈西函数？防止暴力破解
+  - 服务器保存salt和派生密钥
+- Symmetric Key Cryptography
+  - 结构
+    - keygen() -> key
+      - key可用KDF生成，这样只用保存主密钥
+    - encrypt(plaintext, key) -> ciphertext
+    - decrypt(ciphertext, key) -> plaintext
+  - 特点
+    - 给定ciphertext，不能推出plaintext
+    - decrypt(encrypt(plain, key), key) = plain
+- Asymmetric Key Cryptography
+  - 结构
+    - keygen() -> (public key, private key)
+    - encrypt(p, public key) -> c
+    - decrypt(c, private key) -> p
+  - 特点
+    - 2个key，只需保存好private key
+- 数字签名
+  - 结构
+    - sign(message, private key) -> signature
+    - verify(message, signature, public key) -> ok?
