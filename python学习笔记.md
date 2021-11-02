@@ -18,6 +18,17 @@
 
 ![image-20201005215053894](C:\Users\jab\AppData\Roaming\Typora\typora-user-images\image-20201005215053894.png)
 
+### 下划线
+
+- `_`：临时变量
+
+- `_var`：约定为protected变量，解释器不加以区分
+- `var_`：避免重名 & 保留含义
+- `__var`：private类型
+  - 类内调用：`self.__var`
+  - 类外调用：`对象名._类名__var`
+- `__var__`：python保留名称，禁止使用
+
 ### 杂七杂八的
 
 **字符串**
