@@ -48,12 +48,12 @@
 ### `parser.add_argument()`
 
 - 提供从命令行中分析的属性
-- ``ArgumentParser.add_argument(name or flags...[, action][, nargs][, const][, default][, type][, choices][, required][, help][, metavar][, dest])`
+- `ArgumentParser.add_argument(name or flags...[, action][, nargs][, const][, default][, type][, choices][, required][, help][, metavar][, dest])`
   - 增加属性时，仅`name or flags`不可缺省，其余均可缺省
 - `name or flags`为分析命令行时该属性的名称
   - 不加`-`代表不可缺省的属性（该属性在命令行中不可出现），加`-`或`--`代表可缺省的属性（`-`一般为简写，`--`一般为全名）
   - 不可缺省的属性：
-    - 命令行输入时不需要在值前面加上属性名
+    - 命令行输入时不需要在值前面加上`--属性名`
     - 符合`type`时，可连续读多个，返回列表
     - 引用`--ground-truth`时，采用`args.ground_truth`
   - 可缺省的属性：

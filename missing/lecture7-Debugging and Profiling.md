@@ -17,12 +17,12 @@
 
 ### pdb
 
-- 使用：`python -m ipdb xxx.py`
+- 使用：`python -m pdb xxx.py`
   - 进入debug命令行，类似于C/C++用的gdb
 - 常用操作
   - 运行相关：
     - `l`：显示代码
-    - `s`：开始运行
+    - `s` (step) ：进入函数
     - `restart`
     - `c`：运行全部直到出现bug
     - `q`：退出debugger
@@ -67,6 +67,7 @@
 
 - `python -m memory_profiler xxx.py`
   - 统计xxx.py每行的资源占用量
+  - 在待分析的函数前加上`@profiler`
 
 ### perf
 

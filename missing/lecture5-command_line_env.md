@@ -38,6 +38,9 @@
 ## 多窗口
 
 - 常用：tmux, screen
+
+### tmux
+
 - tmux概念
   - sesssion会话：一系列任务
   - window窗口：1个任务
