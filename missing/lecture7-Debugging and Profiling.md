@@ -57,7 +57,7 @@
 ### line profier
 
 - 能一行一行地分析性能
-
+- 安装：`pip install line_profiler`
 - `kernprof`
   - `kernprof -l -v xxx.py`
     - 分析结果默认写入aaa.py.lprof文件，加入`-v`参数是为了在命令行显示
