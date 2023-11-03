@@ -7,8 +7,9 @@
 
 - command + option + [：折叠函数 or if
   - command + option + ]：展开函数 or if
-- option + 向上箭头/向下箭头：上下移动整行
+- option + 上下方向键：上下移动整行
 - command + shift + L：先选中变量，按下后选中文档中所有的变量
+- option + 左右方向键：左右快速移动光标
 
 ## markdown
 

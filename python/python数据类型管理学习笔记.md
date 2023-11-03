@@ -2,7 +2,7 @@
 
 ## typing
 
-- 功能：标注函数输入输出的类型
+- 功能：标注函数输入输出的类型，**但运行时不检查类型**
 
   - 与pylance配合，实时检查变量在函数内的调用，是否符合该类型
   - python 3.5引入
@@ -16,20 +16,21 @@
 - 基本类型
 
   - int, float, bool, str, bytes
-  - `Union`：多类型的集合，实际类型从中间选
+  - `Union`：返回值有多个类型
   - `Tuple`：固定长度的元组，如：`Tuple[torch.Tensor, torch.Tensor]`
   - `List`：列表，如：`List[int, float, str]`
   - `Dict`：字典，`Dict[key类型, value类型]`
   - `Set`：集合，`Set[元素类型]`
 
 ```python
-from typing import Tuple, List, Dict
+from typing import Union, Tuple, List, Dict
 
-def fun1(a: int, s: str, f: float) -> Tuple[List, Dict]
+def func1(a: int, s: str, f: float) -> Tuple[List, Dict]:
 	return [list(range(a)), {s: f}]
-    
-def fun2(a: int, s: str) -> List[int or str]
+def func2(a: int, s: str) -> List[int or str]:
 	return [a, s]
+def func3(a: int, s: str) -> Dict[str, Union[int, str]]:
+    return {'a': a, 's': s}
 ```
 
 - 泛型

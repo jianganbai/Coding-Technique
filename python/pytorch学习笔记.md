@@ -6,8 +6,8 @@
 
 - `torch.utils.data.ConcatDataset([Dataset1, Dataset2])`：将多个数据集拼接起来
   - 若拼接的数据集调用方法不同（如半监督数据集），则需要重写ConcatDataset方法
-
 - DataLoader
+  - batch_size：None表示Dataset打batch（拼成torch.tensor并pad）
   - `num_workers`：额外开多少个子进程加载batch，=0则主进程用于加载，>0则主进程不加载，在RAM中找子进程加载好的batch
 
 ### Sampler

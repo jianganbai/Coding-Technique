@@ -1,17 +1,5 @@
 # pandas学习笔记
 
-## 读取csv
-
-```python
-import pandas as pd
-
-df = pd.read_csv(path, sep, header, index_col)
-# sep指定哪个是分隔符
-# header指定哪行是表头，header=None表示没有表头
-# index_col指定哪列是行索引，index_col=False表示没有行索引
-df.columns = ['name1', 'name2']  # 设置表头
-```
-
 ## Dataframe操作
 
 ### 构建
@@ -22,6 +10,18 @@ df = pd.DataFrame({'班级': [1, 2, 3],
                    '成绩': [80, 90, 100]})  # dict的每个key都是一列
 # 一般不同列为不同属性，不同行为不同样本
 df = pd.DataFrame({'班级': [], '姓名': []})  # 空DataFrame
+```
+
+### 读取csv
+
+```python
+import pandas as pd
+
+df = pd.read_csv(path, sep, header, index_col)
+# sep指定哪个是分隔符
+# header指定哪行是表头，header=None表示没有表头
+# index_col指定哪列是行索引，index_col=False表示没有行索引
+df.columns = ['name1', 'name2']  # 设置表头
 ```
 
 ### 访问
@@ -40,6 +40,11 @@ df = pd.DataFrame({'班级': [], '姓名': []})  # 空DataFrame
     df.loc[df['column_name'] == some_value]
     df.loc[df['column_name'].isin(some_values)]
     df.loc[(df['column_name'] >= A) & (df['column_name'] <= B)]
+    
+    # 筛选特定列等于特定值
+    require = {'列名': [值1, 值2, 值3]}
+    bools = [df[k] in v for k, v in require.items()]
+    df[np.all(bools, axis=0)]
     ```
 
 - 访问列
@@ -47,13 +52,17 @@ df = pd.DataFrame({'班级': [], '姓名': []})  # 空DataFrame
   - ```python
     df.columns  # 查看列名
     df['列名']  # 查看某一列
+    df[['列1', '列2']]  # 查看多列
     ```
 
-- apply：根据特定行/列创建新行/列
+- apply：对元素逐一即兴变换
 
+  - 可先筛选出特定行/列
+  
   - ```python
     df = pd.DataFrame({'name': ['a', 'b'], 'age': [40, 50], 'salary': [10, 29]})
     df[['age', 'salary']].apply(np.sum, axis=0)
+    # axis=0为column-wise，axis=1为row-wise
     ```
 
 ### 添加
@@ -152,4 +161,42 @@ df.groupby(['班级', '姓名']).agg({'语文': [np.mean, min], '数学': [np.me
   - ```python
     df.set_index('索引栏名称', inplace=True)  # inplace=True代表原地修改
     ```
+
+## Series操作
+
+- Series：一维数组
+  - 相比于numpy：可自定义索引
+  - 相比于字典：速度更快、可使用切片
+
+### 构建
+
+```python
+a = pd.Series([1, 2, 3])
+a = pd.Series([1, 2, 3], index=['a', 'b', 'c'])  # 自定义索引
+a = pd.Series({'a': 1, 'b': 2, 'c': 3})
+```
+
+### 访问
+
+- 按索引值访问
+
+  - ```python
+    a = pd.Series({'a': 1, 'b': 2, 'c': 3})
+    b = pd.Series([1, 2, 3])
+    a['a'] == 1  # 按索引值
+    assert b[1] = 2  # 按索引值  
+    ```
+
+- 切片运算
+
+  - ```python
+    a = pd.Series({'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5})
+    a['a': 'c']  # 截取'a'到'c'（含）的元素
+    a[0: 2]  # 截取前2个元素（不含右端）
+    
+    a.loc['a': 'c']  # loc使用索引名（显式索引）
+    a.iloc[0: 2]  # iloc使用数字索引（隐式索引）
+    ```
+
+
 
