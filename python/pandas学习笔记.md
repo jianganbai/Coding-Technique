@@ -26,6 +26,8 @@ df.columns = ['name1', 'name2']  # 设置表头
 
 ### 访问
 
+- loc使用索引名（显式索引）；iloc使用数字索引（隐式索引）
+
 - 访问行
 
   - ```python
@@ -55,7 +57,7 @@ df.columns = ['name1', 'name2']  # 设置表头
     df[['列1', '列2']]  # 查看多列
     ```
 
-- apply：对元素逐一即兴变换
+- apply：对元素逐一进行变换
 
   - 可先筛选出特定行/列
   
@@ -98,7 +100,7 @@ df.columns = ['name1', 'name2']  # 设置表头
 
   - ```python
     # append之后将被舍弃，转为concat
-    a = df.DataFrame({'name': ['f'], 'score': [6]})
+    a = pd.DataFrame({'name': ['f'], 'score': [6]})
     df.append(a, ignore_index=True)  # append一般用于将一DataFrame添加到另一DataFrame之后
     ```
 
