@@ -72,7 +72,7 @@ def a(x):
             return result
         return wrapper
     
-    @count_time
+    @time_decorator
     def slow_func(n):
         time.sleep(n)
     slow_func(n)
@@ -141,3 +141,8 @@ def a(x):
     ```
 
 - `@abstractmethod`装饰器：指定函数为纯虚函数
+
+## 特殊函数
+
+- `__iter__`
+- `__call__`

@@ -66,6 +66,8 @@
   - `git commit`将修改提交到本地库
   - 为从working tree到stage的每次提交写commit 信息，加双引号代表这是1个参数
   - 更推荐直接在vscode的左上角文本框中写commit信息
+- 其它参数
+  - `git commit -a`：自动先进行add，再进行commit
 - `git diff`：比较工作区和暂存区的区别
 
 ### 从stage到remote
@@ -100,7 +102,6 @@
   - `git push orgin <分支名> -f` 
     - 强制push，即将远端仓库删光，再拷贝本地仓库上去
     - 不要乱用，一般只用于reset到远端旧版本后的push
-- 
 
 ### reset
 
@@ -150,9 +151,6 @@
           - name: Install
             run: npm ci  # 运行脚本命令
     ```
-
-  - 
-
 
 
 ## 其它

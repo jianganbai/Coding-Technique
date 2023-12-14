@@ -31,12 +31,13 @@ df.columns = ['name1', 'name2']  # 设置表头
 - 访问行
 
   - ```python
-    df.iloc[index]  # 查看第index行，支持切片
+    df.iloc[index]  # 查看第index行，支持切片。结果通过索引值访问
     df.iloc[24:]  # 查看第24行及之后的全部数据
     df.iloc[:, 8:]  # 切片
     df.iloc[:, 1:].to_numpy()  # 将除表头外转化为numpy
+    df.iloc[-1].to_dict()  # 将最后一行转化为dict
     ```
-
+    
   - ```python
     df[df['列名'] == '值']  # 特定行
     df.loc[df['column_name'] == some_value]
@@ -65,6 +66,7 @@ df.columns = ['name1', 'name2']  # 设置表头
     df = pd.DataFrame({'name': ['a', 'b'], 'age': [40, 50], 'salary': [10, 29]})
     df[['age', 'salary']].apply(np.sum, axis=0)
     # axis=0为column-wise，axis=1为row-wise
+    df.apply(lambda x: x['age'] + 10, axis=1)  # 提取年龄，然后加10岁
     ```
 
 ### 添加
@@ -141,14 +143,23 @@ df.groupby('班级', as_index=False).mean()
 # 按某一列的值的分析结果分组
 df.groupby(df['姓名'].str[0]).mean()
 df.groupby({0: '聪明', 1: '笨笨'}).mean()  # 默认先将第0列送入字典中查询
-df.groupby(lambda x: '聪明' if x%2 else '笨笨').mean()
+df.groupby(lambda x: '聪明' if x % 2 else '笨笨').mean()
 # mean, median, sum, min, max, std, var, count
-```
 
-```python
 # 分别给出语文和数学的统计结果
 df.groupby(['班级', '姓名']).agg({'语文': [np.mean, min], '数学': [np.mean, max]})
 ```
+
+```python
+# DataFrameGroupBy是可迭代的
+group = df.groupby('班级', as_index=True, sort=True)
+for class_name, class_info in group:
+    pass
+```
+
+- 返回DataFrameGroupBy对象
+  - `list(DataFrameGroupBy)`：`[(分组名1， 子DataFrame1), (分组名2， 子DataFrame2), ...]`
+  - `DataFrameGroupBy.groups`：所有分组名
 
 ### 输出
 

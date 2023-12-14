@@ -139,6 +139,12 @@
   
 - **free命令**：查看内存配置，`free -m`or`free -g`
 
+  - <img src="imgs/image-20231203155907731.png" alt="image-20231203155907731" style="zoom:80%;" align="left"/>
+  - Mem：物理内存；Swap：虚拟内存（存到硬盘）
+  - total：总的；used：使用的；free：完全未被使用的；shared：被多个进程共享的内存
+  - buff/cache：buffer是数据在磁盘块的形式，cache是给数据/文件做缓冲
+  - available：可立即分配给进程使用的
+
 - **df命令**：以磁盘分区为单位，查看文件系统占地大小
   
   - `df -h`：查看文件系统占地大小
@@ -357,6 +363,7 @@
 ```shell
 # ls -l开头：drwx-r-...，以d开头为文件夹，以-开头为文件
 ls -l | grep ^d  # 获得所有文件夹（每行以d开头的）
+ls -d */  # 获得所有文件夹名
 ls -l | grep ^-  # 获得所有文件
 ```
 

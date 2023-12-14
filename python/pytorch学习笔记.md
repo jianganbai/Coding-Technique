@@ -2,13 +2,28 @@
 
 ## Data
 
-### Dataset & DataLoader
+### Dataset
+
+- `torch.utils.data.Dataset`：Map-style，输入index，输出样本
+  - 需要实现`__init__`, `__len__`和`__getitem__`三个函数
+- `torch.utils.data.IterableDataset`：Iterable-style，按迭代器方式输出样本，可实现dynamic batch
+  - 需要实现`__init__`和`__iter__`两个函数
+  - 不需要一次性读入数据集，也不需要知道数据集大小
+  - 自行决定读取样本的顺序，无法使用sampler或者batch_sampler
+  - num_workers > 0：每个子进程都会把数据全读一遍
+    - 
 
 - `torch.utils.data.ConcatDataset([Dataset1, Dataset2])`：将多个数据集拼接起来
   - 若拼接的数据集调用方法不同（如半监督数据集），则需要重写ConcatDataset方法
-- DataLoader
-  - batch_size：None表示Dataset打batch（拼成torch.tensor并pad）
-  - `num_workers`：额外开多少个子进程加载batch，=0则主进程用于加载，>0则主进程不加载，在RAM中找子进程加载好的batch
+
+### DataLoader
+
+- `batch_size`：自动构建batch_sampler，给出list of batch indices
+  - None表示Dataset打batch（拼成torch.tensor并pad）
+- `shuffle`：自动构建sampler来shuffle所有训练的index
+- `num_workers`：额外开多少个子进程加载batch，=0则主进程用于加载，>0则主进程不加载，在RAM中找子进程加载好的batch
+  - 适合map-style datset，直接根据index进行切分
+- `collate_fn`：将list of sample拼接成大tensor
 
 ### Sampler
 
@@ -25,7 +40,7 @@
         def __iter__():
     ```
 
-- DistributedSampler：DDP用的Sampler
+- DistributedSampler：DDP用的Sampler，只能用于Map-style dataset
 
   - 每个epoch执行1次sample，把数据切分给不同GPU
 
