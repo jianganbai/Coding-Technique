@@ -417,5 +417,45 @@ trainer.train()
 trainer.evaluate()
 ```
 
+## 科学上网
+
+- 目前国内无法直连到huggingface
+
+- 下载huggingface预训练模型
+
+  - 挂梯子，从huggingface下载文件
+  - 从国内镜像站找（很少）：aliendao.cn
+
+- 加载本地预训练模型
+
+  - 法1：将模型名更换为下载好的文件夹
+  - 法2：手动构建`.cache`
+    - 从官网下载的预训练模型，默认存在`~/.cache/huggingface/hub/`下面
+
+- 预训练模型在`.cache`的存储形式
+
+  - 文件夹名称：`models--{上传用户名}--{模型名}`
+    - 内部包含`refs, blobs, snapshots`三个文件夹
+  - `refs`：存放每次commit的hash
+    - 例：仅有1个main文件（branch名称），内容是最新的commit的hash（没有`\n`）
+      - 删除\n：`tr -d < refs/main_cp > refs/main`
+  - `blobs`：存放实际下载的文件，如config.json和模型参数
+    - 从`snapshots`中的文件hard link过来
+    - 若为config文件，则文件名改为其git hash
+      - `git hash-object $file`
+    - 若为模型参数文件 (LFS)，则文件名改为其sha256 hash
+      - `openssl sha256 $file`
+    - 根据hash值，判断不同commit是否修改了每个文件，若未修改，则不用下载
+  - `snapshots`：存放每次commit的文件的软链接（实际是直接拷贝）
+    - 子文件夹名：相应commit的hash
+    - 子文件夹内容：相应commit的文件，例如config.json, pytorch_model.bin
+    - 与官网的一致，不需要修改名称
+  
+  
+
+
+
+
+
 
 

@@ -1,35 +1,31 @@
 # TensorBoardX学习笔记
 
-- TensorBoardX：将tensorflow的tensorboard适配给pytorch
-  - 提供了方便的可视化工具
-  - 需要像日志一样记录数据，然后系统进行绘图、可视化等
-- torch也适配了tensorboard：`torch.utils.tensorboard`
+- `tensorboardX`不需要安装tensorflow
+- `tensorboardX`与`torch.utils.tensorboard`调用方式基本一致
 
 ## SummaryWriter
 
 - ```python
   from tensorboardX import SummaryWriter
-  writer = SummaryWriter(logdir)
-  
-  # 日志操作
-  
-  writer.close()
+  writer = SummaryWriter()  # 未指定保存路径，将默认使用runs/日期时间
+  writer = SummaryWriter('runs/example')
+  writer = SummaryWriter(comment='abc')  # 保存路径：runs/日期时间-abc
   ```
-  
-  - logdir：保存的文件夹名
-    - 默认保存在./runs/
 
-## 操作
+
+## 写入
 
 ### 标量
 
 - ```python
-  writer.add_scalar(数据名称, 数据值, 时间戳)
+  writer.add_scalar(tag, scalar_value, global_step=None, walltime=None)
   ```
 
-  - 数据名称可使用`/`分组：`data/scalar1`和`data/scalar2`为同一组
+  - tag: 曲线名；scalar_value：值
+    - 数据名称可使用`/`分组：`data/scalar1`和`data/scalar2`为同一组
   - 仅相同数据名称，才画在一张图中
-
+  - global_step：记录的step；walltime：记录发生的时间，默认为time.time()
+  
 - ```
   writer.add_scalars(总名, {单个数据名: 数据值}, 时间戳)
   ```
@@ -63,8 +59,10 @@
 ### 可视化神经网络
 
 - ```python
-  writer.add_graph(神经网络(nn.Module), 网络输入示例, verbose)
+  writer.add_graph(model, input_to_model=None, verbose=False, **kwargs)
   ```
+
+  - model: 待可视化的网络模型；`input_to_model`：待输入神经网络的变量或一组变量（tuple）
 
 ### 神经网络参数
 
