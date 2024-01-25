@@ -23,6 +23,13 @@ Hello World!  % 正文放在document环境中
 \end{document}
 ```
 
+## 原理
+
+- latex三种模式：paragraph mode（一般情况），math mode, left-to-right mode
+- box：当做一个整体的text
+  - parbox：paragraph mode下的box
+  - minipage：创建parbox
+
 ## 插入
 
 ### 位置关系
@@ -32,7 +39,10 @@ Hello World!  % 正文放在document环境中
   - ！：忽略其它内部要求；H：准确地放在文本中的位置
     - ht：优先放在当前页面的上部，若不满足则顺延到下页上部
 - 基础技巧
-  - 靠左$\to$靠右：`\usepackage[export]{adjustbox}`，然后在引用图像时加入`[width=0.5\textwidth, right]`
+  - 靠左=>靠右：`\usepackage[export]{adjustbox}`，然后在引用图像时加入`[width=0.5\textwidth, right]`
+- 宽度
+  - `\textwidth`: 整行宽；`\pagewidth`：包含页边宽度，比`\textwidth`大
+  - `\linewidth`: 目前环境的宽（在box中就是box的宽度）；`\columnwidth`：栏宽
 
 ### 图片
 
@@ -45,7 +55,6 @@ Hello World!  % 正文放在document环境中
 \end{figure}
 ```
 
-- \linewidth: 栏宽；\textwidth: 整行宽
 - 建议将图片先转化为eps格式，再插入，jpg格式放大后不清晰
   - windows下可使用latex自带的`bmeps -c [原图像名] [新图像名]`
 - `\graphicspath{{imgs/}}`：指定从哪个文件夹中找图片
@@ -258,8 +267,10 @@ $E=mc^2$
 
 - 字体
 
-  - 加粗：`\bm{}`或`\mathbf{}`
+  - 加粗：`\bm{}`（需要bm库）或`\mathbf{}`
   - 取消斜体：`\mathrm{}`
+
+- 在上面加括号注释：`\overbrace{公式}^{注释}`；在下面加括号注释：`\underbrace{公式}_{注释}`
 
 - 分段函数
 
@@ -296,8 +307,9 @@ $E=mc^2$
 
 ### 引用
 
-- 引用图、表：`\ref{图、表的label}`
-- 引用公式：`\eqref`
+- 引用图、表：`\ref{图、表的label}`，前面需要自行补Figure, Table
+
+- 引用公式：`\eqref`，前面需要自行补Equation
 
 - 引用参考文献
 
@@ -313,51 +325,60 @@ $E=mc^2$
 
 ### 算法表
 
-- `\usepackage[linesnumbered, ruled, vlined]{algorithm2e}`
-  - `linesnumbered`：显示行号
-  - `ruled`：标题显示在上方，默认在下方
-  - `vlined`：同缩进前有联系那
-  - `boxed`：将算法插入在一个盒子里
+- 不同组合彼此冲突，不能混用
 
-- ```latex
-  \begin{algorithm}
-  	\SetAlgoLined  % 显示end
-  	\caption{算法名字}
-  	\KwIn{input parameters A, B, C}
-  	\KwOut{output result}
-  	some description\;  % \;用于换行
-  	\For{condition}{  % for循环
-  		only if\;
-  		\If{Condition}{
-  		1\;
-  		}
-  	}
-  	\While{not at end of this document}{  % while循环
-  		if and else\;
-  		\eIf{condition}{  % if-else
-  			1\;
-  		}{
-  			2\;
-  		}
-  	}
-  \end{algorithm}
-  ```
+- algpseudocode和algorithm
+
+  - <img src="imgs/image-20240111104826105.png" alt="image-20240111104826105" style="zoom:50%;" align="left"/>
+
+  - ```latex
+    \usepackage{algorithm,algpseudocode}
+    
+    \begin{algorithm}
+    \caption{An algorithm with caption}\label{alg:cap}
+    \begin{algorithmic}  % 在后面加上[1]表示行号
+    \Require $n \geq 0$  % \geq是大于等于
+    \Ensure $y = x^n$
+    \State $y \gets 1$  % \gets是赋值（左箭头）
+    \State $X \gets x$  % \State表示新起一行
+    \State $N \gets n$
+    \While{$N \neq 0$}  % while循环
+    \If{$N$ is even}  % if-else
+        \State $X \gets X \times X$
+        \State $N \gets \frac{N}{2}$  \Comment{This is a comment}  % 注释
+    \ElsIf{$N$ is odd}
+        \State $y \gets y \times X$
+        \State $N \gets N - 1$
+    \EndIf
+    \EndWhile
+    \For{\texttt{<some condition>}}  % for循环
+        \State \texttt{<do stuff>}
+    \EndFor
+    \Repeat  \Comment{forever}  % repeat-until循环
+    \State this
+    \Until{you die.}
+    \end{algorithmic}
+    \end{algorithm}
+    ```
+
+- 
 
 ### 脚注
 
 - `\footnote{text for footnote}`：标在要解释的正文后面，自动创建脚注
 - `\footnote[number]{text for footnote}`：指定脚注数字
 
+### 框
+
+- **\fbox命令**：`\fbox{内容}`，对包裹的内容（构成box）加框
+- **\colorbox命令**：`\colorbox{颜色}{内容}`，对包裹的内容填充颜色
+
+
+
 ## 符号
 
 - `%`：注释
 - 省略号：`\cdots`：横向居中省略号；`\vdots`：竖向省略号；`\ddots`：对角线向省略号
-
-### 排版
-
-- `\newpage`：换新页
-- `\section{}`：小标题
-- `\subsection{}`，`\subsubsection{}`
 
 ### 字体
 
@@ -372,12 +393,69 @@ $E=mc^2$
 
 - 文本中有下划线，需要转义`\_`
 
+## 排版
+
+### 快捷命令
+
+- `\newpage`：换新页
+- `\section{}`：小标题
+- `\subsection{}`，`\subsubsection{}`
+- `\centerline{}`：该行居中
+
+### minipage
+
+- minipage：创建parbox
+
+  - `\begin{minibox}[position][height][inner-pos]{width}`，`[]`表示可选，`{}`表示必填
+  - position
+    - `t`：box的第一行与原位置等高
+    - `c`：box的中间一行与原位置等高
+    - `b`：box的最后一行与原位置等高
+  - height：整个box的高度
+  - inner-pos：text在box的上下位置
+    - `t`; `c`; `b`
+  - width：整个box的宽度
+    - `em`：当前字体中M的宽度；`ex`：当前字体中x的高度
+
+- 例子
+
+  - <img src="imgs/image-20240111180841222.png" alt="image-20240111180841222" style="zoom:75%;" align="left"/>
+
+  - ```latex
+    Look at this text,
+    \begin{minipage}{3cm}
+    % \setlength{\parindent}{2em}  % 表示开头缩进2字符
+    This text is processed in paragraph mode, and then becomes an indivisible \TeX{} box.
+    \end{minipage}
+    how strange!
+    ```
+
+  - <img src="imgs/image-20240111181408687.png" alt="image-20240111181408687" style="zoom:65%;" align="left"/>
+
+  - ```latex
+    This is
+    \begin{minipage}[b]{2.5cm}
+        \textbf{A paragraph aligned at the bottom.}
+    \end{minipage}
+    and this is
+    \begin{minipage}{2.5cm}
+        \textbf{A paragraph aligned at the centre.}
+    \end{minipage}
+    and the last one is 
+    \begin{minipage}[t]{2.5cm}
+        \textbf{A paragraph aligned at the top.}
+    \end{minipage}
+    ```
+
+  - 
+
 ## 操作
 
 ### vscode
 
 - `alt+b`: build
 - `ctrl+alt+v`: 查看pdf
+  - 按ctrl，再双击pdf的位置，可跳转到源码的位置
 - 在setting.json中修改latex配置
 - `alt+z`：打开或关闭自动换行
 

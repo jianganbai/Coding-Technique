@@ -23,3 +23,10 @@
           # do something
           pbar.update(1)
   ```
+
+- ```python
+  pbar0 = tqdm(total=100, position=0)  # 多个进度条，使用position区分位置
+  pbar1 = tqdm(total=200, position=1)
+  ```
+
+- 

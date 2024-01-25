@@ -75,7 +75,10 @@ df.columns = ['name1', 'name2']  # 设置表头
 
   - ```python
     df = pd.DataFrame({'name': ['a', 'b', 'c', 'd', 'e']})
+    # 原地操作
     df['score'] = [1,2,3,4,5]  # 总长度等于已有样本长度
+    # 返回新dataframe，不修改原来的
+    df_new = df.assign(new_key=lambda x: x['score'] +1)
     ```
 
 - 添加行：添加新样本
@@ -89,22 +92,13 @@ df.columns = ['name1', 'name2']  # 设置表头
     df.iloc[index] = ['f', 6]  # 修改已有index
     ```
 
-  - ```python
-    df.append({'name': 'f', 'score': 6}, ignore_index=True)
-    ```
-
 - 拼接DataFrame
 
   - ```python
     # 上下拼接, axis=0为行，ignore_index为忽略左侧index
-    df = pd.concat([data_a, data_b], axis=0, ignore_index=False)
+    df = pd.concat([data_a, data_b], axis=0, ignore_index=True)
     ```
 
-  - ```python
-    # append之后将被舍弃，转为concat
-    a = pd.DataFrame({'name': ['f'], 'score': [6]})
-    df.append(a, ignore_index=True)  # append一般用于将一DataFrame添加到另一DataFrame之后
-    ```
 
 ### 修改
 
@@ -125,6 +119,18 @@ df.columns = ['name1', 'name2']  # 设置表头
   - ```python
     df.drop('column_name', axis=1, inplace=True)  # axis=0为行，axis=1为列。inplace表示原地操作
     ```
+
+- 排序
+
+  - ```python
+    # 按指定列的值排序
+    df.sort_values(['a', 'b'], ascending=[True, False], inplace=True)  # 先按a列升序排，再按b列降序排
+    # 按每一行的index排序（适合指定了index的df）
+    df = pd.DataFrame([1, 2, 3, 4, 5], index=[100, 29, 234, 1, 150], columns=['A'])
+    df.sort_index()
+    ```
+
+- 
 
 ### groupby
 

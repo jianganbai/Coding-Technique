@@ -33,13 +33,14 @@
     a=$((var1+var2))  # 更快，但只能计算整数
     a=$((var+1))  # =前后无空格，加减法前后无空格
     a=$((var1*var2))  # 乘法
-    a=$((var1/var2))
+    a=$((var1/var2))  # 除法
     
     # expr法也只能计算整数
     a=`expr $var1 + $var2`  # =前后无空格，加减法前后空格
     a=`expr $var + 1`
     a=`expr $var1 \* $var2`  # \为转义
     a=`expr $var1 / $var2`
+    a=`expr $var1 % $var2`  # 求余
     
     # 浮点数计算
     a=$(echo "$x*$y" | bc)  # 无法计算负数
@@ -164,6 +165,7 @@
 - `gpustat -cpui`：查看显卡使用，需要用pip安装gpustat
 
 - **ps命令**：查看进程统计信息（静态）
+  
   - `ps -e`：系统的所有进程信息
   - `ps -x`：当前用户在所有终端的进程
   - `ps -l`：长格式进程信息；`ps -f`：完整格式进程信息
@@ -182,6 +184,41 @@
     - TIME：该进程占用CPU时间
     - COMMAND：启动该进程的命令的名称
   
+- **top命令**
+
+  - ```shell
+    top - 17:03:00 up 17 days,  7:15, 31 users,  load average: 76.10, 74.38, 72.80  # 当前时间17:03，系统已运行17天，当前有31用户登录
+    Tasks: 1294 total,  73 running, 1221 sleeping,   0 stopped,   0 zombie  # 进程数
+    %Cpu(s): 67.4 us, 26.0 sy,  0.0 ni,  6.2 id,  0.3 wa,  0.0 hi,  0.0 si,  0.0 st  # wa是等待硬盘IO的CPU时间
+    MiB Mem : 1030712.+total,  12722.9 free, 139886.5 used, 878102.6 buff/cache  # 物理内存
+    MiB Swap: 124999.0 total, 107725.5 free,  17273.5 used. 880481.1 avail Mem  # 交换内存
+    
+        PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                     
+    3140619 songhai+  20   0   27.3g   2.7g  15928 S 307.9   0.3  16608:24 ld-linux-x86-64                                             
+    3777899 zhaosuc+  20   0   66.8g   3.8g   1.8g S 243.1   0.4  22:41.95 python         
+    ```
+
+    - ```shell
+      us: user cpu time (or)  # CPU time spent in user space
+      sy: system cpu time (or)  # CPU time spent in kernel space
+      ni: user nice cpu time (or)  # CPU time spent on low priority processes
+      id: idle cpu time (or)  # CPU time spent idle
+      wa: io wait cpu time (or)  # CPU time spent in wait (on disk)
+      hi: hardware irq (or)  # CPU time spent servicing/handling hardware interrupts
+      si: software irq (or)  # CPU time spent servicing/handling software interrupts
+      st: steal time - -  # CPU time in involuntary wait by virtual cpu while hypervisor is servicing another processor (or) % CPU time stolen from a virtual machine
+      ```
+
+  - 调用参数：`top -hv|-bcEHiOSs1 -d secs -n max -u|U user -p pid -o fld -w [cols]`
+
+    - `-d secs`：改变更新速度
+    - `-u user`：仅查看某用户的进程
+
+  - 交互参数：运行`top`命令后
+
+    - `l`：切换负载信息的显示方式；`m`：切换内存的显示方式
+    - `P`：根据CPU使用排序；`M`：根据内存占用排序
+
 - **kill命令**：`kill [-signal] pid`，将信号量发送给对应pid的进程
   
   - 默认发送15信号量，让进程优雅退出并释放资源
@@ -414,8 +451,9 @@ ls -l | grep ^-  # 获得所有文件
       #是分隔号，等价于/，/有时会出现在待匹配的路径里
       # 匹配'Length (seconds):     28.107375'中的时长
       sed -n 's#^Length (seconds):[^0-9]*\([0-9.]*\)$#\1#p'  # \(\)表示捕获组；\1表示引用第1个捕获组
+      # s代表替换，^代表在开头匹配，$代表行结束
       ```
-
+  
 - `c`：以行为单位替换
   
   - `s`：替换，`s/[原字符串]/[替换字符串]/`，可用正则表达式
@@ -554,6 +592,37 @@ ls -l | grep ^-  # 获得所有文件
   - `sudo apt-get install xxx`：安装包
   - `sudo apt-get update`：获取所有包的最新版本信息（包缓存）；`sudo apt-get upgrade`：下载并更新
 
+### 网络相关
+
+- **ssh命令**：通过ssh连接到服务器
+  - `ssh [-l login_name] [-p port_number] [-i identity_file] remote_host`
+  - 也可写成`ssh [user]@[ip address]`
+- **scp命令**：主机间拷贝数据
+  - `scp -P [port] [local path] [user]@[ip address]:[remote path]`：将本地文件拷贝到服务器端
+    - 使用ssh连接的服务器，一般要指定通过ssh的端口连接（默认是22，很多会为了安全改一下）
+    - `scp -r`：直接拷贝文件夹，不需要先打包
+  - `scp -P [port] [user]@[ip address]:[remote path] [local path]`：将服务器文件拷贝到本地
+    - 2条scp命令均需在本地使用
+- **sync命令**：文件同步
+  - 模板
+    - 本地同步：`rsync [OPTION...] SRC... [DEST]`
+    - 远程pull：`rsync [OPTION...] [USER@]HOST:SRC... [DEST]`
+    - 远程push：`rsync [OPTION...] SRC... [USER@]HOST:DEST`
+  - 机制
+    - quick check：若modify time和文件大小相同，则不同步
+  - 参数
+    - `-t`：同步modify time（默认不同步）
+    - `-I`：时间戳相同的不skip
+    - `-v`：显示更多信息
+    - `-l`：将软链接拷贝为软链接（默认不拷贝）；`-L`：拷贝软连接指向的文件
+    - `-P`：等价于`--partial`和`--progress`
+      - `--partial`：只穿了一部分，连接断了，不删除文件，断点重传
+      - `--progress`：显示进度条
+
+
+
+
+
 
 
 ### 其它
@@ -563,18 +632,8 @@ ls -l | grep ^-  # 获得所有文件
   - `set -u`：若遇到未知变量，bash默认忽略。加上`set -u`后，若遇到未知变量，会报错
   - `set -x`：输出前显示该行命令
   - `set -e`：若有命令执行失败，bash默认继续执行。加上`set -e`后，若发生错误，则终止执行
-- `set -o pipefail`：`set -e`无法约束管道，加上`set -o pipefail`后，只要管道中一个子命令失败，则终止执行
+  - `set -o pipefail`：`set -e`无法约束管道，加上`set -o pipefail`后，只要管道中一个子命令失败，则终止执行
   
-- **连接服务器相关**
-
-  - `ssh [-l login_name] [-p port_number] [-i identity_file] remote_host`：通过ssh连接到服务器
-    - 也可写成`ssh [user]@[ip address]`
-  - `scp -P [port] [local path] [user]@[ip address]:[remote path]`：将本地文件拷贝到服务器端
-    - 使用ssh连接的服务器，一般要指定通过ssh的端口连接（默认是22，很多会为了安全改一下）
-    - `scp -r`：直接拷贝文件夹，不需要先打包
-  - `scp -P [port] [user]@[ip address]:[remote path] [local path]`：将服务器文件拷贝到本地
-    - 2条scp命令均需在本地使用
-
 - **seq命令**：生成序列（不是数组），类似于python的range
 
   - ```shell
@@ -586,6 +645,13 @@ ls -l | grep ^-  # 获得所有文件
 - **shopt命令**：开启/关闭shell的隐藏行为
   - `shopt -s xxx`：开启；`shopt -u xxx`：关闭；`shopt -p`：打印所有隐藏行为
   - `shopt -s autocd`：autocd可省去cd，输入文件夹，自动进入
+  
+- **linux的时间**
+
+  - modify time：最后一次修改文件/文件夹的时间（内容）
+    - `ls -l`展示的就是modify time
+  - change time：最后一次改变文件/文件夹的时间（属性、位置）
+  - access time：最后一次访问文件/文件夹的时间
 
 ## 结构
 
@@ -731,7 +797,25 @@ ls -l | grep ^-  # 获得所有文件
 
 ### 多进程
 
-- 
+- **sleep命令**：阻塞指定时间
+
+  - ```shell
+    sleep 10s  # 阻塞10s，等价于sleep 10
+    # sleep 2m; sleep 2h; sleep 3d
+    ```
+
+- **wait命令**：等待子进程完成
+
+  - 后台进程：命令后加上`&`，表示把命令放到后台
+
+  - `$!`：最后一个后台进程的PID；`$?`：最后一个进程的退出状态
+
+  - ```shell
+    wait  # 阻塞至全部进程完成，再运行
+    wait $PID  # 仅阻塞至$PID进程完成，再运行
+    ```
+
+  - 
 
 
 
