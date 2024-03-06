@@ -49,6 +49,20 @@ df.columns = ['name1', 'name2']  # 设置表头
     bools = [df[k] in v for k, v in require.items()]
     df[np.all(bools, axis=0)]
     ```
+    
+  - ```python
+    # 创建示例DataFrame
+    df = pd.DataFrame({'A': [1, 2, 3], 'B': ['a', 'b', 'c']})
+     
+    for index, row in df.iterrows():
+        print(f"Index: {index}")
+        print("Data:")
+        for column_name, value in row.items():  # 也可通过row['A'], row['B']访问
+            print(f"\t{column_name}: {value}")
+        print("\n")
+    ```
+
+  - 
 
 - 访问列
 
@@ -58,7 +72,7 @@ df.columns = ['name1', 'name2']  # 设置表头
     df[['列1', '列2']]  # 查看多列
     ```
 
-- apply：对元素逐一进行变换
+- apply：对元素逐一进行变换（单进程）
 
   - 可先筛选出特定行/列
   
@@ -67,6 +81,13 @@ df.columns = ['name1', 'name2']  # 设置表头
     df[['age', 'salary']].apply(np.sum, axis=0)
     # axis=0为column-wise，axis=1为row-wise
     df.apply(lambda x: x['age'] + 10, axis=1)  # 提取年龄，然后加10岁
+    # 若apply func返回pd.Series，则.apply()会将它们拼成新dataframe
+    ```
+    
+  - ```python
+    # pandarallel库可实现多进程apply
+    pandarallel.initialize()
+    df.parallel_apply(func, axis=1)  # API与原版apply一致
     ```
 
 ### 添加
@@ -97,6 +118,8 @@ df.columns = ['name1', 'name2']  # 设置表头
   - ```python
     # 上下拼接, axis=0为行，ignore_index为忽略左侧index
     df = pd.concat([data_a, data_b], axis=0, ignore_index=True)
+    # axis=1代表拼接列，可通过keys指定各列新名称
+    df = pd.concat([df1['a'], df2['b']], axis=1, keys=['c', 'd'])
     ```
 
 
@@ -105,7 +128,10 @@ df.columns = ['name1', 'name2']  # 设置表头
 - loc
 
   - ```python
-    df.loc[df['name'] == 'a', 'score'] = 100  # df.loc[条件1，条件2]，条件可以为切片(:)，值，行索引/列标签名
+    df.loc[df['name'] == 'a', 'score'] = 100  # 不能使用df.loc[i]['score'] = 100
+    # df.loc[条件1，条件2]，条件可以为切片(:)，值，行索引/列标签名
+    
+    df.at[row_index, 'column_name'] = 100  # .at()只能设定单个值，.loc()和.iloc()可设定多个值
     ```
 
 - 修改顺序
@@ -130,7 +156,18 @@ df.columns = ['name1', 'name2']  # 设置表头
     df.sort_index()
     ```
 
-- 
+- **replace**：将所有指定值，替换为另一指定值
+
+  - ```python
+    # DataFrame.replace(to_replace, replace), to_replace是原表的指定值，replace是替换后的值
+    df.replace(0, 5)  # 将表内所有的0，替换为5
+    df.replace(to_replace={'a': 'b', 'c': 'd'}, replace=None)  # 将所有a替换为b，将所有c替换为d
+    df.replace(to_replace={'a': 1, 'b': 2}, replace=[3, 4])  # 将a列的1替换为3，将b列的2替换为4
+    ```
+
+- 改变索引
+
+  - `df.reset_index()`：将索引列改为正常的一列，适合groupby操作
 
 ### groupby
 

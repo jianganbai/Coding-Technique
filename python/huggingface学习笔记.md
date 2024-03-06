@@ -438,7 +438,7 @@ trainer.evaluate()
     - 内部包含`refs, blobs, snapshots`三个文件夹
   - `refs`：存放每次commit的hash
     - 例：仅有1个main文件（branch名称），内容是最新的commit的hash（没有`\n`）
-      - 删除\n：`tr -d < refs/main_cp > refs/main`
+      - 删除\n：`tr -d "\n" < refs/main_cp > refs/main`
   - `blobs`：存放实际下载的文件，如config.json和模型参数
     - 从`snapshots`中的文件hard link过来
     - 若为config文件，则文件名改为其git hash

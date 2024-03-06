@@ -113,26 +113,24 @@ Hello World!  % 正文放在document环境中
     \end{table}
     ```
 
-  - `\cline{2-3}`：该行仅第2格到第3格有框线
+  - `\cline{2-3}`：该行仅第2列到第3列有框线
 
   - `\begin{table}`仅占用一栏，`\begin{table*}`占用整个页面宽
 
-- 调整宽度
+- 调整大小
 
   - ```latex
     % 调整列间距
     \makebox[0.1\textwidth][c]{第1行列名}  % 写在第1行
     
-    % 调整行间距
-    \renewcommand{\arraystretch}{倍数}  % 写在\begin{table}和\begin{tabular}中间
-    
-    % 压缩整个表格宽度
-    \resizebox{\textwidth}!{
-    \begin{tabular}
-    ...
-    \end{tabular}}
+    % 调整整个表格的行间距和列间距
+    \begingroup  % 设置单独的行间距和列间距，不影响其他表格
+    \setlength{\tabcolsep}{5pt}  % 调整列间距为5pt，默认是6pt
+    \renewcommand{\arraystretch}{1.5}  % 调整行间距为1.5倍，默认是1倍
+    % 定义表格
+    \endgroup
     ```
-
+  
 - 三线表
 
   - ```latex
@@ -172,9 +170,12 @@ Hello World!  % 正文放在document环境中
 - 多行多列
 
   - ```tex
-    % 多行：multirow{合并的行数}{所占大小，默认为*（不加{}）}{文本}
-    % 多列：multicolumn{合并的列数}{对齐格式}{文本}
+    % 多行：\multirow{合并的行数}{所占大小，默认为*（不加{}）}{文本}，需要\usepackage{multirow}
+    % 多行内换行：在文本出填上\shortstack{第1行\\ 第2行}
+    
+    % 多列：\multicolumn{合并的列数}{对齐格式}{文本}
     % 被合并的位置需要用&空出，但不填东西
+    % 若多列左右两侧需要竖线，则需要在{对齐格式里加上|}
     ```
 
 - 表格并排
@@ -202,6 +203,10 @@ Hello World!  % 正文放在document环境中
 
 ```latex
 % itemize为无序列表，enumerate为有序列表，description为描述
+\begin{itemize}
+	\item 这是第一点
+\end{itemize}
+
 \begin{enumerate}
     \item 这是第一点; 
     \item 这是第二点;
@@ -310,6 +315,8 @@ $E=mc^2$
 - 引用图、表：`\ref{图、表的label}`，前面需要自行补Figure, Table
 
 - 引用公式：`\eqref`，前面需要自行补Equation
+
+- 引用符号前，最好加上~，例如`~\ref{}`，保证`Table [1]`不会分在2行
 
 - 引用参考文献
 

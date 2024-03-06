@@ -57,16 +57,14 @@
             return data
     ```
 
-  - 
 
-## 张量
+## Tensor
 
 - `tensor.squeeze()`与`tensor.unsqueeze()`
   - `tensor.squeeze()`：去除所有大小为1的维度
   - `tensor.squeeze(arg)`：若第arg维的维度值为1，则去除之，否则保持原tensor不变
   - `tensor.unsqueeze(arg)`：在第arg维插入维度值为1
   - `a = a[None, :, :] `：None代表在此位置插入维度
-  
 - Variable与Parameter
 
   - Variable: 所有输入网络的tensor都会被自动包装为Variable
@@ -74,6 +72,10 @@
   - Parameter: 自动将tensor注册到网络中，默认有梯度，可进行反向创博
   - **仅需要被更新的tensor才需要梯度**
     - 如果常量只是加入了计算图，则不需要梯度
+- Broadcast：两个矩阵按位置相乘，形状不需要完全等，可自动进行复制
+  - 从靠后的维度往前面的维度，进行广播
+  - 若A和B在第i维的size相等or有1个为1，则将等于1的维度复制
+  - 若没有该维度，则初始化为1
 
 ## 梯度
 

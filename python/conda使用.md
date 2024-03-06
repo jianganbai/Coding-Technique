@@ -1,13 +1,11 @@
 # Anaconda使用
 
-## 用语
-
 - conda --version #查看conda版本，验证是否安装
 - conda update conda #更新至最新版本，也会更新其它相关包
 - conda update --all #更新所有包
 - conda update package_name #更新指定的包
 
-### 创建环境
+## 创建环境
 
 - `conda create --name <env_name> python=<版本>` #创建名为env_name的新环境
   - `-n`等同于`--name`
@@ -18,15 +16,15 @@
 - `conda info --envs` #显示所有已经创建的环境
 - `conda config --show channels`源
 
-### 删除
+## 修改
 
 - `conda install --name env_name package_name` #在指定环境中安装包
+- `conda rename --name old_env_name new_env_name`  # 修改环境名
 - `conda remove --name env_name package` #删除指定环境中的包
 - `conda remove --name env_name --all` # 删除整个环境 
 - `conda remove package` #删除当前环境中的包
-- conda env remove -n env_name #采用第10条的方法删除环境失败时，可采用这种方法
 
-###  导出
+##  导出
 
 - `conda env export > xxx.yaml`：将环境中安装的包及版本号导入xxx.yaml中
 - `conda env create -f xxx.yaml`：根据xxx.yaml安装相应conda环境
@@ -46,6 +44,11 @@
 - 直接从github安装
   - `pip install git+https://github.com/xxx/xxx.git`
   - `pip install git+https://github.com/xxx/xxx.git@main`：指定安装main分支
+
+## 参数
+
+- `pip install --editable [dir_path / URL]`：安装该路径下的源码，库路径为该路径
+  - 若修改源码，则会立即生效
 
 
 ## 手动安装包

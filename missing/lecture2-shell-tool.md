@@ -253,7 +253,7 @@
     - `-P`：不跟随symbolic link（默认）
     - `-L`：跟随symbolic link
   - 查找方式
-    - `-type`：按类型查，`-type f`查找所有文件
+    - `-type`：按类型查，`-type f`查找所有文件，`-type d`查找所有文件夹
     - `-name`：按名字查找，**使用正则表达式时用双引号`""`框起来**
     - `-iname`：按名字查找，不区分大小写
     - `-inum`：按inode查找
@@ -282,9 +282,12 @@
   - tar.gz：tar用于打包，gzip用于压缩
     - linux系统上最常用的打包压缩工具
     - 打包压缩：`tar -czvf xxx.tar.gz file1 file2 file3`
+      - `-r`：递归，将子文件夹一并打包
+      - `--exclude='path'`：不打包指定文件/文件夹，可输入多次
     - 解压缩：`tar -xzvf xxx.tar.gz`
   - zip：打包和压缩二合一
     - 打包压缩：`zip -rq xxx.zip xxx`，`-r`表示递归，`-q`表示安静操作
+      - `-x file`：不打包指定文件；`-x dir/\*`：不打包指定文件夹
     - 解压缩：`unzip xxx.zip`，`-d xxx`更换解压路径
 - 其它
   - `cd ${dir}/../script`：进入dir上层文件夹中的script文件夹
@@ -320,8 +323,7 @@
 - **declare命令**：`declare [变量类型] [name[=value]]`，声明变量，可同时给出变量值
   - `-a`：数组；`-f`：函数；`-i`：整数；`-l`：小写字母；`-u`：大写字母；`-r`：只读；`-x`：环境变量
 - **sort命令**：对输入进行排序
-  - 参数
-    - `-r`：从大至小逆序输出；`-n`：按数字大小比较（默认按字符比较）；`-k x`：选定第x列进行比较
+  - 参数：`-r`：从大至小逆序输出；`-n`：按数字大小比较（默认按字符比较）；`-k x`：选定第x列进行比较
 
 ### 运行程序
 
@@ -342,7 +344,7 @@
     - `-P [并行的进程数]`：与`-n`配合，每个参数并行运算
   
   - ```shell
-    find . -name "engine*" | xargs -i sh -c "ls -l {} | wc -l"  # 统计所有以engine开头的文件夹的文件数目
+    find . -type d -name "engine*" | xargs -i sh -c "ls -l {} | wc -l"  # 统计所有以engine开头的文件夹的文件数目
     ```
 
 
@@ -446,6 +448,7 @@ ls -l | grep ^-  # 获得所有文件
       sed -n '/root/p'  # 打印开头为root的行
       sed -n '2,5p'  # 打印第2到5行
       sed -n '1~2p'  # 只打印奇数行
+      sed -n "1~${a}p"  # 打印至a行
       ```
     - ```shell
       #是分隔号，等价于/，/有时会出现在待匹配的路径里
@@ -595,35 +598,63 @@ ls -l | grep ^-  # 获得所有文件
 ### 网络相关
 
 - **ssh命令**：通过ssh连接到服务器
-  - `ssh [-l login_name] [-p port_number] [-i identity_file] remote_host`
-  - 也可写成`ssh [user]@[ip address]`
+  - `ssh [-l login_name] [-p port_number] [-i identity_file] remote_host 'command'`
+  
+    - `-i`：指定使用哪个private key
+    - `command`：登录后执行的命令，若连续执行多条命令，则用分号隔开
+  
+  - 也可写成`ssh [user]@[ip address] 'command'`
+  
+  - 多个ssh key管理
+  
+    - ```yaml
+      Host server1  # 可直接使用ssh server1连接
+          HostName 1.2.3.4  # IP地址
+          IdentityFile ~/.ssh/realname_rsa  # 指定server1的private key
+          User aaa  # 用户名
+      
+      Host server2
+          HostName realname2.example.org
+          IdentityFile ~/.ssh/realname2_rsa  # different private key for realname2
+          User remoteusername
+      ```
+
 - **scp命令**：主机间拷贝数据
+  
   - `scp -P [port] [local path] [user]@[ip address]:[remote path]`：将本地文件拷贝到服务器端
     - 使用ssh连接的服务器，一般要指定通过ssh的端口连接（默认是22，很多会为了安全改一下）
     - `scp -r`：直接拷贝文件夹，不需要先打包
   - `scp -P [port] [user]@[ip address]:[remote path] [local path]`：将服务器文件拷贝到本地
     - 2条scp命令均需在本地使用
-- **sync命令**：文件同步
+  - 参数
+    - `-i [identity_file]`：指定使用哪个private key
+- **rsync命令**：文件同步
+  
   - 模板
     - 本地同步：`rsync [OPTION...] SRC... [DEST]`
     - 远程pull：`rsync [OPTION...] [USER@]HOST:SRC... [DEST]`
     - 远程push：`rsync [OPTION...] SRC... [USER@]HOST:DEST`
+    - 若`SRC`为文件夹，则将其下的所有文件传到`DEST`文件夹下
+    
   - 机制
+    
     - quick check：若modify time和文件大小相同，则不同步
+    
   - 参数
+    
+    - `-r`：递归传文件夹
     - `-t`：同步modify time（默认不同步）
     - `-I`：时间戳相同的不skip
     - `-v`：显示更多信息
     - `-l`：将软链接拷贝为软链接（默认不拷贝）；`-L`：拷贝软连接指向的文件
     - `-P`：等价于`--partial`和`--progress`
-      - `--partial`：只穿了一部分，连接断了，不删除文件，断点重传
+      - `--partial`：只传了一部分，连接断了，不删除文件，断点重传
       - `--progress`：显示进度条
-
-
-
-
-
-
+    - `-e`：指定协议，如ssh
+      - 默认是`-e ssh`
+      - 若ssh有参数：`-e 'ssh -i /home/xxx/.ssh/id_rsa'`指定用哪个ssh key
+    - `--exclude 'dir/'`：不传输某文件夹
+      - 若路径以`/`开始，则是相对于source路径
 
 ### 其它
 
@@ -797,6 +828,12 @@ ls -l | grep ^-  # 获得所有文件
 
 ### 多进程
 
+- **后台进程**
+
+  - **nohup**：写在原始命令最前面，不挂断 (no hang up)，日志写到nohup.out中，但无法进行交互（输入密码等）
+  - **&**：写在原始命令最后面，可进行交互，但关闭终端后命令自动停止
+  - `nohup command &`：不挂断、可交互
+  
 - **sleep命令**：阻塞指定时间
 
   - ```shell
@@ -806,8 +843,6 @@ ls -l | grep ^-  # 获得所有文件
 
 - **wait命令**：等待子进程完成
 
-  - 后台进程：命令后加上`&`，表示把命令放到后台
-
   - `$!`：最后一个后台进程的PID；`$?`：最后一个进程的退出状态
 
   - ```shell
@@ -815,7 +850,6 @@ ls -l | grep ^-  # 获得所有文件
     wait $PID  # 仅阻塞至$PID进程完成，再运行
     ```
 
-  - 
 
 
 

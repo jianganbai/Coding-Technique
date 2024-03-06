@@ -18,8 +18,6 @@
 
 ### htop
 
-- 界面
-
 - <img src="../imgs/htop_eg.jpg" style="zoom:80%;" align="left"/>
 
   - 区域1：CPU、内存、Swap的使用情况
@@ -49,10 +47,18 @@
 - 命令行参数
 
   - -d：设置延迟更新时间
-
-  - -u：只显示给定用户的进程
-
+- -u：只显示给定用户的进程
   - -p：只显示给定的PID
+
+### atop
+
+<img src="imgs/image-20240127164009656.png" alt="image-20240127164009656" style="zoom:50%;" align="left"/>
+
+- 监控系统进程、CPU、内存、硬盘、网络等各项状态
+  - `PRC`：系统进程。`sys`：10s内在内核态的时间之和。`usr`：10s内在用户态的时间之和。`#proc`：进程总数。`#exit`：10s内退出的进程数
+  - `CPU`：CPU状态。`sys`：CPU在内核态的时间比例。`usr`：CPU在用户态的时间比例。`irq`：CPU中断的比例。`idle`：CPU空闲的比例
+  - `CPL`：等待队列。`avg1`：过去1分钟等待队列数。`avg5`：过去5分钟等待队列数。`avg15`：过去15分钟等待队列数
+  - `LVM/DSK`：硬盘。`busy`：磁盘忙所占比例。`read`：每秒读入。`write`：每秒写入。`avq`：磁盘平均队列长度。`avio`：磁盘平均io时间
 
 ### tmux
 
