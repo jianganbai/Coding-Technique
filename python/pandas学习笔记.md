@@ -48,6 +48,9 @@ df.columns = ['name1', 'name2']  # 设置表头
     require = {'列名': [值1, 值2, 值3]}
     bools = [df[k] in v for k, v in require.items()]
     df[np.all(bools, axis=0)]
+    
+    # 筛选特定列非空
+    df.loc[df['xxx'].notnull() | (df['xxx'] == '')]
     ```
     
   - ```python

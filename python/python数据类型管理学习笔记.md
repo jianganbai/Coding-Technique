@@ -21,6 +21,7 @@
   - `List`：列表，如：`List[int, float, str]`
   - `Dict`：字典，`Dict[key类型, value类型]`
   - `Set`：集合，`Set[元素类型]`
+  - `Literal`：指定取值集合，`Literal['foo', 'bar']`
 
 ```python
 from typing import Union, Tuple, List, Dict
