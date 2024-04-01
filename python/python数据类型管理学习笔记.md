@@ -16,7 +16,7 @@
 - 基本类型
 
   - int, float, bool, str, bytes
-  - `Union`：返回值有多个类型
+  - `Union`：返回值有多个类型，`Union[int, None]`也可写成`int | None`
   - `Tuple`：固定长度的元组，如：`Tuple[torch.Tensor, torch.Tensor]`
   - `List`：列表，如：`List[int, float, str]`
   - `Dict`：字典，`Dict[key类型, value类型]`
@@ -37,7 +37,8 @@ def func3(a: int, s: str) -> Dict[str, Union[int, str]]:
 - 泛型
   - `Any`：任意数据类型
   - `Callable`：可调用对象
-  - `Optional`：可选类型
+  - `Optional`：可选类型，`Optional[float]`等价于`float | None`
+    - `Optional[Literal['a', 'b']]`
   - `Iterable`：可迭代对象
 
 ```python

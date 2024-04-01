@@ -344,7 +344,7 @@
     - `-P [并行的进程数]`：与`-n`配合，每个参数并行运算
   
   - ```shell
-    find . -type d -name "engine*" | xargs -i sh -c "ls -l {} | wc -l"  # 统计所有以engine开头的文件夹的文件数目
+    find . -type d -name "engine*" | xargs -i sh -c "ls -l {} | wc -l"  # 统计所有以engine开头的文件夹内的文件数目
     ```
 
 
@@ -629,19 +629,20 @@ ls -l | grep ^-  # 获得所有文件
   - 参数
     - `-i [identity_file]`：指定使用哪个private key
 - **rsync命令**：文件同步
-  
+
   - 模板
     - 本地同步：`rsync [OPTION...] SRC... [DEST]`
     - 远程pull：`rsync [OPTION...] [USER@]HOST:SRC... [DEST]`
     - 远程push：`rsync [OPTION...] SRC... [USER@]HOST:DEST`
-    - 若`SRC`为文件夹，则将其下的所有文件传到`DEST`文件夹下
+      - 若`SRC`以`/`结尾，则将其下所有文件传到`DEST`文件夹下
+      - 若`SRC`不以`/`结尾，则将该文件/文件夹传到`DEST`文件夹下
     
   - 机制
     
     - quick check：若modify time和文件大小相同，则不同步
     
-  - 参数
-    
+- 参数
+  
     - `-r`：递归传文件夹
     - `-t`：同步modify time（默认不同步）
     - `-I`：时间戳相同的不skip
@@ -650,10 +651,9 @@ ls -l | grep ^-  # 获得所有文件
     - `-P`：等价于`--partial`和`--progress`
       - `--partial`：只传了一部分，连接断了，不删除文件，断点重传
       - `--progress`：显示进度条
-    - `-e`：指定协议，如ssh
-      - 默认是`-e ssh`
+    - `-e`：指定协议，如ssh，默认是`-e ssh`
       - 若ssh有参数：`-e 'ssh -i /home/xxx/.ssh/id_rsa'`指定用哪个ssh key
-    - `--exclude 'dir/'`：不传输某文件夹
+    - `--exclude '/dir/'`：不传输某文件夹
       - 若路径以`/`开始，则是相对于source路径
 
 ### 其它

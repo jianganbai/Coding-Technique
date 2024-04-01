@@ -21,12 +21,16 @@ df = pd.read_csv(path, sep, header, index_col)
 # sep指定哪个是分隔符
 # header指定哪行是表头，header=None表示没有表头
 # index_col指定哪列是行索引，index_col=False表示没有行索引
-df.columns = ['name1', 'name2']  # 设置表头
+df.columns = ['name1', 'name2']  # 设置列名
+df.index = [1, 0]  # 访问行名 / 设置行名
+df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代表原地修改
 ```
 
 ### 访问
 
 - loc使用索引名（显式索引）；iloc使用数字索引（隐式索引）
+
+- loc包含左右两侧端点，iloc仅包含左端点
 
 - 访问行
 
@@ -41,7 +45,7 @@ df.columns = ['name1', 'name2']  # 设置表头
   - ```python
     df[df['列名'] == '值']  # 特定行
     df.loc[df['column_name'] == some_value]
-    df.loc[df['column_name'].isin(some_values)]
+    df.loc[df['column_name'].isin(some_values)]  # 可有多个不同取值
     df.loc[(df['column_name'] >= A) & (df['column_name'] <= B)]
     
     # 筛选特定列等于特定值
@@ -58,14 +62,12 @@ df.columns = ['name1', 'name2']  # 设置表头
     df = pd.DataFrame({'A': [1, 2, 3], 'B': ['a', 'b', 'c']})
      
     for index, row in df.iterrows():
-        print(f"Index: {index}")
+        print(f"Index: {index}")  # DataFrame的行标签
         print("Data:")
         for column_name, value in row.items():  # 也可通过row['A'], row['B']访问
             print(f"\t{column_name}: {value}")
         print("\n")
     ```
-
-  - 
 
 - 访问列
 
@@ -81,6 +83,7 @@ df.columns = ['name1', 'name2']  # 设置表头
   
   - ```python
     df = pd.DataFrame({'name': ['a', 'b'], 'age': [40, 50], 'salary': [10, 29]})
+    df['age'].apply(lambda x: x + 10)  # df['age']是Series，apply()输出Series，不需要指定axis
     df[['age', 'salary']].apply(np.sum, axis=0)
     # axis=0为column-wise，axis=1为row-wise
     df.apply(lambda x: x['age'] + 10, axis=1)  # 提取年龄，然后加10岁
@@ -115,7 +118,8 @@ df.columns = ['name1', 'name2']  # 设置表头
   - ```python
     df.iloc[index] = ['f', 6]  # 修改已有index
     ```
-
+    
+  
 - 拼接DataFrame
 
   - ```python
@@ -125,6 +129,18 @@ df.columns = ['name1', 'name2']  # 设置表头
     df = pd.concat([df1['a'], df2['b']], axis=1, keys=['c', 'd'])
     ```
 
+- 若要插入多行，则先存在list中，每个元素为`pd.DataFrame`，最后一次性拼接
+
+  - ```python
+    info_list = []
+    for a in range(10):
+        info_list.append(pd.DataFrame({'a': a, 'a^2': a * a}))
+    df = pd.concat(info_list, axis=0)  # axis=0为行，axis=1为列
+    ```
+
+  - 
+
+  - 一行一行地写，复杂度太高
 
 ### 修改
 
@@ -171,6 +187,15 @@ df.columns = ['name1', 'name2']  # 设置表头
 - 改变索引
 
   - `df.reset_index()`：将索引列改为正常的一列，适合groupby操作
+  
+- 筛选非空列
+
+  - ```python
+    # .copy()防止原位修改时有冲突
+    df = df[df['a'].notnull()].copy()  # 筛选出a列非空的行，若空则该位置为nan
+    df = df[df['a'].isnull()].copy()  # 筛选出a列为空的行
+    ```
+
 
 ### groupby
 
@@ -205,6 +230,7 @@ for class_name, class_info in group:
 
 - 返回DataFrameGroupBy对象
   - `list(DataFrameGroupBy)`：`[(分组名1， 子DataFrame1), (分组名2， 子DataFrame2), ...]`
+    - 子DataFrame保留原来的行index
   - `DataFrameGroupBy.groups`：所有分组名
 
 ### 输出
@@ -214,12 +240,6 @@ for class_name, class_info in group:
   - csv：ascii，逗号分隔。excel：二进制，分号分隔
 
 ### 其它
-
-- 设置索引栏
-
-  - ```python
-    df.set_index('索引栏名称', inplace=True)  # inplace=True代表原地修改
-    ```
 
 ## Series操作
 
@@ -257,5 +277,12 @@ a = pd.Series({'a': 1, 'b': 2, 'c': 3})
     a.iloc[0: 2]  # iloc使用数字索引（隐式索引）
     ```
 
+- 递归访问
 
+  - ```python
+    for index, value in series.items():
+        xxx
+    ```
+
+  - 
 

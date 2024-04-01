@@ -163,14 +163,18 @@
   - 处理函数的输入是中间层的输入和输出，可将其保存到其它变量中
   - 以上在初始化时进行，前向/反向传播后自动调用绑定的函数
 
-## 模型参数
+### 参数
 
-- 模型保存：`torch.save(net.state_dict(), path)`
-- 模型加载：`net.load_state_dict(torch.load(path))`
-  - 需要先例化一个相同结构的net，再加载参数
-  - map_location
-- 记录最优参数：`copy.deepcopy(net.state_dict())`
-  - 必须深拷贝，浅拷贝只会返回同一套参数的引用
+- 参数类型
+  - `_parameters`：由`torch.nn.Parameter`定义
+    - 调用`self.register_parameter(name, tensor)`，注册到`_parameters`这个dict
+  - `_buffers`：无梯度的tensor
+    - 调用`self.register_buffer(name, tensor)`
+  - `_modules`：由`torch.nn.Module`定义
+
+- 保存state_dict
+  - `nn.Module`集成了`state_dict()`和`load_state_dict()`两个函数
+  - 需要自定义state_dict，可以覆写这两个方法
 
 ## cuda
 

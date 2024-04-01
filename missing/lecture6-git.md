@@ -80,7 +80,7 @@
 
 #### git clone
 
-- `git clone`：下载远程仓库：
+- `git clone`：下载远程仓库
   - `git clone [url] [folder name]`
     - 仓库地址为url，下载仓库到folder name
     - `url`可以是网络地址，也可以是本地路径
@@ -264,6 +264,7 @@
 
 - `git restore`：丢弃unstaged的修改
   - `git restore [file]`：丢弃file中的修改
+  - `git restore --stage [file]`：将加入staged zone的文件移除
 
 ### 提交相关
 
