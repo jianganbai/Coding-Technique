@@ -5,11 +5,14 @@
 ## 多图
 
 - ```python
-  fig, ax = plt.subplots(2,2)
-  ax[0, 0].plot(x, y, s=s, c=c, marker='x')  # s是标点的大小，c是颜色
-  ax[0, 0].set_xlabel('x')
-  ax[0, 0].set_title('...')
-  ax[0, 0].set_yscale('log')  # y轴设置为对数坐标
+  fig = plt.figure(figsize=(width, height))
+  ax = fig.subplots(2, 2)
+  # [行编号, 列编号]
+  ax[0, 1].plot(x, y, s=s, c=c, marker='x')  # s是标点的大小，c是颜色
+  ax[0, 1].set_xlabel('x')
+  ax[0, 1].set_title('...')
+  ax[0, 1].set_yscale('log')  # y轴设置为对数坐标
+  ax[0, 1].legend()  # 图例
   ```
 
 ## librosa & plt

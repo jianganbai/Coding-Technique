@@ -99,7 +99,8 @@ Hello World!  % 正文放在document环境中
     
     \begin{table}[htbp]
         \centering
-        \caption{表格标题}
+        \caption{表格标题}  % 表格标题在上，图标题在下
+        \label{表格标签}
         \begin{tabular}{|l|c|r|}  % l为靠左，c为居中，r为靠右，|为竖直边框
         % % \begin{tabular*}{\linewidth}{@{}llll@{}}：占满两栏
         	\hline  % 水平边框
@@ -112,8 +113,8 @@ Hello World!  % 正文放在document环境中
         \end{tabular}
     \end{table}
     ```
-
-  - `\cline{2-3}`：该行仅第2列到第3列有框线
+    
+  - `\cline{2-3}`：该行仅第2列到第3列有框线（从1开始算）
 
   - `\begin{table}`仅占用一栏，`\begin{table*}`占用整个页面宽
 
@@ -129,6 +130,12 @@ Hello World!  % 正文放在document环境中
     \renewcommand{\arraystretch}{1.5}  % 调整行间距为1.5倍，默认是1倍
     % 定义表格
     \endgroup
+    
+    % 进一步压缩行间距，在\begin{table}和\begin{tabular}之间
+    % 保持比例压缩/放大
+    \adjustbox{max width=\textwidth}{  % 也可换成width=，强制调整至给定大小
+    \begin{tabular}
+    }
     ```
   
 - 三线表
@@ -153,7 +160,7 @@ Hello World!  % 正文放在document环境中
     \multicolumn{列数}{p{\textwidth}}{注释}  % 也可改成\linewidth
     
     % 对表格中需要加注释的地方标注
-    \usepackage{threepartable}
+    \usepackage{threeparttable,booktabs}
     
     % 三线表
     \begin{threeparttable}  % 在\begin{table}和\begin{tabular}之间
@@ -329,6 +336,11 @@ $E=mc^2$
     ```
 
   - 需要引用的地方，使用`\cite{参考文献的关键词}`
+  
+    - 推荐使用`~\cite{}`
+    - 需要自行在前面补`xxx et~al.~\cite{}``
+      - ``et al.`适合3个以上作者，不需要斜体
+      - `et al.`中间不能分在两行，故得加上`~`，表示前后不能分开
 
 ### 算法表
 
@@ -368,7 +380,6 @@ $E=mc^2$
     \end{algorithm}
     ```
 
-- 
 
 ### 脚注
 
@@ -394,7 +405,7 @@ $E=mc^2$
 
 ### 空格
 
-- 小：`\ `；中：`\;`；大：`\quad`
+- 小：`\ `（对空格进行转义）；中：`\;`；大：`\quad`
 
 ### 其它
 

@@ -390,7 +390,7 @@ finally:  # 无论正常or错误，都会运行finally中的命令
 
   - 运行时遇到yield就保存局部变量、返回。若运行到最后一直没碰到yield，则结束
 
-### 高阶应用
+### 高阶应用 
 
 - 海象运算符`:=`
 
@@ -410,10 +410,6 @@ finally:  # 无论正常or错误，都会运行finally中的命令
 ### enumerate()
 
 - enumerate(sequence,[start=0])将可遍历的数据对象组合为一个索引序列，同时在每个数据前标上数据下标
-  - []代表选填
-- ![image-20201109161245796](C:\Users\jab\AppData\Roaming\Typora\typora-user-images\image-20201109161245796.png)
-
-![image-20201109161302396](C:\Users\jab\AppData\Roaming\Typora\typora-user-images\image-20201109161302396.png)
 
 ### print()
 

@@ -235,6 +235,10 @@
       *   cf810e4 conflict fixed
       ```
 
+- `git merge`参数
+  
+  - `--allow-unrelated-histories`：没有相同父节点的2个分支，默认无法合并；加上后，可合并
+
 #### git rebase
 
 - `git rebase`：变基合并
@@ -257,7 +261,7 @@
   - `git stash list`：展示所有缓存
   - `git stash apply`：恢复缓存
     - `git stash apply stash@{0}`：有多个缓存时，恢复指定缓存，`stash@{0}`通过`git stash list`查看
-  - `git stash drop`：删除缓存
+  - `git stash drop [缓存名]`：删除缓存
   - `git stash pop`：恢复缓存 +删除缓存
 
 #### git restore
@@ -304,8 +308,9 @@
   - 若不指定文件，则回退整个仓库
   - `git reset --soft HEAD^`：回退至上一次commit
   - reset类型
-    - `--hard`：回滚至之前的代码，相当于撤销add和commit
+    - `--hard`：删除所有修改，回滚至之前的代码（不推荐）
     - `--soft`：保留新代码，相当于撤销commit但不撤销add
+    - `--mixed`：撤销add和commit
 
 #### git restore
 
@@ -325,6 +330,8 @@
   - `git remote -v`：查看远程仓库的详细信息
   - `git remote add origin [github仓库地址]`：添加origin仓库，一般是可直接push上去的
   - `git remote add upstream [upstream仓库地址]`：添加upstream仓库，一般是只pull，需要通过pull request提交的
+  - `git remote rename [old name] [new name]`：重命名remote分支
+  - `git remote rm [remote名]`：删除远程分支
 
 #### git blame
 
@@ -335,7 +342,7 @@
 #### 远程分支修改
 
 - 本地分支与远程分支冲突：需要先pull到本地，在本地merge，再推送到远程
-- reset远程：先在本地reset，然后`git push -f`
+- reset远程：先在本地reset，然后`git push -f origin [分支名]`
 - 远程的2个分支合并：pull request
 
 ## 配置
