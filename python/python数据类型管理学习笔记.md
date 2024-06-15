@@ -11,6 +11,7 @@
 
   - ```python
     def 函数名(参数: 数据类型) -> 返回值类型:
+    def 函数名(参数: 数据类型 = 默认值) -> 返回值类型:
     ```
 
 - 基本类型
@@ -18,6 +19,7 @@
   - int, float, bool, str, bytes
   - `Union`：返回值有多个类型，`Union[int, None]`也可写成`int | None`
   - `Tuple`：固定长度的元组，如：`Tuple[torch.Tensor, torch.Tensor]`
+    - 不定长：`Tuple[int, ...]`
   - `List`：列表，如：`List[int, float, str]`
   - `Dict`：字典，`Dict[key类型, value类型]`
   - `Set`：集合，`Set[元素类型]`
@@ -28,17 +30,18 @@ from typing import Union, Tuple, List, Dict
 
 def func1(a: int, s: str, f: float) -> Tuple[List, Dict]:
 	return [list(range(a)), {s: f}]
-def func2(a: int, s: str) -> List[int or str]:
+def func2(a: int, s: str = 'aaa') -> List[int or str]:
 	return [a, s]
-def func3(a: int, s: str) -> Dict[str, Union[int, str]]:
+def func3(a: int, s: str = 'bbb') -> Dict[str, Union[int, str]]:
     return {'a': a, 's': s}
 ```
 
 - 泛型
   - `Any`：任意数据类型
   - `Callable`：可调用对象
-  - `Optional`：可选类型，`Optional[float]`等价于`float | None`
+  - `Optional`：可以为给定类型或None，`Optional[float]`等价于`float | None`
     - `Optional[Literal['a', 'b']]`
+    - **不表示该变量有默认值**
   - `Iterable`：可迭代对象
 
 ```python

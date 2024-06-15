@@ -138,8 +138,6 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     df = pd.concat(info_list, axis=0)  # axis=0为行，axis=1为列
     ```
 
-  - 
-
   - 一行一行地写，复杂度太高
 
 ### 修改

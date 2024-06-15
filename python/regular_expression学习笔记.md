@@ -103,14 +103,18 @@
 
 #### 编译
 
-- `p = re.compile('[a-z]+')`
+- `p = re.compile(r'[a-z]+')`
   - `'[a-z]+'`为正则表达式
   - `re.compile()`将正则表达式表以为模式对象p，然后使用p的内置函数进行匹配
 - `re.compile`为即时编译，适合多次复用
+- 含变量的pattern
+  - 若变量不包含特殊字符，则可采用字符串格式化方式：`p = re.compile(rf'aa_{a}_\d*})`
+  - 若变量包含特殊字符，则只能采用字符串拼接方式：`p = re.compile('aa_' + re.escape(a) + '_\d*')`
+    - `re.escape(a)`自动为变量中的特殊字符加转义
 
 ##### 编译标志
 
-- `p = re.compile('[a-z]+', re.IGNORECASE)`
+- `p = re.compile(r'[a-z]+', re.IGNORECASE)`
 - `re.ASCII`：使转义字符按照ASCII的含义匹配，取消正则匹配中的转义含义
   - `\w`, `\b`等当做ASCII字符处理，而不再当做匹配字符处理
 - `re.DOTALL`：使`'.'`匹配任何字符，包括换行符（原来不匹配）

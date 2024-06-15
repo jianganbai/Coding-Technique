@@ -90,7 +90,11 @@
 
 ### 分支相关
 
-- `HEAD`：当前所在commit; `HEAD^`：当前所在commit的前1个分支
+- git指针
+  - `HEAD`：当前所在commit; `HEAD^`：当前所在commit的前1个分支
+  - Branches：指向各个分支的最新commit
+  - Remotes：指向远程分支的最新commit
+  - Tags：指向tag
 
 #### git branch
 
@@ -113,9 +117,12 @@
   - `git checkout [hash]`：输入某个节点的hash值（可只输入前缀），切换至该节点
   - `git checkout -b [name]`：创建名为name的分支并切换进
   - `git checkout -b [name] origin/main`：创建新分支，并从`origin/main`下载代码至该分支
+- `git checkout [commit hash]`：`HEAD`切换到某commit
+  - 若未修改，`git checkout [分支名]`切换到该分支的头部
 - `git checkout [commit] -- [文件]`：将文件回退至指定commit
   - 若未指定文件，则回退整个仓库
   - 若未指定`commit`，则回退至最近的`git commit`或`git add`
+- `git rev-parse [指针名]`：给出该指针指向commit的hash
 
 #### git switch
 
@@ -164,6 +171,8 @@
 #### git fetch
 
 - `git fetch origin [远程分支]:[本地分支]`：将远程分支下载到本地分支，不进行merge
+  - 参数
+    - `--unshallow`：下载全部历史
 
 #### git pull
 
@@ -244,6 +253,7 @@
 - `git rebase`：变基合并
   - `git rebase [分支a]`：将当前分支拼接在分支a后面
   - 优点：没有分支，结构清晰；缺点：commit顺序不再按时间排序
+  - 若出现冲突，先在文件中删掉不想要的，再`git add`，最后`git rebase --continue`
 
 
 #### git cherry-pick

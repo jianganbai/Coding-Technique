@@ -29,7 +29,7 @@ model.save(path)  # 保存网络参数
 model = Word2Vec.load(path)  # 加载模型
 ```
 
-### pretrain
+### pre-train
 
 ```python
 import gensim.download as api

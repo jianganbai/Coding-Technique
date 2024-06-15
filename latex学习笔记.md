@@ -319,7 +319,9 @@ $E=mc^2$
 
 ### 引用
 
-- 引用图、表：`\ref{图、表的label}`，前面需要自行补Figure, Table
+- 引用图、表：`\ref{图、表的label}`，前面需要自行补`Figure`或`Fig.`, `Table`，`Eq.`
+
+  - `Figure`或`Fig.`，与图的caption保持一致
 
 - 引用公式：`\eqref`，前面需要自行补Equation
 

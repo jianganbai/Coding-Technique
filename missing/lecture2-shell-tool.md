@@ -1,6 +1,6 @@
 # Shell Tools and Scripting
 
-- 对缩进及其严格
+- 对缩进极其严格
 
 ## 基础语法
 
@@ -307,7 +307,7 @@
 
 - `realpath [文件名]`：获取文件的绝对路径
   
-  - `realpath --relative_to="$file1" "$file2"`：获取`$file2`相对于`$file1`的相对路径
+  - `realpath --relative-to="$file1" "$file2"`：获取`$file2`相对于`$file1`的相对路径
   
 - **which命令**：判断命令在系统中是否存在，若存在则返回执行该命令的可执行文件
 
@@ -382,11 +382,12 @@
 
 - **nl命令**：在标准输出（命令行）打印文件，同时加上行号
 - **watch命令**：`watch [参数] [命令]`，周期性执行某命令
-- `-n [刷新周期]`：默认2秒一刷新
-  
-- `-d`：高亮变化
-  
-- watch组合命令：通过管道组合，使用''框起命令，`watch "ls -l | grep .npy"`
+
+  - `-n [刷新周期]`：默认2秒一刷新
+    
+  - `-d`：高亮变化
+    
+  - watch组合命令：通过管道组合，使用''框起命令，`watch "ls -l | grep .npy"`
 
 ### 文本处理
 
@@ -594,6 +595,11 @@ ls -l | grep ^-  # 获得所有文件
   - Debian/Ubuntu: `apt-get`；Centos: `yum`
   - `sudo apt-get install xxx`：安装包
   - `sudo apt-get update`：获取所有包的最新版本信息（包缓存）；`sudo apt-get upgrade`：下载并更新
+- **wget命令**: `wget [option] [URL]`
+  - 参数
+    - `-O [文件名]`：指定下载到本地的文件名
+    - `-c`：断点续传；`-t [重试次数]`；`-T [超时等待时间]`
+    - `--limit-rate=20k`：限速20kB/s下载
 
 ### 网络相关
 
@@ -640,7 +646,7 @@ ls -l | grep ^-  # 获得所有文件
   - 机制
     
     - quick check：若modify time和文件大小相同，则不同步
-    
+  
 - 参数
   
     - `-r`：递归传文件夹
@@ -849,10 +855,6 @@ ls -l | grep ^-  # 获得所有文件
     wait  # 阻塞至全部进程完成，再运行
     wait $PID  # 仅阻塞至$PID进程完成，再运行
     ```
-
-
-
-
 
 
 
