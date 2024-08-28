@@ -1,9 +1,11 @@
 # selenium学习笔记
 
 - 用代码模拟浏览器点击、输入密码等
+
 - 可用于爬虫、网站测试等
 
 - 安装：以chrome为例
+  
   - 到selenium下载适配chrome版本的chromedriver
   - 在conda环境中安装selenium
 
@@ -24,43 +26,54 @@ broser.get(url)  # 打开浏览器，访问url
 - 设置编码格式：`options.add_argument('lang=zh_CN.UTF-8')`，utf-8格式
 
 - 模拟移动设备
-
+  
   - ```python
     options.add_argument('user-agent="填入移动设备的user-agent信息"')
     ```
-
+  
   - user-agent查询地址：http://www.fynas.com/ua，对应手机型号、系统、浏览器
 
 - 禁止图片加载
-
+  
   - ```python
     prefs = {"profile.managed_default_content_setting.images": 2}
-    chrome_options.add_experimental_options("prefs", prefs)
+    chrome_options.add_experimental_options("prefs", prefs) 
     ```
 
-## 定位元素
+## 运行
+
+### 定位元素
 
 - ```python
   browser.find_element_by_css_selector(CSS路径)
   browser.find_element(类型，值)  # selenium 4.0之后
   ```
   
-  - F12，找到该元素的代码，邮件复制，选择复制selector，即为CSS路径
+  - F12，找到该元素的代码，右键复制，选择复制selector，即为CSS路径
   - 成功则返回True，失败则抛出异常
-  
+
 - ```python
   browser.find_elements_by_class_name(所属类名)
   ```
-
+  
   - `find_elements`：寻找所有同类名的对象
 
 - **返回对象，可对该元素直接操作**
-
+  
   - `.text`：获得文本
   - `.get_attribute(属性名)`：获得元素的属性值
   - `.click()`：点击该元素
   - `.send_keys(str)`：填入字符串
   - `.clear()`：清空文字
+
+### 切换窗口
+
+- ```python
+  windows = browser.window_handles
+  browser.switch_to.window(windows[-1])
+  ```
+
+- 关闭窗口：`browser.close()`
 
 ## 等待
 
@@ -110,7 +123,7 @@ broser.get(url)  # 打开浏览器，访问url
 ### 修改webdriver标签
 
 - 使用selenium，`window.navigator.webdriver`会为true，正常浏览为false
-
+  
   - 浏览器给每个窗口一个window属性来记录用户信息
   - 使用F12，在console中输入，可查询
 

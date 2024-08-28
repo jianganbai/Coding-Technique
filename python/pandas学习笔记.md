@@ -33,7 +33,7 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
 - loc包含左右两侧端点，iloc仅包含左端点
 
 - 访问行
-
+  
   - ```python
     df.iloc[index]  # 查看第index行，支持切片。结果通过索引值访问
     df.iloc[24:]  # 查看第24行及之后的全部数据
@@ -41,7 +41,7 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     df.iloc[:, 1:].to_numpy()  # 将除表头外转化为numpy
     df.iloc[-1].to_dict()  # 将最后一行转化为dict
     ```
-    
+  
   - ```python
     df[df['列名'] == '值']  # 特定行
     df.loc[df['column_name'] == some_value]
@@ -56,11 +56,11 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     # 筛选特定列非空
     df.loc[df['xxx'].notnull() | (df['xxx'] == '')]
     ```
-    
+  
   - ```python
     # 创建示例DataFrame
     df = pd.DataFrame({'A': [1, 2, 3], 'B': ['a', 'b', 'c']})
-     
+    
     for index, row in df.iterrows():
         print(f"Index: {index}")  # DataFrame的行标签
         print("Data:")
@@ -70,7 +70,7 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     ```
 
 - 访问列
-
+  
   - ```python
     df.columns  # 查看列名
     df['列名']  # 查看某一列
@@ -78,7 +78,7 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     ```
 
 - apply：对元素逐一进行变换（单进程）
-
+  
   - 可先筛选出特定行/列
   
   - ```python
@@ -89,7 +89,7 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     df.apply(lambda x: x['age'] + 10, axis=1)  # 提取年龄，然后加10岁
     # 若apply func返回pd.Series，则.apply()会将它们拼成新dataframe
     ```
-    
+  
   - ```python
     # pandarallel库可实现多进程apply
     pandarallel.initialize()
@@ -99,7 +99,7 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
 ### 添加
 
 - 添加列：添加新属性
-
+  
   - ```python
     df = pd.DataFrame({'name': ['a', 'b', 'c', 'd', 'e']})
     # 原地操作
@@ -109,19 +109,18 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     ```
 
 - 添加行：添加新样本
-
+  
   - ```python
     df.loc[index] = ['f', 6]  # 若该index已存在，则修改；否则添加在最后
     df.loc[len(df)] = ['f', 6]  # 在最后添加
     ```
-
+  
   - ```python
     df.iloc[index] = ['f', 6]  # 修改已有index
     ```
-    
-  
-- 拼接DataFrame
 
+- 拼接DataFrame
+  
   - ```python
     # 上下拼接, axis=0为行，ignore_index为忽略左侧index
     df = pd.concat([data_a, data_b], axis=0, ignore_index=True)
@@ -130,20 +129,20 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     ```
 
 - 若要插入多行，则先存在list中，每个元素为`pd.DataFrame`，最后一次性拼接
-
+  
   - ```python
     info_list = []
     for a in range(10):
         info_list.append(pd.DataFrame({'a': a, 'a^2': a * a}))
     df = pd.concat(info_list, axis=0)  # axis=0为行，axis=1为列
     ```
-
+  
   - 一行一行地写，复杂度太高
 
 ### 修改
 
 - loc
-
+  
   - ```python
     df.loc[df['name'] == 'a', 'score'] = 100  # 不能使用df.loc[i]['score'] = 100
     # df.loc[条件1，条件2]，条件可以为切片(:)，值，行索引/列标签名
@@ -152,19 +151,19 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     ```
 
 - 修改顺序
-
+  
   - ```python
     df.reindex(columns=['new_index1', 'new_index2', 'new_index3'])
     ```
 
 - 删除
-
+  
   - ```python
     df.drop('column_name', axis=1, inplace=True)  # axis=0为行，axis=1为列。inplace表示原地操作
     ```
 
 - 排序
-
+  
   - ```python
     # 按指定列的值排序
     df.sort_values(['a', 'b'], ascending=[True, False], inplace=True)  # 先按a列升序排，再按b列降序排
@@ -174,7 +173,7 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     ```
 
 - **replace**：将所有指定值，替换为另一指定值
-
+  
   - ```python
     # DataFrame.replace(to_replace, replace), to_replace是原表的指定值，replace是替换后的值
     df.replace(0, 5)  # 将表内所有的0，替换为5
@@ -183,17 +182,46 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
     ```
 
 - 改变索引
-
-  - `df.reset_index()`：将索引列改为正常的一列，适合groupby操作
   
-- 筛选非空列
+  - `df.reset_index()`：将索引列改为正常的一列，适合groupby操作
 
+- 筛选非空列
+  
   - ```python
     # .copy()防止原位修改时有冲突
     df = df[df['a'].notnull()].copy()  # 筛选出a列非空的行，若空则该位置为nan
     df = df[df['a'].isnull()].copy()  # 筛选出a列为空的行
     ```
 
+### 合并
+
+- `pd.merge`：合并2个DataFrame
+  
+  - ```python
+    pd.merge(
+        left, right, how='inner',
+        on=None, left_on=None, right_on=None,
+        suffixes=('_x', '_y')
+    )
+    ```
+    
+    - `left`和`right`：均为dataframe
+    
+    - `on`：基于哪一列合并
+      
+      - `left_on`和`right_on`：2个dataframe用于合并的列的列名不同
+    
+    - `how`：列的元素不同怎么办
+      
+      - `'left'`：只使用左侧的datafame
+      
+      - `'right'`：只使用右侧的dataframe
+      
+      - `'outer'`：使用2个dataframe的元素的并集
+      
+      - `'inner'`：使用2个dataframe的元素的交集
+    
+    - `suffixes`：合并时，对同名的列加的后缀
 
 ### groupby
 
@@ -256,7 +284,7 @@ a = pd.Series({'a': 1, 'b': 2, 'c': 3})
 ### 访问
 
 - 按索引值访问
-
+  
   - ```python
     a = pd.Series({'a': 1, 'b': 2, 'c': 3})
     b = pd.Series([1, 2, 3])
@@ -265,7 +293,7 @@ a = pd.Series({'a': 1, 'b': 2, 'c': 3})
     ```
 
 - 切片运算
-
+  
   - ```python
     a = pd.Series({'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5})
     a['a': 'c']  # 截取'a'到'c'（含）的元素
@@ -276,11 +304,8 @@ a = pd.Series({'a': 1, 'b': 2, 'c': 3})
     ```
 
 - 递归访问
-
+  
   - ```python
     for index, value in series.items():
         xxx
     ```
-
-  - 
-

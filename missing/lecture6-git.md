@@ -7,31 +7,32 @@
 ### 版本控制原理
 
 - 3个区域
+  
   - `working zone`工作区：修改代码，但未`git add`
   - `staged zone`暂存区：`git add`后
   - `repository`仓库：`git commit`后
 
 - 分支树
-
+  
   - ```python
     ... o ---- o ---- A ---- B  origin/main (upstream work)
                        \
                         C  main(your work)
     ```
-
+  
   - 每个节点是1个commit
-
+    
     - ```c
       type commit = struct {  // 每次提交的数据结构
-      	parents: array;  // 指向父节点的指针
-      	author: string;
-      	message: string;
-      	snapshot: tree;  // 开发流程树
+          parents: array;  // 指向父节点的指针
+          author: string;
+          message: string;
+          snapshot: tree;  // 开发流程树
       }
       ```
-
+  
   - 每个分支有1个指针（如: HEAD），指向该分支最新的节点
-
+    
     - `git merge dev`有无冲突：HEAD节点是否是dev节点的父节点
 
 ### 工作流程
@@ -99,13 +100,16 @@
 #### git branch
 
 - `git branch`：展示所有分支名
+  
   - `git branch -vv`：展示各个分支的一些信息
   - `git branch -r`：查看远端仓库的所有分支
-  
+
 - `git branch [name]`：创建名为name的分支
 
 - 修改
+  
   - `git branch -m [新名字]`：修改本地分支名（需要先在该分支上）
+  
   - `git branch -d [分支名]`：删除本地已合并的分支，若未合并，将`-d`替换为`-D`强行删除
   
   - `git branch --set-upstream-to=origin/master`：设置默认推送的远程仓库
@@ -159,12 +163,20 @@
 #### git tag
 
 - `git tag [标签名] [commit]`：为指定commit打上标签，如v1.0
-  - `git tag -d [标签名]`：删除标签
-  - `git tag -a [标签名] -m "文字" [commit]`：打标签时补上说明文字
+  - `git tag -a [标签名] [commit] -m "文字" [commit]`：打标签时补上说明文字
+    - `-a`：annotated tag
+    - 缺失`[commit]`则默认为`HEAD`
 - 处理tag
   - `git show [标签名]`：展示该标签对应的commit
+  - `git tag`：展示所有tag
+    - `-n1`：同时展示说明
   - `git push origin [标签名]`：将本地指定标签同步到远程
   - `git push origin --tags`：将本地所有标签同步到远程
+    - tag只是指向commit的指针，不与branch绑定，故不用指定branch
+  - `git fetch --tags`：从远程下载tag
+- 删除tag
+  - `git tag -d [标签名]`：本地删除标签
+  - `git push origin :refs/tags/[标签名]`：本地删除标签后，删除远程的标签
 
 ### 更新代码
 
@@ -203,17 +215,17 @@
 - `git merge`：合并分支（两支合并）
   
   - `git merge [分支名]`：将该分支合并入HEAD分支
-  
+
 - 合并结果：`git merge dev`
-
+  
   - 无冲突：要求HEAD节点是dev节点的父节点
-
+    
     - 执行fast-forward，也就是把HEAD节点直接指向dev节点
-
+  
   - 有冲突
-
+    
     - git会在文件中标注冲突位置
-
+      
       - ```markdown
         <<<<<<< HEAD  # HEAD节点
         Creating a new branch is quick & simple.
@@ -221,21 +233,21 @@
         Creating a new branch is quick AND simple.
         >>>>>>> dev  # dev节点
         ```
-
+    
     - 手动解决冲突：直接删除不要的代码，然后去掉标注
-
+    
     - 继续merge
-
+      
       - 先`git add`有冲突的文件
       - 然后`git commit`（老版git），或`git merge --continue`（新版git新增），继续合并
       - `git merge --abort`：返回merge前的状态，会丢掉未commit的信息
 
 - fast-forward
-
+  
   - 执行fast-forward，再删除临时分支后，分支树不会记录临时分支
-
+  
   - `git merge --no-ff -m "commit信息" [分支名]`：合并后的节点是1个新commit
-
+    
     - ```shell
       *   e1e9c68 (HEAD -> master) merge with no-ff
       |\  
@@ -254,7 +266,6 @@
   - `git rebase [分支a]`：将当前分支拼接在分支a后面
   - 优点：没有分支，结构清晰；缺点：commit顺序不再按时间排序
   - 若出现冲突，先在文件中删掉不想要的，再`git add`，最后`git rebase --continue`
-
 
 #### git cherry-pick
 
@@ -362,7 +373,7 @@
 - 生成ssh key：`ssh-keygen -t rsa -C "github绑定的邮箱"`
 
 - 若有多个ssh key（git、服务器等），则需要专门在`~/.ssh/config`文件中说明用哪个
-
+  
   - ```yaml
     Host github.com  # 若使用其他名字，则git@github.com中的github.com应替换为该名字
       HostName github.com
@@ -377,7 +388,7 @@
 ### gitignore
 
 - 屏蔽规则
-
+  
   - 若出现`/`且不在最后，则认为是相对于`.gitignore`所在目录。若无，则匹配所有子目录
   - 路径最后面的`/`表示只匹配文件夹
   - `*`匹配所有除了`/`（任意长度）；`?`匹配所有除了`/`的单个字符；`[a-zA-Z]`匹配所有单个字母
@@ -393,20 +404,21 @@
   ```
 
 - 生效范围
+  
   - 对没有commit的都生效（即使.gitignore还没有提交）
   - 若被屏蔽的文件已经提交：先删除被屏蔽的文件，commit，然后更新gitignore，再commit
 
 ## github action
 
 - 持续集成/持续交付 (CI/CD) :
-
+  
   - 每个人完成自己部分后就单独测试，不要等所有人都开发完成后再统一测试
   - 提高开发效率
 
 - **github action**：进行push / pull request后，自动对新代码进行测试
-
+  
   - 测试流程写在`.yml`文件中
-
+  
   - ```yaml
     name: SCRIPT_NAME
     
@@ -416,21 +428,20 @@
           branches:  # 在哪个分支
             - main  # 在main分支
         pull_request:  # PR提交时触发
-        
+    
     jobs:  # 工作流
       first_job:  # 工作名称
         runs-on:  ubuntu-latest  # 运行在哪个环境中
         steps:  # 步骤
           - name: Checkout  # 步骤名
             uses: actions/checkout@v3  # 使用market上的脚本包
-       
+    
           - names: Setup node
             uses: action/setup-node@v3
             with:  # 设定参数
               node-version: 16.13.x
               cache: npm
-             
+    
           - name: Install
             run: npm ci  # 运行脚本命令
     ```
-
