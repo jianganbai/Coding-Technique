@@ -309,3 +309,9 @@ a = pd.Series({'a': 1, 'b': 2, 'c': 3})
     for index, value in series.items():
         xxx
     ```
+
+### 修改
+
+- map：对元素进行变换
+  
+  - `pd.Series`用`map`，`pd.DataFrame`用`apply`

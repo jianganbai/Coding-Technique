@@ -92,7 +92,7 @@
 ### 分支相关
 
 - git指针
-  - `HEAD`：当前所在commit; `HEAD^`：当前所在commit的前1个分支
+  - `HEAD`：当前所在commit; `HEAD^`：当前所在commit的前1个commIt
   - Branches：指向各个分支的最新commit
   - Remotes：指向远程分支的最新commit
   - Tags：指向tag
