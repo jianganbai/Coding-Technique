@@ -103,8 +103,11 @@
 ### SparkContext操作
 
 - `sc = SparkContext(appName=任务名)`：构建Spark任务
+
 - `sc.parallelize(list, partition_num)`：由内存创建RDD
+
 - `sc.textFile(大文本文件)`：由大文件创建RDD
+  
   - 一般每行为一个元素，默认分区数等于大文件的分区数
 
 - `sc.setLogLevel()`：设置日志输出等级，分别为'INFO', 'WARN', 'ERROR'
@@ -118,11 +121,17 @@
 #### Actions
 
 - `rdd.count()`：返回元素个数
+
 - `rdd.first()`：返回第1个元素
+
 - `rdd.take(10)`：取前10个结果
+  
   - 从1开始计数，`rdd.take(0)`无结果
+
 - `rdd.distinct()`：统计不同元素个数
+
 - `rdd.collect()`：将运行结果全部送到一个节点上并返回python变量
+  
   - `rdd.coalesce(1)`：将结果送到一个节点，仍为RDD
 
 - `rdd.sum()`：对所有元素求和，前提是元素可加
@@ -143,33 +152,37 @@
 #### Partition
 
 - Partition分区
+  
   - 用textFile读取时，分区数=part数
 
 - `rdd.getNumPartitions()`：获取RDD的分区数
 
 - `rdd.repartition(num_partition)`：增加/减少RDD的分区数至num_partition
+  
   - RDD的分区数建议为CPU内核总数的3-4倍
+
 - `rdd.coalesce(num_partition)`：将RDD合并为num_partition个分区
+  
   - `.repartition`和`.coalesce`复杂度都很高，慎用
     - `.repartition`需要shuffle
     - `.coalesce`仅部分executor合并，其余在空计算
     - 若合并到1个分区，建议使用`.repartition`，`.coalesce`大量executor在空跑
     - 仅建议在原分区>目标分区且二者都很大时，采用`.coalesce`
 
-
 #### 保存
 
 - `rdd.cache()`：将RDD保存到内存，加快访问
+
 - `rdd.saveAsTextFile(hdfs_pth)`：将RDD以文本形式保存到hdfs里
+  
   - 在hdfs_pth创建文件夹，在下面存放part-00000, part-00001等，文件数=分区数
   - 保存时hdfs_pth路径不能存在
 
 - `rdd.checkpoint()`：将需要复用的中间结果存放到HDFS
-
+  
   - ```python
     sc.setCheckpointDir(hdfs_pth)
     rdd.checkpoint()
     ```
 
 - `rdd.unpersisit()`：删除RDD
-

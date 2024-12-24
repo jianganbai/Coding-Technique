@@ -23,7 +23,7 @@ df = pd.read_csv(path, sep, header, index_col)
 # index_col指定哪列是行索引，index_col=False表示没有行索引
 df.columns = ['name1', 'name2']  # 设置列名
 df.index = [1, 0]  # 访问行名 / 设置行名
-df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代表原地修改
+df.set_index(索引列, inplace=True)  # 设置行名。inplace=True代表原地修改
 ```
 
 ### 访问
@@ -118,6 +118,14 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
   - ```python
     df.iloc[index] = ['f', 6]  # 修改已有index
     ```
+  
+  - ```python
+    # 若从头逐次加入，则先添加到list，最后再转为dataframe，速度更快
+    data = []
+    for i in range(10000):
+        data.append({'a': i, 'b': i * 2})
+    df = pd.DataFrame(data)
+    ```
 
 - 拼接DataFrame
   
@@ -153,7 +161,7 @@ df.set_index('索引栏名称', inplace=True)  # 设置行名。inplace=True代�
 - 修改顺序
   
   - ```python
-    df.reindex(columns=['new_index1', 'new_index2', 'new_index3'])
+    df = df.reindex(columns=['new_index1', 'new_index2', 'new_index3'])
     ```
 
 - 删除
@@ -264,6 +272,9 @@ for class_name, class_info in group:
 - csv: `df.to_csv(csv_name, sep=',', header=True, index=True)`
   - `header=True`保留每列名字，`index=True`保留每行名字
   - csv：ascii，逗号分隔。excel：二进制，分号分隔
+- pickle
+  - `df.to_pickle(file_name)`
+  - 适合保存带有`np.array`等特殊结构的表格
 
 ### 其它
 

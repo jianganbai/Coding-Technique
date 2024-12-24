@@ -175,11 +175,11 @@
 ### split()
 
 - `p.split(string, maxsplit=0)`
-
+  
   - 找出string中各匹配的位置，按匹配的位置切分字符串，切分后不再保留匹配位置的字符串
-
+  
   - `maxsplit`为最大拆分次数，亦即最大匹配次数
-
+  
   - ```python
     >>> p = re.compile(r'\W+')  # \W代表匹配所有非字母与非数字字符
     >>> p.split('This is a test, short and sweet, of split().')
@@ -187,9 +187,9 @@
     >>> p.split('This is a test, short and sweet, of split().', 3)
     ['This', 'is', 'a', 'test, short and sweet, of split().']
     ```
-
+  
   - 若要获取各匹配位置的匹配结果，则应在正则表达式中加入括号
-
+  
   - ```python
     >>> p = re.compile(r'\W+')
     >>> p2 = re.compile(r'(\W+)')
@@ -200,17 +200,17 @@
     ```
 
 - `re.split(<正则表达式>, string, maxsplit=0)`
-
+  
   - 将编译与匹配放在一起执行
 
 ### sub()
 
 - `p.sub(replacement, string, count=0)`
-
+  
   - 找到string中各匹配的位置，使用replacement替换匹配上的字符串，返回替换后的总字符串
-
+  
   - 匹配时选择满足条件的最长匹配结果，替换的时候也替换的是最长匹配结果
-
+  
   - ```python
     >>> string = "Cats are smarter than dogs! Dogs are faster than cats!"
     >>> result = re.sub(r'C.*ts', 'Pigs', string)
@@ -223,9 +223,9 @@
 ### subn()
 
 - `p.subn(replacement, string, count=0)`
-
+  
   - `subn()`与`sub()`完成相同的工作，但`subn()`在返回时返回`(替换后结果，替换次数)`这个二元组
-
+  
   - ```python
     >>> p = re.compile('(blue|white|red)')
     >>> p.subn('colour', 'blue socks and red shoes')
@@ -233,18 +233,11 @@
     >>> p.subn('colour', 'no colours at all')
     ('no colours at all', 0)
     ```
-
+  
   - 对于空匹配`*`，仅当与前一个空匹配不相邻时，才会替换空匹配
-
+  
   - ```python
     >>> p = re.compile('x*')
     >>> p.sub('-', 'abxd')
     '-a-b--d-'
     ```
-
-    
-
-
-
-
-

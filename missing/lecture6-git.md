@@ -88,6 +88,7 @@
   - 参数
     - `-b [分支名]`：只下载指定的分支
     - `--depth 1`：只下载最近1次commit
+    - `--bare`：只下载`.git`目录，不下载其它文件
 
 ### 分支相关
 
@@ -148,7 +149,7 @@
 
 - `git diff`：对比未提交与已提交
   - `git diff [hash] [file_name]`：查看某文件在hash分支与当前分支的区别
-    - 不填`[hash]`，则默认为当前分支
+    - 不填`[hash]`，则默认为当前分支前一commit
   - `git diff [本地分支名]`：比较指定分支与当前分支
   - `git diff origin/[远程分支名]`：比较本地当前分支与远程分支
 
@@ -284,6 +285,7 @@
     - `git stash apply stash@{0}`：有多个缓存时，恢复指定缓存，`stash@{0}`通过`git stash list`查看
   - `git stash drop [缓存名]`：删除缓存
   - `git stash pop`：恢复缓存 +删除缓存
+- 恢复缓存时若有冲突，手动修改文件中冲突的部分，再使用`git add file`标注解决
 
 #### git restore
 
@@ -315,11 +317,24 @@
 
 #### git push
 
-- `git push [remote name] [local branch name]:[remote branch name]`：将本地代码推送至远程
-  - `remote name`：远程仓库的别名；`local branch name`：要提交的本地分支名；`remote branch name`：远程仓库的分支名
-    - `git push origin main`默认将本地的main分支提交到远端的main分支
-  - `git push -f origin [分支名]`：使用本地分支强行覆盖远程分支（不推荐）
-- `git push origin :[分支名]`：删除远程指定分支
+- `git push [参数] [remote name] [local branch name]:[remote branch name]`：将本地代码推送至远程
+  
+  - `remote name`：远程仓库的别名
+  
+  - `local branch name`：要提交的本地分支名
+  
+  - `remote branch name`：远程仓库的分支名
+  
+  - `git push origin main`默认将本地的main分支提交到远端的main分支
+
+- 参数
+  
+  - `git push origin :[分支名]`：删除远程指定分支
+  - `-f`：使用本地分支强行覆盖远程分支（不推荐）
+  - `-u`：推送到远端新分支
+  - `--mirror`
+    - 默认只推送当前branch和未push的commit
+    - `--mirror`将所有branch的所有commit都推上去（从头同步仓库）
 
 ### 代码回退
 
@@ -366,6 +381,21 @@
 - reset远程：先在本地reset，然后`git push -f origin [分支名]`
 - 远程的2个分支合并：pull request
 
+## 场景
+
+### 迁移仓库
+
+```shell
+# 先创建空白的新仓库
+# 只下载.git
+git clone --bare https://github.com/EXAMPLE-USER/OLD-REPOSITORY.git
+# mirror-push：推送所有branch的所有commit
+cd OLD-REPOSITORY
+git push --mirror https://github.com/EXAMPLE-USER/NEW-REPOSITORY.git
+cd ..
+rm -rf OLD-REPOSITORY
+```
+
 ## 配置
 
 ### ssh key
@@ -407,6 +437,12 @@
   
   - 对没有commit的都生效（即使.gitignore还没有提交）
   - 若被屏蔽的文件已经提交：先删除被屏蔽的文件，commit，然后更新gitignore，再commit
+
+### 科学上网
+
+- `github.com` => `githubfast.com`
+  
+  - 只适合`git clone`, `wget`等https下载，不适合ssh
 
 ## github action
 

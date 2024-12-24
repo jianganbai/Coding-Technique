@@ -25,10 +25,14 @@
 - `_`：临时变量
 
 - `_var`：约定为protected变量，解释器不加以区分
+
 - `var_`：避免重名 & 保留含义
+
 - `__var`：private类型
+  
   - 类内调用：`self.__var`
   - 类外调用：`对象名._类名__var`
+
 - `__var__`：python保留名称，禁止使用
 
 ### 杂七杂八的
@@ -61,13 +65,13 @@
 
 **位运算符**
 
-- &：按位与	|：按位或	^：按位亦或	~：按位非
+- &：按位与    |：按位或    ^：按位亦或    ~：按位非
 - <<：左移运算符    >>：右移运算符
--  使用位运算符时，先把十进制转二进制，对二进制进行操作，再把二进制转十进制
+- 使用位运算符时，先把十进制转二进制，对二进制进行操作，再把二进制转十进制
 
 **逻辑运算符**
 
-- and：逻辑与	or：逻辑或	not：逻辑非
+- and：逻辑与    or：逻辑或    not：逻辑非
 
 **成员运算符**
 
@@ -162,8 +166,6 @@ def func():
 print(b)
 ```
 
-
-
 #### 函数“静态变量”
 
 - python只有类有静态变量，函数没有静态变量
@@ -211,16 +213,54 @@ def foo(a):
 ### 字典
 
 - 字典是索引自定义的列表，基本组成为**{key: value}**
-- key是value的索引，dict[key]则返回相应的value
-- 对已有的key，dict[key]=value1修改value值
-- 对不存在的key，dict[key]=value1则在最后补上该key和相应的value
-- `del dict['Name']`：删除Name条目
-- `dict.clear()`：清空字典的所有条目，但仍保留dict的变量名
-- `del dict`：删除字典
-- `dict.get(k, v)`：若k是dict的键，则返回`dict[k]`；若k不是dict的键，则返回v
-- `dict_a.update(dict_b)`：dict_a中加入dict_b的key和value
-  - 深拷贝，若key有冲突，则覆盖
+  
+  - key是value的索引，dict[key]则返回相应的value
+    - 对已有的key，dict[key]=value1修改value值
+    - 对不存在的key，dict[key]=value1则在最后补上该key和相应的value
+  - 删除
+    - `del dict['Name']`：删除Name条目
+    - `dict.clear()`：清空字典的所有条目，但仍保留dict的变量名
+    - `del dict`：删除字典
+  - 访问
+    - `dict.get(k, v)`：若k是dict的键，则返回`dict[k]`；若k不是dict的键，则返回v
+  - 修改
+    - `dict_a.update(dict_b)`：dict_a中加入dict_b的key和value
+      - 深拷贝，若key有冲突，则覆盖
 
+- `defaultdict`：为缺失key 设置初始值
+  
+  - `defaultdict(default_factory)`
+    
+    - `default_factory`给出缺失key的初始值
+    
+    - 可以是常见的数据类型，也可以是lambda 函数（无参数）
+  
+  - ```python
+    from collections import defaultdict
+    
+    int_dict = defaultdict(int)  # 缺失的key默认为0
+    list_dict = defaultdict(list)  # 默认为[]
+    str_dict = defaultdict(str)  # 默认为''
+    # 默认值：dict => {}; set => set()
+    
+    int_dict['a'] += 1
+    list_dict['b'].append(1)
+    str_dict['c'] += 'hello'
+    ```
+  
+  - ```python
+    custom_dict = defaultdict(lambda: "default_value")
+    print(custom_dict['missing'])  # Output: 'default_value'
+    
+    dict_dict = defaultdict(lambda: {'count': 0, 'items': []})
+    print(dict_dict['another_key'])
+    ```
+  
+  - `defaultdict`与`dict`
+    
+    - `defaultdict`是`dict`的子类
+    
+    - 通过`dict(default_dict)`转化为普通`dict`
 
 ### 函数
 
@@ -279,20 +319,20 @@ def foo(a):
   ```
 
 - funcA是装饰器，`@funcA`进行了隐式调用
-
+  
   - funB函数指针作为funcA，系统执行`funcA(funcB)`
 
 ### import
 
 - 2种执行.py方式：当作top_script或者module
-
-  - |            | 意义                                         | 执行方法                               |
-    | ---------- | -------------------------------------------- | -------------------------------------- |
-    | top_script | 仅1个，`__name__`为`__main__`                | `python x.py` or `python d/x.py`       |
+  
+  - |            | 意义                                | 执行方法                                   |
+    | ---------- | --------------------------------- | -------------------------------------- |
+    | top_script | 仅1个，`__name__`为`__main__`         | `python x.py` or `python d/x.py`       |
     | module     | import的均按module访问，`__name__`为相对路径 | `python -m x.py` or `python -m d.x.py` |
 
 - 寻址路径
-
+  
   - 对不同文件，`sys.path`固定
   - `sys.path`中保存了所有寻址路径，包含安装的库的路径
     - 若按top_script执行，则保存top_script的绝对路径
@@ -300,12 +340,20 @@ def foo(a):
   - `sys.path.append(新路径)`：加入新路径
 
 - import：绝对导入、相对导入
-
+  
   - 绝对导入：从`sys.path`中的路径下导入
   - 相对导入：相对于该文件的`__name__`
     - 从当前层导入：`import .d.x.py`
     - 从上一层导入：`import ..d.x.py`
     - 相对导入的路径的`.`数应 < `__name__`的`.`数
+
+- 主文件需要调用上级目录下的库
+  
+  - 法1：`python -m a.bb.ccc`
+  
+  - 法2：`PYTHONPATH=. python a/bb/ccc.py`
+  
+  - 主文件之外的文件可直接从上一级引入，使用`python a/bb/ccc.py`时不会报错
 
 ### 异常处理
 
@@ -329,7 +377,7 @@ finally:  # 无论正常or错误，都会运行finally中的命令
 - ```python
   assert [expression], 'problem'  # experssion为False，则抛出problem异常
   ```
-
+  
   - 抛出的异常为`AssertionError`
   - assert语句仅在编译器`__debug__`为True时，才会被编译进来
     - 生产环境中该项一般为False，因而不能在用于生产的代码中加入assert
@@ -337,9 +385,9 @@ finally:  # 无论正常or错误，都会运行finally中的命令
 ### 迭代器
 
 - 迭代器的定义与使用
-
+  
   - 仅生成完上一个样本后，才生成下一个样本，不知道总样本数
-
+  
   - ```python
     a = [1,2,3,4,5]  # a是Iterable
     b = iter(a)  # b是Iterator
@@ -347,13 +395,13 @@ finally:  # 无论正常or错误，都会运行finally中的命令
     ```
 
 - `Iterable`：可迭代
-
+  
   - 实现了`__iter__()`或`__getitem__()`两个函数，未实现`__next__()`
   - 例：list, dict, tuple, string, ...
   - for循环处理`Iterable`时，首先调用`iter()`创建无名迭代器，再不断调用`next()`
 
 - `Iterator`：迭代器
-
+  
   - 同时实现`__iter__()`和`__next__()`两个函数
   - 可用`iter()`将非迭代器转化为迭代器
     - 调用`iter(a)`时，实际调用a的`__iter__()`
@@ -364,14 +412,14 @@ finally:  # 无论正常or错误，都会运行finally中的命令
 ### 生成器
 
 - `generator`：1种特殊的`Iterator`
-
+  
   - `Iterator`实现了如何遍历
   - `generator`不保存所有元素，每次生成下1个元素
 
 - `yield`函数
-
+  
   - yield返回生成器，
-
+  
   - ```python
     def fab(max): 
         a = 0
@@ -383,19 +431,19 @@ finally:  # 无论正常or错误，都会运行finally中的命令
     for n in fab(5): 
         print n
     ```
-
+  
   - 第1次执行fab：从a=0开始执行
-
+  
   - 之后执行fab：只执行while循环
-
+  
   - 运行时遇到yield就保存局部变量、返回。若运行到最后一直没碰到yield，则结束
 
-### 高阶应用 
+### 高阶应用
 
 - 海象运算符`:=`
-
+  
   - 本质上仍是赋值，用于在条件中进行赋值，简化代码
-
+  
   - ```python
     if (n := len(a)) > 10:  # a是字符串
         print(a)
@@ -414,30 +462,30 @@ finally:  # 无论正常or错误，都会运行finally中的命令
 ### print()
 
 - 格式化控制符`%`
-
+  
   - 与C基本一致
-
+  
   - ```python
     >>> str = "the length of (%s) is %d" %('runoob',len('runoob'))
     >>> print(str)
     the length of (runoob) is 6
     ```
-
+  
   - ```py
-     %c	 # 格式化字符及其ASCII码
-     %s	 # 格式化字符串
-     %d	 # 格式化整数
-     %u	 # 格式化无符号整型
-     %o	 # 格式化无符号八进制数
-     %x	 # 格式化无符号十六进制数
-     %X	 # 格式化无符号十六进制数（大写）
-     %f	 # 格式化浮点数字，可指定小数点后的精度
+     %c     # 格式化字符及其ASCII码
+     %s     # 格式化字符串
+     %d     # 格式化整数
+     %u     # 格式化无符号整型
+     %o     # 格式化无符号八进制数
+     %x     # 格式化无符号十六进制数
+     %X     # 格式化无符号十六进制数（大写）
+     %f     # 格式化浮点数字，可指定小数点后的精度
     ```
 
 - 字符串format函数
-
+  
   - 可将常量和变量随时拼成字符串，打印时直接打印拼好的字符串
-
+  
   - ```python
     >>> '{}  {}'.format('hello', 'world')
     'hello world'
@@ -446,7 +494,7 @@ finally:  # 无论正常or错误，都会运行finally中的命令
     >>> '{w0}  {w1}'.format(w0='hello', w1='world')
     'hello world'
     ```
-
+  
   - ```python
     # 通过字典设置参数
     >>> site = {'name': '菜鸟教程', 'url':'www.runoob.com'}
@@ -454,6 +502,7 @@ finally:  # 无论正常or错误，都会运行finally中的命令
     ```
 
 - `string.split(str='', num)`
+  
   - 未给定`str`和`num`时，按照空格等默认分隔符将string切分成若干个子字符串
   - `str`给定了用于切分的分隔符
   - `num`给定了切分次数，即最终获得`num+1`个子字符串
@@ -461,12 +510,15 @@ finally:  # 无论正常or错误，都会运行finally中的命令
 ### lambda匿名函数
 
 - `func_name = lambda argument_list:expression`
+  
   - `argument_list`为各形参
   - `expression`为对形参进行操作的表达式/函数，注意形式要简洁
   - `func_name`为这个函数的句柄
+
 - lambda函数常与python内置函数相结合
-  - `filter(判断函数，序列)`：判断函数（lambda函数）判断序列每个元素是否符合条件，filter函数返回所有符合条件的元素（迭代器）
   
+  - `filter(判断函数，序列)`：判断函数（lambda函数）判断序列每个元素是否符合条件，filter函数返回所有符合条件的元素（迭代器）
+    
     - ```python
       a = [1,2,3,4,5]
       b = filter(lambda x:x%2 == 0, a)  # b为迭代器
@@ -474,7 +526,7 @@ finally:  # 无论正常or错误，都会运行finally中的命令
       ```
   
   - `map(变换函数，序列)`：变换函数（lambda函数）对序列中每个元素进行变换，map函数返回各元素变换结果（迭代器）
-  
+    
     - ```python
       a = [1,2,3,4,5]
       c = map(lambda x:'fuck'+str(x)+'\n', a)
@@ -485,7 +537,7 @@ finally:  # 无论正常or错误，都会运行finally中的命令
     
     - 累加函数对两个输入进行自定义的累加操作
     - reduce函数按顺序将序列中的元素送入累加函数，最终返回各项自定义累加的结果
-    
+  
   - 判断函数、变换函数、累加函数常常用lambda函数代替
 
 ### isinstance()
@@ -510,9 +562,8 @@ finally:  # 无论正常or错误，都会运行finally中的命令
 ### partial
 
 - `functools.partial(函数名，给定的函数参数)`：给定一个函数的部分参数，将其包装为一个新的函数
-
+  
   - ```python
     a = partial(show, 'jab', 22)
     a('good')
     ```
-

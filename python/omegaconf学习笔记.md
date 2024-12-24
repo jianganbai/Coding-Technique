@@ -26,7 +26,7 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
 ## 访问&赋值
 
 - OmegaConf支持多种访问方式
-
+  
   - ```python
     conf.server.port  # 按对象方式访问
     # 若缺失，则弹出omegaconf.MissingMandatoryValue
@@ -36,7 +36,7 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
     ```
 
 - 赋值
-
+  
   - ```python
     conf.server.hostname = "localhost"  # 若缺失，则作为新key
     conf['server']['hostname'] = "localhost"
@@ -44,16 +44,17 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
     ```
 
 - 表示
-
+  
   - ```python
     OmegaConf.to_yaml(conf)  # 转为yaml
     OmegaConf.to_yaml(conf, resolve=True)  # resolve=True则进行变量替换
+    OmegaConf.to_container(conf) # 转为dict
     ```
 
 ## 变量替换
 
 - Variable interpolation：1个变量与是另1个变量的函数
-
+  
   - ```yaml
     server:
       host: localhost
@@ -63,7 +64,7 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
       server_port: ${server.port}
       description: Client of ${.url}
     ```
-
+  
   - ```python
     # 多重替换
     cfg = OmegaConf.create(
@@ -77,7 +78,7 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
     ```
 
 - 使用环境变量替换
-
+  
   - ```yaml
     user:
       name: ${oc.env:USER}  # 使用运行时'USER'的环境变量替换
@@ -86,12 +87,13 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
     ```
 
 - 提取string中的python数据
-
+  
   - ```python
+    # oc.decode:将后面的string转为相应变量
     cfg = OmegaConf.create(
         {
             'database': {
-                'port': "${oc.decode:${oc.env:DB_PORT}}",  # oc.decode:将后面的string转为相应变量
+                'port': "${oc.decode:${oc.env:DB_PORT}}",
                 'nodes': "${oc.decode:${oc.env:DB_NODES}}",
                 'timeout': "${oc.decode:${oc.env:DB_TIMEOUT,null}}",
             }
@@ -100,20 +102,26 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
     os.environ["DB_PORT"] = '3308'
     os.envrion["DB_NODES"] = '[host1, host2, host3]'
     ```
-
+  
   - 可转的数据类型: bool, int, float, dict, list, None
 
 - 自定义变量替换
-
+  
   - ```python
     OmegaConf.register_new_resolver('plus_10': lambda x: x + 10)
-    conf = OmegaConf.create({'key': '${plus_10:990}'})  # 调用plus_10函数，处理990
+    conf = OmegaConf.create({'key': '${plus_10:990}'})  # 调用plus_10函数，处理990 
     ```
+
+- 说明
+  
+  - OmegaConf 仅在调用时才进行变量替换（如`conf.a`），刚读入/创建时不会
+  
+  - `OmegaConf.to_container(conf, resolve=True)`：强制进行变量替换
 
 ## 合并
 
 - 合并每个模块的配置文件
-
+  
   - ```python
     # 直接合并
     conf = OmegaConf.merge(base_cfg, model_cfg, optimizer_cfg, dataset_cfg)
@@ -122,7 +130,7 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
     sys.argv = ['program.py', 'server.port=82']
     conf.merge_with_cli()
     ```
-
+  
   - ```python
     from omegaconf import ListMergeMode
     
@@ -135,23 +143,18 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
 ## 其它
 
 - yaml语法
-
+  
   - 以换行`\n`为分割号，`:`表示dict，`-`表示list
-
+    
     - `:`和`-`后均需空格
-
+  
   - 所有变量小写，不需要加引号
-
+  
   - 可表示list
-
+    
     - ```yaml
       a:
         - 1  # 以2个空格区分层级
         - 2
       # 读取后：{'a': [1, 2]}
       ```
-
-
-
-
-

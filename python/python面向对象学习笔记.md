@@ -11,7 +11,7 @@
 ## 类继承
 
 - 父类构造函数
-
+  
   - ```python
     class A:
         def __init__(self, a):
@@ -20,10 +20,8 @@
         def __init__(self, a):
             super().__init__(a)  # 父类构造函数
     ```
-
+  
   - 
-
-
 
 ## 静态变量
 
@@ -37,7 +35,7 @@ class Counter:
     @static_method
     def get_count(self):
         return Counter.count
-    
+
 count1 = Counter()
 count2 = Counter()
 print(Counter.get_count())  # 输出2
@@ -61,7 +59,7 @@ def a(x):
 ### 例子
 
 - 计算用时
-
+  
   - ```python
     def time_decorator(func):  # 只能有一个参数，且为被包裹的函数
         def wrapper(*args, **kwargs):
@@ -79,7 +77,7 @@ def a(x):
     ```
 
 - 斐波那契数列缓存
-
+  
   - ```python
     def cache_decorator(func):  # 只能有一个参数，且为被包裹的函数
         cache = dict()
@@ -101,11 +99,11 @@ def a(x):
 ### 常见装饰器
 
 - `@classmethod`装饰器：指定函数为**类方法**，可在创建类之前调用该函数
-
+  
   - 第1个参数为cls，代表类本身
-
+  
   - 可作为另一个构造函数
-
+    
     - ```python
       class YUE:  # 两个参数不同的构造函数
           def __init__(self, a):  # python类中只能有1个__init__函数
@@ -117,11 +115,11 @@ def a(x):
       ```
 
 - `@staticmethod`装饰器：可在创建类之前调用指定的函数
-
+  
   - 相比于`@classmethod`，没有cls参数，无法访问类本身的变量和函数
-
+  
   - 可用于实现判断函数
-
+    
     - ```python
       class YUE:
           @staticmethod
@@ -130,7 +128,7 @@ def a(x):
       ```
 
 - `@property`装饰器：指定的函数使用变量的方式访问
-
+  
   - ```python
     class YUE:
         @property

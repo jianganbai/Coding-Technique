@@ -20,14 +20,14 @@
   
   # target: prerequisite，target都是逻辑名
   helloworld: hi.o   # 想要helloworld，则需要先有hi.o（hi.o只编译，未链接）
-  	$(CC) -o exe hi.o  # $(CC)是变量
+      $(CC) -o exe hi.o  # $(CC)是变量
   
   hi.o: hello.c hello.h   # 多个依赖项，空格隔开，最后留一个空格
-  	$(CC) -c -o hi.o hello.c
+      $(CC) -c -o hi.o hello.c
   
   .PHONY: clean  # 表示伪目标
   clean:  # 清理之前产生的文件，使用make clean调用
-  	-rm *.o fuck
+      -rm *.o fuck
   # 上面-表示忽略该指令出错
   ```
   
@@ -40,14 +40,3 @@
   - `@echo "hello"`
 - `-`：忽略命令出错
   - `-rm *.out`
-
-
-
-
-
-
-
-
-
-
-

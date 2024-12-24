@@ -76,16 +76,9 @@
 - 创建新用户
   
   - ```shell
-    # 省事版
-    adduser xxx  # 交互式
-    # 逐步
-    useradd xxx  # 不创建密码、主目录、登录脚本
+    sudo useradd xxx  # 不创建密码、主目录、登录脚本
+    sudo useradd -m -s /bin/bash xxx  # -m创建主目录；-s指定默认bash
     passwd xxx  # 设定密码
-    mkdir /home/xxx  # 创建用户主目录
-    cp -r /etc/skel/. /home/xxx  # 复制必要文件到主目录
-    chown -R xxx:yyy /home/xxx  # 修改主目录所属用户，xxx为用户名，yyy为用户组
-    # 默认新用户的用户组与用户名同名
-    usermod -s /bin/bash xxx  # 指定登录shell
     ```
 
 - **usermod命令**：改变用户的各项属性，`usermod [参数] [用户名]`
@@ -155,6 +148,7 @@
   
   - `du [-abcDhHklmsSx] [--exclude=<目录或文件>] [--max-depth=<目录层数>] [目录或文件]`
     - `-a`：分别显示各个文件的大小
+    - `-d 1`：查询的最大深度
     - `-s`：仅显示总和
     - `-h`：以K/M/G显示，提升可读性
     - `--max-depth=<目标层数>`：指定最大统计层数
@@ -167,9 +161,10 @@
   
   - `ps -e`：系统的所有进程信息
   - `ps -x`：当前用户在所有终端的进程
+  - `ps -u [username]`：显示指定用户的进程
+  - `ps -p [pid]`：显示指定进程号的信息
   - `ps -l`：长格式进程信息；`ps -f`：完整格式进程信息
   - `ps -a`：显示**当前终端**下的所有进程信息，包括其他用户的进程
-  - `ps -u`：以用户为主，显示进程
   - `ps aux`：以简单列表形式显示出进程信息
     - USER：启动该进程的用户账号名称
     - PID：该进程的ID号，在当前系统中是唯一的
@@ -247,6 +242,42 @@
   - **shutdown命令**：`sudo shutdown [参数] 时间`关机
     - 时间：`now`：立刻关机；数字：等多少分钟关机
   - **reboot命令**：`sudo reboot`，重启
+
+- `netstat`：查看网络连接、端口占用
+  
+  - 参数
+    
+    - `-a`：查看所有正在使用和监听的端口
+    
+    - `-l`：查看所有正在监听的端口
+    
+    - `-t`：查看TCP连接
+    
+    - `-u`：查看UDP连接
+    
+    - `-n`：返回IP地址，不经DNS查找hostname
+    
+    - `-p`：显示pid
+    
+    - `-c`：不断刷新结果
+  
+  - 常用
+    
+    - ```shell
+      netstat -tuln  # 展示所有使用TCP和UDP协议监听的端口
+      ```
+
+-  **time命令**：记录命令运行时间
+  
+  - ```shell
+    # python -c：以字符串形式输入命令
+    time python -c "for i in range(1000000): pass"
+    real    0m0.012s  # 总时间
+    user    0m0.004s  # 处于用户态的时间
+    sys     0m0.008s  # 处于内核态的时间
+    ```
+  
+  - 
 
 ### 文件相关
 
@@ -489,7 +520,13 @@ ls -l | grep ^-  # 获得所有文件
     - `FS`：输入字段分隔符；`OFS`：输出字段分隔符；`ORS`：输出行间隔符
   - 参数
     - `-F`：指定字段分隔符，用双引号，如`awk -F ":" '{print $0}'`
-    - `-v`：变量赋值，如`awk -v var=100 '{print $0":"v}'`
+    - `-v`：变量赋值
+      - ```shell
+        awk -v var=100 '{print $0":"v}'
+        a=100
+        awk -v b="$a" '{print $b}'  # 使用外部变量赋值，打印第100项
+        ```
+      - 
   - 匹配条件可采用正则表达式，`/正则表达式/`
 
 - 打印

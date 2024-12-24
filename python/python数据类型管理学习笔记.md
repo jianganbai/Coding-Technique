@@ -38,19 +38,50 @@ def func3(a: int, s: str = 'bbb') -> Dict[str, Union[int, str]]:
 ```
 
 - 泛型
+  
   - `Any`：任意数据类型
+  
   - `Callable`：可调用对象
+  
   - `Optional`：可以为给定类型或None，`Optional[float]`等价于`float | None`
+    
     - `Optional[Literal['a', 'b']]`
     - **不表示该变量有默认值**
+  
   - `Iterable`：可迭代对象
+  
+  - `Generator`：生成器
+    
+    ```python
+    # The generator yields values of type int.
+    # It does not accept any values sent to it (hence None).
+    # When the generator completes, it returns a value of type str.
+    def my_generator() -> Generator[int, None, str]:
+        yield 1
+        yield 2
+        yield 3
+        return "Done"
+    ```
+  
+  - `Type`：所有类
+    
+    - `Type[Animal]`：指定为Animal 类（可以是基类）
+  
+  ```python
+    from  typing import Callable, Iterable
+  
+    def processor(f: Callable, a: Iterable) -> Iterable:
+      return f(a)
+  ```
 
-```python
-from  typing import Callable, Iterable
-
-def processor(f: Callable, a: Iterable) -> Iterable:
-    return f(a)
-```
+- 其他
+  
+  - ```python
+    def process_object(obj: A) -> None:  # obj是类A的对象
+    def create_instance(cls: type[A], value: int) -> A:  # cls就是类A
+    ```
+  
+  - 
 
 ## dataclass
 

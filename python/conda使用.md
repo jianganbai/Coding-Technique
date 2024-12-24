@@ -24,7 +24,7 @@
 - `conda remove --name env_name --all` # 删除整个环境 
 - `conda remove package` #删除当前环境中的包
 
-##  导出
+## 导出
 
 - `conda env export > xxx.yaml`：将环境中安装的包及版本号导入xxx.yaml中
 - `conda env create -f xxx.yaml`：根据xxx.yaml安装相应conda环境
@@ -50,24 +50,23 @@
 - `pip install --editable [dir_path / URL]`：安装该路径下的源码，库路径为该路径
   - 若修改源码，则会立即生效
 
-
 ## 手动安装包
 
 - `pip install xxx.whl`：先cd到.whl所在文件夹下
 
 - 其它
-
+  
   - 到镜像源上下载包（tar文件）
-
+  
   - 拷到Linux上，使用tar -zxvf name.tar.gz解压
+    
     - cd到解压出的文件夹
       - cd 文件名到下一级
       - ls 查看当前路径下有哪些文件和文件夹
       - cd .. 回到上一级
-
+  
   - python3 setup.py build
-
+  
   - python3 setup.py install
 
-
-  - sudo rm 文件夹 -rf sud #删除文件夹及其内部所有文件
+- sudo rm 文件夹 -rf sud #删除文件夹及其内部所有文件

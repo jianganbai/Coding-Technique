@@ -16,7 +16,7 @@
       pbar.set_description('Processing %s' %c)  # 在进度条最左侧显示提示
       pbar.set_postfix({'a': 1, 'b': 2})  # 在右侧[]内显示该轮的提示
   ```
-  
+
 - ```python
   with tqdm(total=100, desc='...') as pbar:  # desc为最左侧的描述
       for i in range(100):

@@ -5,15 +5,18 @@
 ### Dataset
 
 - `torch.utils.data.Dataset`：Map-style，输入index，输出样本
+  
   - 需要实现`__init__`, `__len__`和`__getitem__`三个函数
+
 - `torch.utils.data.IterableDataset`：Iterable-style，按迭代器方式输出样本，可实现dynamic batch
+  
   - 需要实现`__init__`和`__iter__`两个函数
   - 不需要一次性读入数据集，也不需要知道数据集大小
   - 自行决定读取样本的顺序，无法使用sampler或者batch_sampler
   - num_workers > 0：每个子进程都会把数据全读一遍
-    - 
 
 - `torch.utils.data.ConcatDataset([Dataset1, Dataset2])`：将多个数据集拼接起来
+  
   - 若拼接的数据集调用方法不同（如半监督数据集），则需要重写ConcatDataset方法
 
 ### DataLoader
@@ -32,7 +35,7 @@
 - Sampler: 给出所有用于训练的数据的下标，默认是[0, 1, 2, 3, ...]
 
 - BatchSampler: 从Sampler给出的下标中，选出要合成1个batch的下标
-
+  
   - ```python
     class BatchSampler(Sampler):
         def __init__():
@@ -41,9 +44,9 @@
     ```
 
 - DistributedSampler：DDP用的Sampler，只能用于Map-style dataset
-
+  
   - 每个epoch执行1次sample，把数据切分给不同GPU
-
+  
   - ```python
     class DistributedSampler:
         def __init_(self, shuffle, **):
@@ -57,25 +60,46 @@
             return data
     ```
 
-
 ## Tensor
 
 - `tensor.squeeze()`与`tensor.unsqueeze()`
+  
   - `tensor.squeeze()`：去除所有大小为1的维度
   - `tensor.squeeze(arg)`：若第arg维的维度值为1，则去除之，否则保持原tensor不变
   - `tensor.unsqueeze(arg)`：在第arg维插入维度值为1
   - `a = a[None, :, :] `：None代表在此位置插入维度
-- Variable与Parameter
 
+- Variable与Parameter
+  
   - Variable: 所有输入网络的tensor都会被自动包装为Variable
     - 默认无梯度
   - Parameter: 自动将tensor注册到网络中，默认有梯度，可进行反向创博
   - **仅需要被更新的tensor才需要梯度**
     - 如果常量只是加入了计算图，则不需要梯度
+
 - Broadcast：两个矩阵按位置相乘，形状不需要完全等，可自动进行复制
+  
   - 从靠后的维度往前面的维度，进行广播
   - 若A和B在第i维的size相等or有1个为1，则将等于1的维度复制
   - 若没有该维度，则初始化为1
+
+- `torch.Tensor.scatter_(dim, index, src, *, reduce=None)`
+  
+  - 将`src`的数值，按`index`给定的位置，沿`dim`维替换到`self`（原tensor）中
+    
+    - 对`index`的每个位置`[i][j]`
+    
+    - `index[i][j]`给出替换到`self`在`dim`维的维度
+    
+    - `src[i][j]`给出替换到`self`的值
+  
+  - ```python
+    # 例：one-hot 编码
+    # label为(0,1,2,3,...)的数值标签，num_class为类别总数
+    # 转化为one_hot
+    one_hot = torch.zeros((label.shape[0], len(num_class)), device=device)
+    one_hot.scatter_(1, label.view(-1, 1).long(), 1)
+    ```
 
 ## 梯度
 
@@ -105,11 +129,11 @@
 ### 定义方式
 
 - `nn.Sequential`：多个模块级联在一起
-
+  
   - 指定好forward方式
-
+  
   - 可使用OrderedDIct同时给出模块和模块名称
-
+  
   - ```python
     layers = []
     layers.append(nn.Linear)  # 可先使用list包括所有模块
@@ -117,7 +141,7 @@
     ```
 
 - `nn.ModuleList`: 使用list组合多个模块，并将它们的参数注册到网络中
-
+  
   - ```python
     # 需手动指定forward方式
     class net_modlist(nn.Module):
@@ -134,26 +158,25 @@
                 x = m(x)
             return x
     ```
-
+  
   - 使用append添加模块
-
+  
   - 优点：可循环创建重复度高的网络；forward更灵活；可创建非固定网络（如Progressive GAN）
 
 - `nn.ModuleDict`：每个模块有自己的名字
-
+  
   - ```python
     class net_moddict(nn.Module):
         def __init__(self):
             self.moddict = nn.ModuleDict()
             self.moddict.update({'0-conv': nn.Conv2d(1, 20, 5)})
             self.moddict.update({'0-relu': nn.ReLU()})
-            
+    
         def forward(self, x):
             for n, m in self.moddict.items():
                 x = m(x)
             return x
     ```
-
 
 ### 钩子
 
@@ -166,6 +189,7 @@
 ### 参数
 
 - 参数类型
+  
   - `_parameters`：由`torch.nn.Parameter`定义
     - 调用`self.register_parameter(name, tensor)`，注册到`_parameters`这个dict
   - `_buffers`：无梯度的tensor
@@ -173,8 +197,23 @@
   - `_modules`：由`torch.nn.Module`定义
 
 - 保存state_dict
+  
   - `nn.Module`集成了`state_dict()`和`load_state_dict()`两个函数
   - 需要自定义state_dict，可以覆写这两个方法
+
+### 遍历
+
+- `net.parameters()`：层参数的迭代器
+
+- `net.named_parameters()`：（层名，层参数）的迭代器
+
+- `net.modules()`：层对象的迭代器
+
+- `net.named_modules()`：（层名，层对象）的迭代器
+
+- `net.childen()`：当前模块的直接子模块的迭代器
+
+- `net.named_children()`：（直接子模块名，直接子模块对象）的迭代器
 
 ## cuda
 
@@ -195,7 +234,6 @@
   - CUDA Driver：运行环境，使用宿主机的
   - GPU Driver：硬件驱动，使用宿主机的，版本>=450.80.02向后兼容
 
-
 ## 多卡训练
 
 - 判断卡：`torch.cuda.is_availabale()`, `torch.cuda.device_count`
@@ -204,7 +242,7 @@
 ### DataParallel
 
 - 使用DataParallel包装model, optimizer
-
+  
   - `model = torch.nn.DataParallel(model, device_ids, out_device)`
     - `device_ids`: 用于训练的卡编号(list of int)，默认使用所有卡
     - `out_device`: 主卡号(int)，主卡用于集中计算loss，负载更大
@@ -212,7 +250,7 @@
   - 模型保存：`torch.save(net.module.state_dict(), PATH)`
 
 - 指定主卡
-
+  
   - ```python
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
@@ -227,33 +265,37 @@
 ### DDP
 
 - 分布式数据并行
-
+  
   - 多进程，推荐1个进程对应1张卡
   - 支持多机多卡，但如果能单机，就不要多机
   - 比DataParallel更高效
 
 - 新加入的代码
-
+  
   - ```python
     import torch.distributed as dist
-    from torch.utils.distributed import DistributedSampler
+    from torch.utils.data import DistributedSampler
     
     parser.add_argument('--local_rank', type=int)  # 启动器会创建多个进程，每个进程通过local_rank获得进程号
     # torch.cuda.set_device(args.local_rank)
     device = torch.device('cuda', local_rank)  # 之后可使用to(device)
     
     # 在创建网络前初始化
-    dist.init_process_group(backend='nccl', init_method='env://')  # nccl适合GPU，gloo适合CPU
+    # nccl适合GPU，gloo适合CPU
+    dist.init_process_group(backend='nccl', init_method='env://')
     
     train_sampler = DistributedSampler(data)  # data是例化后的Dataset
     # 再去掉DataLoader中的shuffle=True，改为sampler=train_sampler，保证不同进程的数据不同
     # DataLoader的batch_size为每个进程的batch_size
     
-    net = torch.nn.SyncBatchNorm.convert_sync_batchnorm(net).to(device)  # 将BN设置为进程间同步参数
-    net = torch.nn.parallel.DistributedDataParallel(net,
-                                                    device_ids=[local_rank],
-                                                    output_device=local_rank,
-                                                    find_unused_parameters=True)  # 使用DDP接口包装
+    # 将BN设置为进程间同步参数
+    net = torch.nn.SyncBatchNorm.convert_sync_batchnorm(net).to(device)
+    net = torch.nn.parallel.DistributedDataParallel(
+        net,
+        device_ids=[local_rank],
+        output_device=local_rank,
+        find_unused_parameters=True
+    )  # 使用DDP接口包装
     
     train_loader.sampler.set_epoch(i)  # 每个epoch计算前
     # 各子进程的DistributedSampler以epoch为种子，保证各机器shuffle出的顺序都相同
@@ -264,19 +306,19 @@
     
     # 保存模型应保存model.module
     ```
-    
+  
   - 若需要写入日志，则仅进程0才能写入，可使用`dist.get_rank() == 0`获得进程号
-
+  
   - 训练时必须1次forward+1次backward，对于GAN则需要将真样本和生成样本级联在一起送入D（2次forward合为1）
 
 - 启动
-
+  
   - ```shell
     CUDA_VISIBLE_DEVICES="4,5,6,7" python -m torch.distributed.launch --nproc_per_node 4 train.py
     ```
-
+  
   - `CUDA_VISIBLE_DEVICES="4,5,6,7"`：指定需要哪几张卡
-
+  
   - `--nproc_per_node 4`：指定创建几个进程
 
 #### 概念
@@ -291,27 +333,33 @@
   - 各GPU通过Ring-Reduce机制同步梯度，边计算梯度边传梯度
     - Ring-Reduce：所有GPU串成1个环，每个GPU只与环路中下一个GPU通信，传完一圈就同步了梯度
 
+#### 同步
 
-## 专题
+<img title="" src="imgs/2024-11-27-16-19-38-image.png" alt="" width="529">
 
-### one-hot
+- `dist.gather(tensor, gather_list=None, dst=0)`
+  
+  - 将所有进程的tensor，汇集到rank dst的gather_list
+    
+    - tensor尺寸固定
+    - 梯度不可反传
 
-```python
-# label为(0,1,2,3,...)的数值标签，num_class为类别总数
-# 转化为one_hot
-one_hot = torch.zeros((label.shape[0], len(num_class)), device=device)
-one_hot.scatter_(1, label.view(-1, 1).long(), 1)
-```
+- `dist.all_gather(tensor_list, tensor)`
+  
+  - 将所有进程的tensor，汇集为gather_list，再分发给所有进程
+    
+    - tensor尺寸可变
+    - 梯度可反传
 
 ## 琐碎
 
 - torch.nn.Module提供了各种封装好的网络模块，torch.nn.functionals提供了各种网络运算（卷积等）
+
 - `optim.param_groups['lr']=new_lr`：改变学习率
+
 - `torch.jit`：just-in-time，即时编译
+  
   - 将动态图转化为静态图，使之能被C++调用，加速推理
   - 两种方法
     - `torch.jit.script`：Scripting编码
     - `torch.jit.tracing`：Tracing追踪，提供输入样例
-
-
-
