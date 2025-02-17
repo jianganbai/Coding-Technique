@@ -279,11 +279,17 @@
 
 #### git stash
 
-- `git stash`：将没有commit的代码移至栈中，将仓库回退到上1次commit
+- `git stash`：将已修改但没有commit的代码移至栈中，将仓库回退到上1次commit
+  - 不包括untracked
+  
   - `git stash list`：展示所有缓存
+  
   - `git stash apply`：恢复缓存
+    
     - `git stash apply stash@{0}`：有多个缓存时，恢复指定缓存，`stash@{0}`通过`git stash list`查看
+  
   - `git stash drop [缓存名]`：删除缓存
+  
   - `git stash pop`：恢复缓存 +删除缓存
 - 恢复缓存时若有冲突，手动修改文件中冲突的部分，再使用`git add file`标注解决
 
@@ -340,13 +346,32 @@
 
 #### git reset
 
-- `git reset [reset类型] [commit] [文件]`：将文件回退到指定commit
+- `git reset [reset类型] [commit] [文件]`：回退到指定commit
+  
   - 若不指定文件，则回退整个仓库
   - `git reset --soft HEAD^`：回退至上一次commit
   - reset类型
     - `--hard`：删除所有修改，回滚至之前的代码（不推荐）
     - `--soft`：保留新代码，相当于撤销commit但不撤销add
     - `--mixed`：撤销add和commit
+
+- `git reset`和`git revert`
+  
+  - 相同点：都能回退代码
+  
+  - 不同点
+    
+    - `git reset`：将之前的commit从branch移出
+    
+    - `git revert`：回退后以新commit提交，保留回退的commit
+
+#### git revert
+
+- `git revert [commit]`
+  
+  - 将代码回退到指定commit，以新commit提交，保留全部commit历史
+  
+  - 若存在冲突，则手动解决，最后`git revert --continue`
 
 #### git restore
 

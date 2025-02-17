@@ -80,8 +80,6 @@ def func3(a: int, s: str = 'bbb') -> Dict[str, Union[int, str]]:
     def process_object(obj: A) -> None:  # obj是类A的对象
     def create_instance(cls: type[A], value: int) -> A:  # cls就是类A
     ```
-  
-  - 
 
 ## dataclass
 

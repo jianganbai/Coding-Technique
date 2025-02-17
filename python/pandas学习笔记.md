@@ -191,7 +191,9 @@ df.set_index(索引列, inplace=True)  # 设置行名。inplace=True代表原地
 
 - 改变索引
   
-  - `df.reset_index()`：将索引列改为正常的一列，适合groupby操作
+  - `df.reset_index()`：重新更新索引，适合groupby操作
+    - `drop`：True则丢掉旧索引；False则将旧索引保存为新列
+    - `inplace`：是否原地操作
 
 - 筛选非空列
   

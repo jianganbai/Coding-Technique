@@ -151,6 +151,7 @@
     - `-d 1`：查询的最大深度
     - `-s`：仅显示总和
     - `-h`：以K/M/G显示，提升可读性
+    - `--exclude='*/'`：不统计符号链接
     - `--max-depth=<目标层数>`：指定最大统计层数
 
 - `watch nvidia-smi`：nvidia-smi查看显卡使用，watch定期刷新
@@ -267,7 +268,7 @@
       netstat -tuln  # 展示所有使用TCP和UDP协议监听的端口
       ```
 
--  **time命令**：记录命令运行时间
+- **time命令**：记录命令运行时间
   
   - ```shell
     # python -c：以字符串形式输入命令
@@ -276,8 +277,6 @@
     user    0m0.004s  # 处于用户态的时间
     sys     0m0.008s  # 处于内核态的时间
     ```
-  
-  - 
 
 ### 文件相关
 
@@ -312,16 +311,25 @@
     - `-u 用户名`：查看单个用户打开的文件
     - `-i 4`：查看IPv4所有打开的网络文件
 - **打包压缩**
-  - tar.gz：tar用于打包，gzip用于压缩
+  - `tar.gz`：tar用于打包，gzip用于压缩
     - linux系统上最常用的打包压缩工具
     - 打包压缩：`tar -czvf xxx.tar.gz file1 file2 file3`
       - `-r`：递归，将子文件夹一并打包
       - `--exclude='path'`：不打包指定文件/文件夹，可输入多次
     - 解压缩：`tar -xzvf xxx.tar.gz`
-  - zip：打包和压缩二合一
+  - `zip`：打包和压缩二合一
     - 打包压缩：`zip -rq xxx.zip xxx`，`-r`表示递归，`-q`表示安静操作
       - `-x file`：不打包指定文件；`-x dir/\*`：不打包指定文件夹
     - 解压缩：`unzip xxx.zip`，`-d xxx`更换解压路径
+  - `rar`
+    - windows常用格式，linux上分别需要安装`rar`和`unrar`
+    - 解压缩
+      - `unrar l data.rar`：列出文件列表
+      - `unrar x data.rar /path/to/destination`：解压缩
+      - `unrar x data.part01.rar /path/to/destination`：自动将不同部分一起解压缩
+- 比较文件是否相同
+  - `md5sum [file]`：给出文件的md5编码值
+  - `cmp [file1] [file2]`：若相同则无输出，若不同则输出第一个不同字节的位置
 - 其它
   - `cd ${dir}/../script`：进入dir上层文件夹中的script文件夹
   - `echo ${file/\.flac/.wav}`：修改文件路径中的扩展名，从flac改成wav
@@ -642,8 +650,16 @@ ls -l | grep ^-  # 获得所有文件
 - **wget命令**: `wget [option] [URL]`
   - 参数
     - `-O [文件名]`：指定下载到本地的文件名
+    - `-P [文件夹名]`：指定下载的文件夹名
     - `-c`：断点续传；`-t [重试次数]`；`-T [超时等待时间]`
     - `--limit-rate=20k`：限速20kB/s下载
+    - `-q`：安静模式
+- **curl命令**: `curl [options] [URL]`
+  - 参数
+    - `-o [文件名]`：将输出保存在文件，而非打印
+    - `-I`：只下载HTTP headers
+    - `-L`：跟随重定位
+    - `-s`：安静模式
 
 ### 网络相关
 
