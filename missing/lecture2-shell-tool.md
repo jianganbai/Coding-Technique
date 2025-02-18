@@ -654,12 +654,16 @@ ls -l | grep ^-  # 获得所有文件
     - `-c`：断点续传；`-t [重试次数]`；`-T [超时等待时间]`
     - `--limit-rate=20k`：限速20kB/s下载
     - `-q`：安静模式
+  - 使用
+    - `wget --post-file=/path/to/your/file url`：上传文件
 - **curl命令**: `curl [options] [URL]`
   - 参数
     - `-o [文件名]`：将输出保存在文件，而非打印
     - `-I`：只下载HTTP headers
     - `-L`：跟随重定位
     - `-s`：安静模式
+  - 使用
+    - `curl -F "file=@/path/to/your/file" url`：下载文件
 
 ### 网络相关
 
