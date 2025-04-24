@@ -5,9 +5,9 @@
 ## pipeline
 
 - 最高级的封装，扩展性差
-
+  
   - 提供了9个常见任务
-
+  
   - ```python
     from transformers import pipeline
     
@@ -36,7 +36,7 @@
 ### AutoTokenizer
 
 - 将句子转化为token id序列，并加入特殊token
-
+  
   - ```python
     from transformers import AutoTokenizer
     
@@ -54,7 +54,7 @@
     ```
 
 - 一步步拆解
-
+  
   - ```python
     tokens = [tokenizer.tokenize(sentence) for sentence in sentences]
     ids = [tokenizer.convert_tokens_to_ids(token) for token in tokens]  # 不补零
@@ -67,11 +67,11 @@
 ### AutoModel
 
 - 加载预训练模型，输出embedding
-
+  
   - 加载的预训练模型**舍弃了只用于pre-train的参数，仅保留fine-tune会用到的**
-
+  
   - 不包含后续分类头，适合直接用于inference
-
+  
   - ```python
     from transformers import AutoModel
     
@@ -83,9 +83,9 @@
 ### AutoModelForSequenceClassification
 
 - 加载预训练模型，比`AutoModel`多引入了可训练的分类头，可输出分类头的
-
+  
   - 适合fine-tune，只需在后面手动加Softmax和交叉熵
-
+  
   - ```python
     from transformers import AdamW, AutoModelForSequenceClassification
     
@@ -107,9 +107,9 @@
 ## Config
 
 - config: 模型的所有超参数，如数据预处理、网络结构、训练超参数
-
+  
   - 根据config能唯一创建出1个模型
-
+  
   - ```python
     from transformers import BertConfig, BertModel
     
@@ -122,14 +122,14 @@
     ```
 
 - 使用模型
-
+  
   - ```python
     import torch
     
     sequences = ["Hello!", "Cool.", "Nice!"]
     encoded_sequences = [[101, 7592, 999, 102],
-        				 [101, 4658, 1012, 102],
-        				 [101, 3835, 999, 102],]
+                         [101, 4658, 1012, 102],
+                         [101, 3835, 999, 102],]
     model_inputs = torch.tensor(encoder_sequences)
     output = model(model_inputs)
     ```
@@ -137,25 +137,24 @@
 ## datasets
 
 - HuggingFace Hub提供了很多训练数据集
-
+  
   - 可直接使用封装的`datsets`类下载并处理
-
+  
   - ```python
     from datasets import load_dataset
     
     raw_datasets = load_dataset('glue', 'mrpc')  # 返回dict
     # raw_datasets['train'], raw_datasets.features, raw_datasets[0]
-    
     ```
-
+  
   - 数据集保存在disk中，仅需要时才读入内存
 
 - 数据集预处理：例如tokenize
-
+  
   - ```python
     def tokenize_func(example):
         return tokenizer(example["sentence1"], example["sentence2"], truncation=True)
-    	# 返回input_ids, attention_mask, and token_type_ids
+        # 返回input_ids, attention_mask, and token_type_ids
     
     tokenized_datasets = load_dataset('glue', 'mrpc').map(tokenize_func, batched=True)
     # batched=True使用并行处理
@@ -171,13 +170,13 @@
     ```
 
 - Dynamic Padding
-
+  
   - 在预处理函数中pad慢
-
+    
     - 需要固定长度的batch（例如TPU），则仍需要在预处理中做
-
+  
   - 更快：先生成batch，再在DataLoader的collect_fn写pad
-
+  
   - ```python
     from torch.utils.data import DataLoader
     from transformers import DataCollatorWithPadding
@@ -215,7 +214,7 @@ def compute_metrics(eval_pred):
     logits, labels = eval_pred
     predictions = np.argmax(logits, axis=-1)
     return metric.compute(predictions=predictions, references=labels)
-    
+
 # 训练
 trainer = Trainer(model, training_args,
                   training_dataset=tokenized_datasets['train'],
@@ -422,18 +421,21 @@ trainer.evaluate()
 - 目前国内无法直连到huggingface
 
 - 下载huggingface预训练模型
-
+  
   - 挂梯子，从huggingface下载文件
-  - 从国内镜像站找（很少）：aliendao.cn
+  - 镜像站：`hf-mirror.com`
+    - `export HF_ENDPOINT=https://hf-mirror.com`，再调用下载脚本
+    - `os.environ['HF-ENDPOINT'] = 'https://hf-mirror.com'`
+  - 从国内镜像站找（模型少）：`aliendao.cn`, `modelscope.cn`
 
 - 加载本地预训练模型
-
+  
   - 法1：将模型名更换为下载好的文件夹
   - 法2：手动构建`.cache`
     - 从官网下载的预训练模型，默认存在`~/.cache/huggingface/hub/`下面
 
 - 预训练模型在`.cache`的存储形式
-
+  
   - 文件夹名称：`models--{上传用户名}--{模型名}`
     - 内部包含`refs, blobs, snapshots`三个文件夹
   - `refs`：存放每次commit的hash
@@ -450,12 +452,3 @@ trainer.evaluate()
     - 子文件夹名：相应commit的hash
     - 子文件夹内容：相应commit的文件，例如config.json, pytorch_model.bin
     - 与官网的一致，不需要修改名称
-  
-  
-
-
-
-
-
-
-

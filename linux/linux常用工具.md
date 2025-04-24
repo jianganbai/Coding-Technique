@@ -75,6 +75,7 @@
   - `tmux ls`：查看当前所有的会话
   - `tmux kill-session -t foobar`：删除名为foobar的session
   - `tmux kill-server`：删除所有session
+  - `tmux rename-session -t [旧名字] [新名字]`
 - 快捷键
   - ctrl+b进入tmux快捷键，每个输入1个快捷键前都需要输入1次ctrl+b
     - 默认是ctrl+b，大多数人选择修改为ctrl+a

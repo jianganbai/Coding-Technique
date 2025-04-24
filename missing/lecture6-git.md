@@ -280,6 +280,7 @@
 #### git stash
 
 - `git stash`：将已修改但没有commit的代码移至栈中，将仓库回退到上1次commit
+  
   - 不包括untracked
   
   - `git stash list`：展示所有缓存
@@ -291,6 +292,7 @@
   - `git stash drop [缓存名]`：删除缓存
   
   - `git stash pop`：恢复缓存 +删除缓存
+
 - 恢复缓存时若有冲突，手动修改文件中冲突的部分，再使用`git add file`标注解决
 
 #### git restore
@@ -335,12 +337,19 @@
 
 - 参数
   
-  - `git push origin :[分支名]`：删除远程指定分支
   - `-f`：使用本地分支强行覆盖远程分支（不推荐）
   - `-u`：推送到远端新分支
-  - `--mirror`
-    - 默认只推送当前branch和未push的commit
-    - `--mirror`将所有branch的所有commit都推上去（从头同步仓库）
+  - `--all`：推送所有本地分支，但不推送tags，不删本地没有的远程分支
+    - 不加`--all`，只推送当前branch 未push的commit
+  - `--mirror`：完全镜像本地仓库到远程
+    - 包括分支、标签
+    - 删除本地没有的分支
+
+- 常用
+  
+  - `git push origin --delete [分支名]`：删除远程分支
+  
+  - `git push origin :[分支名]`：删除远程分支，二者等价
 
 ### 代码回退
 
@@ -389,10 +398,12 @@
 - `git remote`：查看建立连接的远程仓库
   - `origin`, `upstream`都是常用的远程仓库名称
   - `git remote -v`：查看远程仓库的详细信息
-  - `git remote add origin [github仓库地址]`：添加origin仓库，一般是可直接push上去的
-  - `git remote add upstream [upstream仓库地址]`：添加upstream仓库，一般是只pull，需要通过pull request提交的
+  - `git remote add [remote名] [github仓库地址]`：添加远程仓库
+    - origin：可push
+    - upstream：只pull，需要通过pull request提交的
   - `git remote rename [old name] [new name]`：重命名remote分支
-  - `git remote rm [remote名]`：删除远程分支
+  - `git remote rm [remote名]`：删除远程仓库
+  - `git remote set-url origin git@github.com:[user]/[repo].git`：将使用url clone的仓库转为使用ssh clone的
 
 #### git blame
 

@@ -118,5 +118,29 @@ def func3(a: int, s: str = 'bbb') -> Dict[str, Union[int, str]]:
   
   - field参数
     
-    - `default`：字段的默认值；`default_factory`：返回字段初始值的函数
-    - metadata：注释信息，如`metadata={'help': 'player skills'}`
+    - `default`：字段的默认值
+    - `default_factory`：返回字段初始值的函数
+    - `metadata`：注释信息，如`metadata={'help': 'player skills'}`
+
+- **数据类实例化时初始化其他变量：`__post_init__`**
+  
+  - ```python
+    from dataclasses import dataclass
+    
+    @dataclass
+    class Person:
+        first_name: str
+        last_name: str
+        birth_year: int
+    
+        def __post_init__(self):  # 不接受其它参数
+            self.full_name = f"{self.first_name} {self.last_name}"
+            self.age = 2023 - self.birth_year  # 假设当前年份是2023
+    
+    # 创建Person实例
+    person = Person(first_name="John", last_name="Doe", birth_year=1980)
+    
+    # 访问通过__post_init__方法设置的属性
+    print(person.full_name)  # 输出: John Doe
+    print(person.age)         # 输出: 43
+    ```

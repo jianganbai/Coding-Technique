@@ -167,7 +167,9 @@ df.set_index(索引列, inplace=True)  # 设置行名。inplace=True代表原地
 - 删除
   
   - ```python
-    df.drop('column_name', axis=1, inplace=True)  # axis=0为行，axis=1为列。inplace表示原地操作
+    df.drop('row_index', axis=0, inplace=True)  # axis=0为行
+    df.drop(df.index[1], axis=0, inplace=True)  # inplace表示原地操作
+    df.drop('column_name', axis=1, inplace=True)  #axis=1为列
     ```
 
 - 排序

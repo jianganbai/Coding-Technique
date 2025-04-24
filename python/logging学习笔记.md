@@ -17,7 +17,7 @@
   ```
 
 - `logging.basicConfig(filename, filemode, format, level)`
-
+  
   - filename: 要写入的日志文件
   - filemode: 'w'为覆盖写入，'a'为追加写入
   - format: 日志格式
@@ -29,7 +29,7 @@
     - `logging.DEBUG, logging.INFO, logging.WARNING`
 
 - 仅针对单记录器
-
+  
   - 无法同时写入日志和输出流
 
 ## 多记录器

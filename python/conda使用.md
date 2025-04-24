@@ -29,6 +29,14 @@
 - `conda env export > xxx.yaml`：将环境中安装的包及版本号导入xxx.yaml中
 - `conda env create -f xxx.yaml`：根据xxx.yaml安装相应conda环境
 
+## 换源
+
+- `conda config --show channels`：显示所有源
+
+- `conda config --remove channels [源url]`：删除源
+
+
+
 # Pip使用
 
 - conda环境中默认装pip，一般在conda环境中使用pip指令装库（更靠谱）

@@ -112,6 +112,29 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
     conf = OmegaConf.create({'key': '${plus_10:990}'})  # 调用plus_10函数，处理990 
     ```
 
+- `II`：引用尚未解析的配置
+  
+  - ```python
+    from omegaconf import OmegaConf, II
+    
+    config = OmegaConf.create({
+        "database": {
+            "host": "localhost",
+            "port": 5432,
+            "url": II("database.host:database.port")
+        }
+    })
+    print(config.database.url)  # 输出: localhost:5432
+    
+    config = OmegaConf.create({
+        "x": 10,
+        "y": 20,
+        "sum": II("x + y")
+    })
+    OmegaConf.resolve(config)  # 解析所有配置
+    print(config.sum)  # 输出: 30
+    ```
+
 - 说明
   
   - OmegaConf 仅在调用时才进行变量替换（如`conf.a`），刚读入/创建时不会

@@ -119,16 +119,24 @@
 - **chown命令**：改变文件所有者
   
   - `chown [参数] [所有者]:[所有用户组] file`：也可只给定所有者
+    - ```shell
+      chown 所有者 文件
+      # 查看用户组 cat /etc/group 每行为用户名:x:用户组
+      ```
   - 参数
     - `-R`：改变文件夹及子文件夹的所有文件的所有者
 
-### 查看资源
+### 硬件管理
+
+#### CPU
 
 - **lscpu命令**：查看cpu配置
 
 - `nproc --all`：cpu核数
 
 - **uptime命令**：查看机器负载情况
+
+#### 内存
 
 - **free命令**：查看内存配置，`free -m`or`free -g`
   
@@ -138,11 +146,20 @@
   - buff/cache：buffer是数据在磁盘块的形式，cache是给数据/文件做缓冲
   - available：可立即分配给进程使用的
 
+#### 硬盘
+
 - **df命令**：查看文件系统存储空间大小
   
   - `df -h`：查看文件系统总存储空间
   - `df -h 文件夹`：查看该文件夹对应挂载盘的存储空间大小
-  - 类似的命令：**lsblk命令**
+
+- **lsblk命令**：查看系统块设备（挂载情况）
+  
+  - 结果解读
+    
+    - | Name | MAJ:MIN  | RM        | SIZE | RO       | TYPE                | MOUNTPOINT |
+      |:----:| -------- | --------- | ---- | -------- | ------------------- |:----------:|
+      | 设备名称 | 主设备号次设备号 | 1可移动0不可移动 | 大小   | 1只读，0可读写 | disk磁盘part分区rom只读存储 | 挂载点        |
 
 - **du命令**：disk usage，显示磁盘空间的使用情况
   
@@ -154,9 +171,75 @@
     - `--exclude='*/'`：不统计符号链接
     - `--max-depth=<目标层数>`：指定最大统计层数
 
+- **udisksctl命令**：管理硬盘、USB等存储设备
+  
+  - `udisksctl status`：列出所有存储设备
+  - `udisksctl info -b /dev/sdb1`：查看设备的详细信息
+  - `udisksctl mount -b /dev/sdb1`：挂载设备
+  - `udisksctl unmount -b /dev/sdb1`：卸载已挂载的设备，但不弹出
+  - `udisksctl power-off -b /dev/sdb1`：弹出设备
+  - `udisksctl format -b /dev/sdb1`：格式化设备
+
+- **iostat命令**：查看系统的I/O情况
+  
+  - `iostat`
+    - `tps`：每秒传输次数（I/O 请求数）
+    - `kB_read/s`：每秒读取的数据量（KB）
+    - `kB_wrtn/s`：每秒写入的数据量（KB）
+    - `kB_read`：读取的总数据量（KB）
+    - `kB_wrtn`：写入的总数据量（KB）
+  - `iostat -x`：展示更详细的信息
+    - **r/s** 和 **w/s**：实际完成的读写请求数
+    - **rkB/s** 和 **wkB/s**：每秒读写的数据量
+    - **rrqm/s** 和 **wrqm/s**：合并的读写请求数（越大合并的越多）
+    - **%rrqm** 和 **%wrqm**：合并请求的比例（越大越好）
+    - **r_await** 和 **w_await**：读操作和写操作的平均等待时间
+    - **%util**：设备带宽利用率，接近 100% 表示磁盘接近满负荷运行
+  - `iostat -x 2 5`：每2秒刷新一次，共刷新5次
+  - `iostat -p sda -p sdb`：查看指定设备的I/O
+
+#### 显卡
+
 - `watch nvidia-smi`：nvidia-smi查看显卡使用，watch定期刷新
 
 - `gpustat -cpui`：查看显卡使用，需要用pip安装gpustat
+  
+  - 需要在conda环境中安装：`pip install gpustat`
+  - 参数
+    - `-c`：显示进程名（进程对应的命令）
+    - `-p`：显示进程号PID
+    - `-u`：显示进程调用者
+    - `-i`：周期性刷新
+
+#### 测试
+
+- **stress命令**：CPU，内存，硬盘压测
+  
+  - <img title="" src="imgs/2025-03-07-15-57-42-image.png" alt="" width="506">
+    
+    - `--cpu [个数]`：cpu压测，如计算平方根
+    
+    - `--vm [个数]`：内存压测，不断调用malloc和free
+      
+      - 常配合`--vm-bytes`和`--vm-hang`
+    
+    - `--io [个数]`：模拟I/O密集
+      
+      - 所有写任务：先写到内核缓冲区，再写入硬盘
+      
+      - 调用`sync()`函数，立即将内核缓冲区写入硬盘
+      
+      - 主要测试系统调用和内核操作，对硬盘实际写入少
+    
+    - `--hdd [个数]`：模拟硬盘读写（主要是写）
+      
+      - 写入当前目录，再删除（write & unlink）
+      
+      - 配合`--hdd-bytes [每个进程写入大小]`
+    
+    - `--timeout [秒数]`：此时间后结束测试（无论是否完成）
+
+### 进程管理
 
 - **ps命令**：查看进程统计信息（静态）
   
@@ -178,6 +261,10 @@
     - START：启动该进程的时间
     - TIME：该进程占用CPU时间
     - COMMAND：启动该进程的命令的名称
+  - ```shell
+    # -o 指定输出格式；--sort=-%cpu 按cpu占用比例倒序排序
+    ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu
+    ```
 
 - **top命令**
   
@@ -228,45 +315,11 @@
       ps -ef | grep {关键词} | grep -v grep | awk 'print $2' | xargs -i kill -9 {}
       ```
 
-- **gpustat**：比nvidia-smi更集成的gpu监视器
-  
-  - 提供利用率、显存、使用进程等信息
-  - 需要在conda环境中安装：`pip install gpustat`
-  - 命令：常用`gpustat -cpui`
-    - `-c`：显示进程名（进程对应的命令）
-    - `-p`：显示进程号PID
-    - `-u`：显示进程调用者
-    - `-i`：周期性刷新
-
 - **关机重启命令**
   
   - **shutdown命令**：`sudo shutdown [参数] 时间`关机
     - 时间：`now`：立刻关机；数字：等多少分钟关机
   - **reboot命令**：`sudo reboot`，重启
-
-- `netstat`：查看网络连接、端口占用
-  
-  - 参数
-    
-    - `-a`：查看所有正在使用和监听的端口
-    
-    - `-l`：查看所有正在监听的端口
-    
-    - `-t`：查看TCP连接
-    
-    - `-u`：查看UDP连接
-    
-    - `-n`：返回IP地址，不经DNS查找hostname
-    
-    - `-p`：显示pid
-    
-    - `-c`：不断刷新结果
-  
-  - 常用
-    
-    - ```shell
-      netstat -tuln  # 展示所有使用TCP和UDP协议监听的端口
-      ```
 
 - **time命令**：记录命令运行时间
   
@@ -286,8 +339,9 @@
     - `-L`：跟随symbolic link
   - 查找方式
     - `-type`：按类型查，`-type f`查找所有文件，`-type d`查找所有文件夹
-    - `-name`：按名字查找，**使用正则表达式时用双引号`""`框起来**
-    - `-iname`：按名字查找，不区分大小写
+    - `-name`：按文件名查找，**使用正则表达式时用双引号`""`框起来**
+    - `-iname`：按文件名查找，不区分大小写
+    - `-wholename`：按文件路径查找
     - `-inum`：按inode查找
     - `-mindepth`：从mindepth深度开始查找（`.`作为深度1）
     - `-maxdepth`：查找到maxdepth
@@ -320,15 +374,18 @@
   - `zip`：打包和压缩二合一
     - 打包压缩：`zip -rq xxx.zip xxx`，`-r`表示递归，`-q`表示安静操作
       - `-x file`：不打包指定文件；`-x dir/\*`：不打包指定文件夹
-    - 解压缩：`unzip xxx.zip`，`-d xxx`更换解压路径
+    - 解压缩：`unzip xxx.zip`
+      - `-d xxx`：更换解压路径
+      - `-q`：安静
   - `rar`
     - windows常用格式，linux上分别需要安装`rar`和`unrar`
     - 解压缩
       - `unrar l data.rar`：列出文件列表
       - `unrar x data.rar /path/to/destination`：解压缩
       - `unrar x data.part01.rar /path/to/destination`：自动将不同部分一起解压缩
-- 比较文件是否相同
+- **比较文件是否相同**
   - `md5sum [file]`：给出文件的md5编码值
+  - `sh256sum [file]`：给出文件的sha256编码值
   - `cmp [file1] [file2]`：若相同则无输出，若不同则输出第一个不同字节的位置
 - 其它
   - `cd ${dir}/../script`：进入dir上层文件夹中的script文件夹
@@ -430,6 +487,24 @@
   - `-d`：高亮变化
   
   - watch组合命令：通过管道组合，使用''框起命令，`watch "ls -l | grep .npy"`
+
+- **dd命令**：传输文件
+  
+  - `dd if=<输入文件> of=<输出文件> [选项]`
+    
+    - `bs=<字节数>`：每次读写的块大小
+    
+    - `count=<块数>`：指定要复制的块数
+    
+    - `skip=<块数>`：跳过输入文件开头的指定块数
+    
+    - `seek=<块数>`：跳过输出文件开头的指定块数
+  
+  - ```shell
+    dd if=/dev/sda of=/backup/sda.img bs=4M  # 备份磁盘内容
+    dd if=/dev/zero of=emptyfile bs=1M count=100  # 创建100MB的空文件
+    dd if=fileA of=/dev/null  # 从文件A读取数据并丢弃，可测试读取速度
+    ```
 
 ### 文本处理
 
@@ -632,6 +707,8 @@ ls -l | grep ^-  # 获得所有文件
   
   - `comm [-123] file1 file2`，`-1`不显示file1特有的，`-2`不显示file2特有的，`-3`不显示两文件共有的
 
+- **uniq命令**：
+
 - **读取文件**
   
   - ```shell
@@ -641,7 +718,9 @@ ls -l | grep ^-  # 获得所有文件
     done < $file  # 最后一行必为空行，否则会少读一行
     ```
 
-### 下载相关
+### 网络相关
+
+#### 下载
 
 - 包管理
   - Debian/Ubuntu: `apt-get`；Centos: `yum`
@@ -665,7 +744,7 @@ ls -l | grep ^-  # 获得所有文件
   - 使用
     - `curl -F "file=@/path/to/your/file" url`：下载文件
 
-### 网络相关
+#### 连接
 
 - **ssh命令**：通过ssh连接到服务器
   
@@ -720,6 +799,7 @@ ls -l | grep ^-  # 获得所有文件
     - `-t`：同步modify time（默认不同步）
     - `-I`：时间戳相同的不skip
     - `-v`：显示更多信息
+    - `-z`：压缩传输
     - `-l`：将软链接拷贝为软链接（默认不拷贝）；`-L`：拷贝软连接指向的文件
     - `-P`：等价于`--partial`和`--progress`
       - `--partial`：只传了一部分，连接断了，不删除文件，断点重传
@@ -728,6 +808,25 @@ ls -l | grep ^-  # 获得所有文件
       - 若ssh有参数：`-e 'ssh -i /home/xxx/.ssh/id_rsa'`指定用哪个ssh key
     - `--exclude '/dir/'`：不传输某文件夹
       - 若路径以`/`开始，则是相对于source路径
+    - `--dry-run`：模拟运行，不真实同步数据
+    - `--bwlimit=10000`：限制带宽为10MB/s
+
+#### 管理
+
+- `netstat`：查看网络连接、端口占用
+  
+  - 参数
+    - `-a`：查看所有正在使用和监听的端口
+    - `-l`：查看所有正在监听的端口
+    - `-t`：查看TCP连接
+    - `-u`：查看UDP连接
+    - `-n`：返回IP地址，不经DNS查找hostname
+    - `-p`：显示pid
+    - `-c`：不断刷新结果
+  - 常用
+    - ```shell
+      netstat -tuln  # 展示所有使用TCP和UDP协议监听的端口
+      ```
 
 ### 其它
 

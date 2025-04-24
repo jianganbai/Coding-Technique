@@ -24,15 +24,20 @@
 - `batch_size`：自动构建batch_sampler，给出list of batch indices
   - None表示Dataset打batch（拼成torch.tensor并pad）
 - `shuffle`：自动构建sampler来shuffle所有训练的index
-- `num_workers`：额外开多少个子进程加载batch，=0则主进程用于加载，>0则主进程不加载，在RAM中找子进程加载好的batch
-  - 适合map-style datset，直接根据index进行切分
+- `num_workers`：开多少个worker加载batch
+  - =0则主进程用于加载，>0则主进程不加载
+  - 主进程使用batchsampler将batch分配给worker
+  - worker以batch为单位读入RAM，至多预先读取`num_workers`个batch到RAM
+  - 主进程在RAM中找读入的batch，若未找到则等worker加载完成
 - `collate_fn`：将list of sample拼接成大tensor
+  - 由`num_workers`创建的子进程调用
+- DDP中，每个GPU进程各有1个dataloader
 
 ### Sampler
 
 - Dataset：读入所有数据，每个下标对应1个样本
 
-- Sampler: 给出所有用于训练的数据的下标，默认是[0, 1, 2, 3, ...]
+- Sampler: 给出样本的下标，默认是[0, 1, 2, 3, ...]
 
 - BatchSampler: 从Sampler给出的下标中，选出要合成1个batch的下标
   
@@ -42,6 +47,10 @@
         def __len__():
         def __iter__():
     ```
+  
+  - num_workers将样本读入内存
+  
+  - batchsampler决定dataloader从内存取哪些下标
 
 - DistributedSampler：DDP用的Sampler，只能用于Map-style dataset
   
@@ -332,6 +341,7 @@
   - 每个GPU分别进行前向
   - 各GPU通过Ring-Reduce机制同步梯度，边计算梯度边传梯度
     - Ring-Reduce：所有GPU串成1个环，每个GPU只与环路中下一个GPU通信，传完一圈就同步了梯度
+- 
 
 #### 同步
 
