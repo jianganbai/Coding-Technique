@@ -13,7 +13,7 @@
 
 - 适合查看、对比之前的commit
 - 查看整体commit tree
-  - <img title="" src="imgs/image-20240504151609379.png" alt="image-20240504151609379" style="zoom:20%;" align="left" width="474">
+  - <img title="" src="imgs/image-20240504151609379.png" alt="image-20240504151609379" style="zoom:20%;" align="left" width="464">
   - more里，可选择对比2个commit
 - 查看单个文件的修改记录
   - 选中文件，右键，Git: view file history
@@ -28,10 +28,10 @@
   - 比较2个commit: select for compare, compare with selected
   - interactive rebase：交互式选择rebase哪些修改
 - 右上角比较不同commit
-  - <img src="imgs/image-20240504152059744.png" alt="image-20240504152059744" style="zoom:15%;" align="left"/>
+  - <img title="" src="imgs/image-20240504152059744.png" alt="image-20240504152059744" style="zoom:15%;" align="left" width="281">
   - alt+点击，可选择比较哪个commit（默认是上一个）
 - 切换显示
-  - <img src="imgs/image-20240504152218572.png" alt="image-20240504152218572" style="zoom:70%;" align="left"/>
+  - <img title="" src="imgs/image-20240504152218572.png" alt="image-20240504152218572" style="zoom:70%;" align="left" width="362">
   - toggle file blame：显示每行是谁修改的
   - toggle file heatmap：代码左侧显示热力图，最近修改的为暖色
   - toggle file change：显示修改了什么
@@ -83,9 +83,15 @@
     }
     ```
 
+- debug脚本
+  
+  - ```shell
+    python -m debugpy --listen localhost:12221 --wait-for-client xxx.py [args]
+    ```
+
 - debug
   
-  - 先在命令行运行bash 脚本
+  - 先在命令行运行debug bash 脚本
   
   - 再使用`Python: Attach`模式开始调试
   

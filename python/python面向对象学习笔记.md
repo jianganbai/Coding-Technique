@@ -20,8 +20,16 @@
         def __init__(self, a):
             super().__init__(a)  # 父类构造函数
     ```
+
+- 访问类的所有属性
   
-  - 
+  - ```python
+    class A
+    
+    hasattr(A, 'B')  # 检查类A是否有方法B
+    vars(A)  # 等价于实例化后a.__dict__
+    dir(A)  # 类A所有属性和方法
+    ```
 
 ## 静态变量
 

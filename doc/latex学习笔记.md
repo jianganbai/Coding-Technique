@@ -143,7 +143,7 @@ Hello World!  % 正文放在document环境中
   
   - ```latex
     % 三线表
-    \usepackage{booktabs}
+    \usepackage{booktabs}  % 仅用booktabs即可绘制三线表，不需要threeparttable
     % \begin{tabular}之后
     \toprule  % 最上面的粗线
     % 第1行
@@ -163,7 +163,7 @@ Hello World!  % 正文放在document环境中
     % 对表格中需要加注释的地方标注
     \usepackage{threeparttable,booktabs}
     
-    % 三线表
+    % threeparttable用于给三线表添加注释
     \begin{threeparttable}  % 在\begin{table}和\begin{tabular}之间
     % \caption放在\begin{threeparttable}和\begin{tabular}之间
     % 需要注释的地方加上\tnote{1}

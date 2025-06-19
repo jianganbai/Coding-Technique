@@ -35,8 +35,6 @@
 
 - `conda config --remove channels [源url]`：删除源
 
-
-
 # Pip使用
 
 - conda环境中默认装pip，一般在conda环境中使用pip指令装库（更靠谱）

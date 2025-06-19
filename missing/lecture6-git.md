@@ -179,11 +179,24 @@
   - `git tag -d [标签名]`：本地删除标签
   - `git push origin :refs/tags/[标签名]`：本地删除标签后，删除远程的标签
 
+#### git worktree
+
+- `git worktree add <路径> <分支名>`：在新路径下打开新分支，不影响当前目录
+  
+  - 路径通常为`../xxx`，与当前目录同层级
+
+- `git worktree add <路径> <commit-hash>`：在新路径下检出历史提交
+
+- `git worktree add -b <新分支> <路径> <基础分支或提交>`：基于基础分支或者提交，在新路径下创建新分支
+
 ### 更新代码
 
 #### git fetch
 
+- `git fetch origin [远程分支]`：将远程分支下载到本地，不创建本地分支
+
 - `git fetch origin [远程分支]:[本地分支]`：将远程分支下载到本地分支，不进行merge
+  
   - 参数
     - `--unshallow`：下载全部历史
 
@@ -213,11 +226,7 @@
 
 #### git merge
 
-- `git merge`：合并分支（两支合并）
-  
-  - `git merge [分支名]`：将该分支合并入HEAD分支
-
-- 合并结果：`git merge dev`
+- `git merge [参数] <commit或分支>`：将该commit 或分支合并入HEAD分支
   
   - 无冲突：要求HEAD节点是dev节点的父节点
     
@@ -243,11 +252,17 @@
       - 然后`git commit`（老版git），或`git merge --continue`（新版git新增），继续合并
       - `git merge --abort`：返回merge前的状态，会丢掉未commit的信息
 
-- fast-forward
+- `git merge`参数
   
-  - 执行fast-forward，再删除临时分支后，分支树不会记录临时分支
+  - `--allow-unrelated-histories`：没有相同父节点的2个分支，默认无法合并；加上后，可合并
+  - `--no-commit`：执行合并操作，但不自动提交
+  - `--no-ff`：禁止fast-forward，强制创建merge commit
+
+- merge commit 与 fast-forward
   
-  - `git merge --no-ff -m "commit信息" [分支名]`：合并后的节点是1个新commit
+  - merge commit：将合并后的代码作为新节点提交
+    
+    - `git merge --no-ff -m "commit信息" [分支名]`：合并后的节点是1个新commit
     
     - ```shell
       *   e1e9c68 (HEAD -> master) merge with no-ff
@@ -256,10 +271,12 @@
       |/  
       *   cf810e4 conflict fixed
       ```
-
-- `git merge`参数
   
-  - `--allow-unrelated-histories`：没有相同父节点的2个分支，默认无法合并；加上后，可合并
+  - fast-forward：直接移动指针至最新的节点
+    
+    - 要求合并分支树上没有分叉，常见于快速修复等短期commit
+    
+    - 执行fast-forward，再删除临时分支后，分支树不会记录临时分支
 
 #### git rebase
 

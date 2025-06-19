@@ -193,7 +193,12 @@ df.set_index(索引列, inplace=True)  # 设置行名。inplace=True代表原地
 
 - 改变索引
   
+  - `df.index = ['a', 'b']`：直接修改索引
+  
+  - `df.set_index(col_name, drop=True, inplace=False)`：使用给定列作为索引
+  
   - `df.reset_index()`：重新更新索引，适合groupby操作
+    
     - `drop`：True则丢掉旧索引；False则将旧索引保存为新列
     - `inplace`：是否原地操作
 
@@ -304,7 +309,9 @@ a = pd.Series({'a': 1, 'b': 2, 'c': 3})
     a = pd.Series({'a': 1, 'b': 2, 'c': 3})
     b = pd.Series([1, 2, 3])
     a['a'] == 1  # 按索引值
-    assert b[1] = 2  # 按索引值  
+    a.loc['a'] == 1  # 按索引值
+    assert b[1] = 2  # 按索引值
+    a.iloc[0] == 1  # 按下标
     ```
 
 - 切片运算
@@ -324,6 +331,10 @@ a = pd.Series({'a': 1, 'b': 2, 'c': 3})
     for index, value in series.items():
         xxx
     ```
+
+- 其它
+  
+  - `series.index`：访问所有索引值
 
 ### 修改
 

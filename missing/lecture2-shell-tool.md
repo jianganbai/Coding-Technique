@@ -194,6 +194,7 @@
     - **rrqm/s** 和 **wrqm/s**：合并的读写请求数（越大合并的越多）
     - **%rrqm** 和 **%wrqm**：合并请求的比例（越大越好）
     - **r_await** 和 **w_await**：读操作和写操作的平均等待时间
+    - **rareq-sz**和**wareq-sz**：每次读操作和写操作的平均大小，单位为kB
     - **%util**：设备带宽利用率，接近 100% 表示磁盘接近满负荷运行
   - `iostat -x 2 5`：每2秒刷新一次，共刷新5次
   - `iostat -p sda -p sdb`：查看指定设备的I/O
@@ -264,6 +265,7 @@
   - ```shell
     # -o 指定输出格式；--sort=-%cpu 按cpu占用比例倒序排序
     ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu
+    ps -p <pid> -o lstart,cmd  # 显示进程的启动时间
     ```
 
 - **top命令**

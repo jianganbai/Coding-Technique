@@ -78,13 +78,19 @@
   - `tensor.unsqueeze(arg)`：在第arg维插入维度值为1
   - `a = a[None, :, :] `：None代表在此位置插入维度
 
-- Variable与Parameter
+- Variable, Parameter, Buffer
   
-  - Variable: 所有输入网络的tensor都会被自动包装为Variable
+  - Variable：所有输入网络的tensor都会被自动包装为Variable
     - 默认无梯度
-  - Parameter: 自动将tensor注册到网络中，默认有梯度，可进行反向创博
-  - **仅需要被更新的tensor才需要梯度**
+  - Parameter：计入网络参数，随网络移动和保存，默认有梯度，可进行反向传播
+    - **仅需要被更新的tensor才需要梯度**
     - 如果常量只是加入了计算图，则不需要梯度
+  - Buffer：随网络移动和保存，默认无梯度
+    - 随网络移动：调用`model.cuda()`会将所有buffer移动到GPU 上
+    - 随网络保存：调用`model.state_dict()`时会将所有buffer保存在硬盘中
+    - 使用DDP时，Parameter会自动被同步到不同GPU，但Buffer不会被自动同步
+    - Buffer适合创建后不修改、希望跟随网络移动保存的，如mask
+    - 创建：`self.register_buffer(name, tensor)`
 
 - Broadcast：两个矩阵按位置相乘，形状不需要完全等，可自动进行复制
   

@@ -12,7 +12,6 @@
   writer = SummaryWriter(comment='abc')  # 保存路径：runs/日期时间-abc
   ```
 
-
 ## 写入
 
 ### 标量
@@ -20,16 +19,16 @@
 - ```python
   writer.add_scalar(tag, scalar_value, global_step=None, walltime=None)
   ```
-
+  
   - tag: 曲线名；scalar_value：值
     - 数据名称可使用`/`分组：`data/scalar1`和`data/scalar2`为同一组
   - 仅相同数据名称，才画在一张图中
   - global_step：记录的step；walltime：记录发生的时间，默认为time.time()
-  
+
 - ```
   writer.add_scalars(总名, {单个数据名: 数据值}, 时间戳)
   ```
-
+  
   - 可绘在一张图中
 
 - ```python
@@ -61,7 +60,7 @@
 - ```python
   writer.add_graph(model, input_to_model=None, verbose=False, **kwargs)
   ```
-
+  
   - model: 待可视化的网络模型；`input_to_model`：待输入神经网络的变量或一组变量（tuple）
 
 ### 神经网络参数
@@ -70,18 +69,19 @@
   for name, param in resnet18.named_parameters():
       writer.add_histogram(name, param.clone().cpu().data.numpy(), n_iter)
   ```
-
+  
   - 记录网络各层的参数值，并进行可视化
 
 ### embedding
 
 - ```python
-  writer.add_embedding(mat, metadata, label_img)
+  writer.add_embedding(mat, metadata, label_img, global_step, tag)
   ```
-
-  - mat是2维待可视化的数据点：vec数*vec特征数
-  - metadata是每个数据点的标签，可在PCA图上显示，也可监督t-sne降维
-  - label_img是每个数据点的图片标记
+  
+  - `mat`：2维待可视化的数据点：vec数*vec特征数
+  - `metadata`：每个数据点的标签，可在PCA图上显示，也可监督t-sne降维
+  - `label_img`：每个数据点的图片标记
+  - `tag`：在TensorBoard 中显示的标签
 
 ## 查看
 

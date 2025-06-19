@@ -2,7 +2,9 @@
 
 - HuggingFace：将PLM封装为易调用的接口
 
-## pipeline
+## 代码
+
+### pipeline
 
 - 最高级的封装，扩展性差
   
@@ -31,9 +33,9 @@
 
 - 预训练参数默认保存在`C:\users\xxx\.cache\huggingface`或`~/.cache/huggingface`
 
-## Auto
+### Auto
 
-### AutoTokenizer
+#### AutoTokenizer
 
 - 将句子转化为token id序列，并加入特殊token
   
@@ -64,7 +66,7 @@
     ouput = model(all_ids, attention_mask=attention_mask)
     ```
 
-### AutoModel
+#### AutoModel
 
 - 加载预训练模型，输出embedding
   
@@ -80,7 +82,7 @@
     print(outputs.last_hidden_state.shape)  # torch.tensor类型
     ```
 
-### AutoModelForSequenceClassification
+#### AutoModelForSequenceClassification
 
 - 加载预训练模型，比`AutoModel`多引入了可训练的分类头，可输出分类头的
   
@@ -104,7 +106,7 @@
     optimizer.step()
     ```
 
-## Config
+### Config
 
 - config: 模型的所有超参数，如数据预处理、网络结构、训练超参数
   
@@ -134,7 +136,7 @@
     output = model(model_inputs)
     ```
 
-## datasets
+### datasets
 
 - HuggingFace Hub提供了很多训练数据集
   
@@ -187,7 +189,7 @@
                                   collate_fn=data_collator)  # 在DataLoader才做pad
     ```
 
-## Trainer
+### Trainer
 
 ```python
 from transformers import Trainer, TrainingArguments
@@ -236,11 +238,11 @@ metric.compute(preds, predictions.label_ids)
   - 适合写好了在多机多卡上运行，对ddp封装较好
   - 不适合不断改进，这种适合用pytorch写for循环
 
-## evaluate
+### evaluate
 
 - evaluate库：计算度量标注，需要自己实现预测logits
 
-## 完整训练代码
+### 完整训练代码
 
 ```python
 import evaluate
@@ -354,7 +356,7 @@ if __name__ == '__main__':
     C.train()
 ```
 
-## Adapter
+### Adapter
 
 ```python
 # 使用预训练RoBERTa，在烂番茄数据上微调情感分析任务
@@ -416,7 +418,9 @@ trainer.train()
 trainer.evaluate()
 ```
 
-## 科学上网
+## 使用
+
+### 科学上网
 
 - 目前国内无法直连到huggingface
 
@@ -452,3 +456,30 @@ trainer.evaluate()
     - 子文件夹名：相应commit的hash
     - 子文件夹内容：相应commit的文件，例如config.json, pytorch_model.bin
     - 与官网的一致，不需要修改名称
+
+### 模型下载
+
+- huggingface_hub：python代码
+  
+  - ```python
+    
+    import os
+    os.environ['HF-ENDPOINT'] = 'https://hf-mirror.com'
+    from huggingface_hub import snapshot_download
+    
+    # 下载整个模型仓库
+    snapshot_download(repo_id="bert-base-uncased")
+    
+    # 可以指定只下载某些文件
+    snapshot_download(repo_id="bert-base-uncased", allow_patterns=["*.json", "*.txt"])
+    ```
+
+- huggingface-cli：命令行下载
+  
+  - ```shell
+    # 安装huggingface_hub工具
+    pip install huggingface_hub
+    
+    # 下载模型
+    huggingface-cli download bert-base-uncased
+    ```
