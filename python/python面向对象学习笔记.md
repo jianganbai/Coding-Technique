@@ -110,7 +110,7 @@ def a(x):
   
   - 第1个参数为cls，代表类本身
   
-  - 可作为另一个构造函数
+  - 可作为另一个构造函数：例如`model.from_pretrained()`
     
     - ```python
       class YUE:  # 两个参数不同的构造函数

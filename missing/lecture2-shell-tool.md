@@ -95,6 +95,32 @@
     sudo usermod -a -G [用户组名] [用户名]  # 将用户追加到用户组里，-a为追加，-G为不改变用户原来的用户组
     ```
 
+- **passwd命令**：更改用户的登录选项
+  
+  - ```shell
+    sudo passwd [用户名]  # 修改指定用户的密码
+    sudo passwd -l [用户名]  # 锁定指定用户
+    sudo passwd -u [用户名]  # 解锁指定用户
+    sudo passwd -e [用户名]  # 要求用户下次登录时必须修改密码
+    ```
+  
+  - 离职员工账号处理：锁定账号、删除ssh 公钥、删除进程
+
+- **userdel命令**：删除用户
+  
+  - ```shell
+    sudo userdel [用户名]  # 保留用户家目录
+    sudo userdel -r [用户名]  # 同时删除用户家目录
+    sudo userdel -f [用户名]  # 即使用户已登录，也可删除
+    ```
+
+- **sudo权限相关**
+  
+  - ```shell
+    grep '^sudo:' /etc/group  # 查看所有具有sudo权限的用户
+    sudo gpasswd -d [用户名] sudo  # 将用户从sudo组移除
+    ```
+
 - **chmod命令**：改变文件的权限
   
   - `chmod [参数] [所有者权限][所有者所在组权限][其它用户权限] file`
@@ -305,11 +331,25 @@
 
 - **kill命令**：`kill [-signal] pid`，将信号量发送给对应pid的进程
   
-  - 默认发送15信号量，让进程优雅退出并释放资源
+  - 常用终止进程的信号量
+    
+    - SIGTERM (15)：默认终止信号，允许进程主动清理资源后退出（系统发送）
+    
+    - SIGKILL (9)：强制终止信号，进程无法捕获或忽略，立即终止
+    
+    - SIGINT (2)：中断信号（interrupt），通常由 Ctrl+C 触发（用户发送）
+    
+    - SIGQUIT (3)：退出信号，通常由 Ctrl+\ 触发，会产生核心转储文件（退出并记录现场）
+      
+      - SIGINT用于日常进程终止，SIGQUIT用于程序调试
+    
+    - SIGHUP (1)：挂起信号，常用于让进程重新读取配置文件，某些进程会以此终止
+      
+      - ctrl+z发送SIGTSTP，将当前进程暂停（挂起）并放入后台
   
-  - `kill pid1 pid2 pid3 pid4`：同时终止多个进程
+  - kill pid1 pid2 pid3 pid4：同时终止多个进程
   
-  - `kill -9 pid`：强制终止进程
+  - `kill -[信号量编号] pid`：向指定进程发送指定信号量，例如`kill -9 pid`强制终止进程
   
   - 删除特定进程
     

@@ -163,6 +163,16 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
     # EXTEND_UNIQUE：仅将没有的变量作为新的
     ```
 
+## 保存
+
+```python
+from omegaconf import OmegaConf
+cfg = OmegaConf.load("config.yaml")
+OmegaConf.save(cfg, "saved_config.yaml")
+```
+
+
+
 ## 其它
 
 - yaml语法

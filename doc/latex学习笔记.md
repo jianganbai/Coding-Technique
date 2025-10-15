@@ -11,7 +11,7 @@
 \documentclass[12pt, a4paper, oneside]{ctexart}  % 默认字体为12pt，A4纸，单面打印
 
 % 加载宏包
-\usepackage{amsmath, asthm, amssymb, graphicx}
+\usepackage{amsmath, amsthm, amssymb, graphicx}
 
 \title{文档标题}
 \author{jab}
@@ -56,8 +56,11 @@ Hello World!  % 正文放在document环境中
 \end{figure}
 ```
 
-- 建议将图片先转化为eps格式，再插入，jpg格式放大后不清晰
-  - windows下可使用latex自带的`bmeps -c [原图像名] [新图像名]`
+- 无损格式：png, pdf, eps
+  - png：位图，需要保证原图分辨率足够高，无损指的是无损压缩保存。无法框选图像中文字
+  - pdf：可框选图像中文字
+  - 转化为eps格式：windows下可使用latex自带的`bmeps -c [原图像名] [新图像名]`
+  - 不要使用jpg, jpeg等有损压缩格式
 - `\graphicspath{{imgs/}}`：指定从哪个文件夹中找图片
 
 ```latex
@@ -65,15 +68,16 @@ Hello World!  % 正文放在document环境中
 
 % 多幅图片，仅限并排
 \begin{figure}[h]
+    \centering
     \subfloat[子图名]{
         \includegraphics[width=0.45\linewidth]{a.eps}
         \label{fig:sub_a}
     }
-    \hfill
+    \hfill  % 水平填充
     \subfloat[子图名]{
         \includegraphics[width=0.45\linewidth]{b.eps}
         \label{fig:sub_b}
-    }
+    }  % 最后不需要添加\hfill
     \caption{Caption for this figure with two images}
     \label{fig:image2}
 \end{figure}
@@ -118,6 +122,8 @@ Hello World!  % 正文放在document环境中
   - `\cline{2-3}`：该行仅第2列到第3列有框线（从1开始算）
   
   - `\begin{table}`仅占用一栏，`\begin{table*}`占用整个页面宽
+  
+  - 对于列很多的表格，可在`\begin{tabular}`处用`*{列数}{格式}`表示将该格式重复n 次
 
 - 调整大小
   
@@ -173,13 +179,15 @@ Hello World!  % 正文放在document环境中
     \item[1] explanation.
     \end{tablenotes}
     % 也可以不加\tnote{}，然后在最后直接使用\item
+    \end{threeparttable}
     ```
 
 - 多行多列
   
   - ```tex
     % 多行：\multirow{合并的行数}{所占大小，默认为*（不加{}）}{文本}，需要\usepackage{multirow}
-    % 多行内换行：在文本出填上\shortstack{第1行\\ 第2行}
+    % 多行内换行：在文本处填上\shortstack{第1行\\ 第2行}
+    % \multirow{3}*[-0.5ex]{Model}：比竖直居中低0.5ex
     
     % 多列：\multicolumn{合并的列数}{对齐格式}{文本}
     % 被合并的位置需要用&空出，但不填东西
@@ -189,21 +197,37 @@ Hello World!  % 正文放在document环境中
 - 表格并排
   
   - ```tex
+    \usepackage{subcaption}
     \begin{table}
         \centering
-        \begin{subtable}[h]{0.45\textwidth}
+        \begin{subtable}0.45\textwidth}
             \begin{tabular}{cc}
                 train & result \\
                 0 & 0 \\
             \end{tabular}
         \end{subtable}
-        \begin{subtable}[h]{0.45\textwidth}
+        \begin{subtable}{0.45\textwidth}
             \begin{tabular}{cc}
                 train & result \\
                 0 & 0 \\
             \end{tabular}
         \end{subtable}
     \end{table}
+    ```
+
+- 表格内加颜色
+  
+  - ```latex
+    \usepackage[table]{xcolor}  % 调包
+    \textcolor{red!30}{xxx}  % 设置文本的颜色,!后为透明度
+    \cellcolor{red!30}xxx  % 设置单元格底色
+    ```
+  
+  - ```latex
+    \rowcolor{blue!20}  % 该行全部设置为浅蓝色
+    \begin{tabular}{>{\columncolor{red!20}}c>{\columncolor{blue!20}}c|c|}  % 设置整列颜色
+    % > 表示格式前缀，>{\columncolor{red!20}}c 表示该列为红色，居中对齐
+    >{\bfseries}c  % 该列自动加粗
     ```
 
 ### 列表
@@ -224,8 +248,12 @@ Hello World!  % 正文放在document环境中
     \item[(1)] 这是第一点; 
     \item[(2)] 这是第二点;
     \item[(3)] 这是第三点. 
-\end{enumerate}
+\end{enumerate} 
 ```
+
+- 注意事项
+  
+  - 列表、整行公式等块与前文之间不要空行，latex代码中可以用`%`让代码更简洁
 
 ### 定理
 

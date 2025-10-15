@@ -37,7 +37,7 @@
 
 ### 工作流程
 
-<img src="imgs/image-20240308224424426.png" alt="image-20240308224424426" style="zoom:60%;" align="left"/>
+<img title="" src="imgs/image-20240308224424426.png" alt="image-20240308224424426" style="zoom:60%;" align="left" width="524">
 
 #### 分支管理
 
@@ -377,7 +377,7 @@
   - 若不指定文件，则回退整个仓库
   - `git reset --soft HEAD^`：回退至上一次commit
   - reset类型
-    - `--hard`：删除所有修改，回滚至之前的代码（不推荐）
+    - `--hard`：删除所有修改，回滚至之前的代码，但不会丢弃未跟踪的文件
     - `--soft`：保留新代码，相当于撤销commit但不撤销add
     - `--mixed`：撤销add和commit
 
