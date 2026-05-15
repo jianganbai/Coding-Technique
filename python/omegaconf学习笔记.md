@@ -157,7 +157,7 @@ conf = OmegaConf.from_cli()  # 保存server.port和log.file 2个key
   - ```python
     from omegaconf import ListMergeMode
     
-    conf = OmegaConf.merge(base_cfg, model_cfg, list_merge_mode=ListMergeMode.EXTEND_UNIQUE)
+    conf = OmegaConf.merge(base_cfg, model_cfg, list_merge_mode=ListMergeMode.EXTEND_UNIQUE)  # 默认是用右边的覆盖左边
     # REPLACE：全部替换
     # EXTEND：全部作为新变量
     # EXTEND_UNIQUE：仅将没有的变量作为新的
@@ -170,8 +170,6 @@ from omegaconf import OmegaConf
 cfg = OmegaConf.load("config.yaml")
 OmegaConf.save(cfg, "saved_config.yaml")
 ```
-
-
 
 ## 其它
 
@@ -191,3 +189,7 @@ OmegaConf.save(cfg, "saved_config.yaml")
         - 2
       # 读取后：{'a': [1, 2]}
       ```
+
+- 复制：`cfg.copy()`，或`OmegaConf.create(OmegaConf.to_container(cfg))`
+
+- 删除：`del cfg['debug']`或`cfg.pop('debug')`，与dict 相同

@@ -47,15 +47,11 @@
 - 使用#注释一行
 - 使用三引号"""分别加在语句段前后注释掉整段
 
-**可在同一行中写下多条语句**
+**标准输入输出**
 
-![image-20201005214849199](C:\Users\jab\AppData\Roaming\Typora\typora-user-images\image-20201005214849199.png)
-
-**print输出**
-
-![image-20201005214948214](C:\Users\jab\AppData\Roaming\Typora\typora-user-images\image-20201005214948214.png)
-
-![image-20201005215003493](C:\Users\jab\AppData\Roaming\Typora\typora-user-images\image-20201005215003493.png)
+- `input()`：读到第1个'\n'，就返回
+	- 遇到`EOF`则会给出`EOFError`
+	- 若使用管道重定向给python的输入，则需要通过`EOF`判断
 
 ### 运算符
 
@@ -418,7 +414,7 @@ finally:  # 无论正常or错误，都会运行finally中的命令
 
 - `yield`函数
   
-  - yield返回生成器，
+  - 收到next()时，才开始执行，直到遇见yield。给出结果后阻塞，直到下一次next()
   
   - ```python
     def fab(max): 

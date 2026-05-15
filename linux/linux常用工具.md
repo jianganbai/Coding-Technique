@@ -109,6 +109,83 @@
 
 ### sox
 
-- `sox [音频路径] -n stat`：提取音频信息
-  - 仅提取时长：`sox [音频路径] -n stat | sed -n 's#^Length (seconds):[^0-9]*\([0-9.]*\)$#\1#p'`
-- `soxi [音频路径]`：提取音频信息
+- `sox`：音频处理（转换、编辑、特效）；`soxi`：查看音频信息
+
+- **sox用法**：`sox [输入文件] [输出文件] [特效参数]`
+
+- 格式转换：匹配文件后缀，自动进行
+
+- 特效
+  
+  - `sox loud.wav quiet.wav gain -3`：将音量降低3 dB
+  
+  - `sox input.wav -r 16000 output.wav`：改变采样率
+  
+  - `sox 第一段.mp3 第二段.mp3 合并后的文件.flac`：连接音频文件
+
+- 查看信息
+  
+  - `sox [音频路径] -n stat`：提取音频信息
+    
+    - 仅提取时长：`sox [音频路径] -n stat | sed -n 's#^Length (seconds):[^0-9]*\([0-9.]*\)$#\1#p'`
+  
+  - `soxi [音频路径]`：提取音频信息
+
+## 任务管理
+
+### task spooler
+
+- 轻量级任务队列管理软件
+  
+  - 按顺序自动执行队列中的任务，每次执行一个任务
+  
+  - 可动态添加和删除未执行的任务
+
+- 执行：Ubuntu用`tsp`，但有的Linux系统用`ts`
+  
+  - ```shell
+    tsp your command   # 添加任务到队列。命令直接粘在后面即可，无需引号查看
+    ```
+
+- 查看
+  
+  - ```shell
+    tsp -l  # 查看队列状态、任务id
+    tsp -c [任务id]  # 持续刷新该任务的stdout（实际通过cat stdout_file）
+    tsp -t [任务id]  # 查看任务输出的最后10行
+    tsp -p [任务id]  # 查看任务的pid
+    tsp -o [任务id]  # 查看任务的stdout_file
+    tsp -C  # 从队列中删除已完成任务的结果
+    ```
+  
+  - `tsp -l`
+    
+    - `E-Level`为执行状态：0为正常退出，1为异常退出，-1为正在进行或tsp丢失进程信息
+    
+    - `Times(r/u/s)`：`r`为总执行时间（单位为秒），`u`为用户态时间，`s`为内核态时间
+
+- 维护
+  
+  - ```shell
+    tsp -S [并行任务数]  # 设置并行任务数
+    tsp -u [任务id]  # 将任务标记为下一个优先执行
+    ```
+
+- 中止
+  
+  - ```shell
+    tsp -r [任务id]  # 移除未执行的任务（正在执行的无法移除）
+    tsp -k [任务id]  # 中止任务
+    tsp -K  # 中止tsp进程，移除队列中的所有任务，但正在执行的任务无法中止
+    ```
+
+- 技巧
+	- 环境变量
+		- `tsp CUDA_VISIBLE_DEVICES=1, 2 python a.py` 不能正确传给子进程，因为tsp 会把`CUDA_VISIBLE_DEVICES=1, 2` 当作命令
+		- ```shell
+		  # 法1
+		  tsp sh -c 'CUDA_VISIBLE_DEVICES=1,2 python a.py'
+		  # 法2：提交tsp命令之前定义环境变量，会被tsp进程继承
+		  export CUDA_VISIBLE_DEVICES=1,2
+		  tsp python a.py
+		  ```

@@ -68,11 +68,6 @@
 
 - 查看用户uid：`id -u`
 
-- 查看用户组
-  
-  - `cat /etc/group`：查看所有用户组
-  - `groups [用户名]`：查看用户所属用户组
-
 - 创建新用户
   
   - ```shell
@@ -82,18 +77,11 @@
     ```
 
 - **usermod命令**：改变用户的各项属性，`usermod [参数] [用户名]`
-  
-  - 参数
-    
-    - `-u 新id`：修改UID；`-d`：修改用户主目录
+	- `-u 新id`：修改UID；`-d`：修改用户主目录
     - `-g 新组`：修改用户主群组；`-G 新组`：修改用户附加群组
     - `-s 新shell`：修改用户登录shell；`-I 新用户名`：修改用户名
     - `-d 新目录`：修改用户主目录（一般再加上`-m`，移动之前的目录）
-    - `-L`：锁定用户；`-U`：解锁用户
-  
-  - ```shell
-    sudo usermod -a -G [用户组名] [用户名]  # 将用户追加到用户组里，-a为追加，-G为不改变用户原来的用户组
-    ```
+    - `-L`：锁定用户；`-U`：解锁用户  
 
 - **passwd命令**：更改用户的登录选项
   
@@ -105,6 +93,14 @@
     ```
   
   - 离职员工账号处理：锁定账号、删除ssh 公钥、删除进程
+
+- **用户组相关**
+	- `sudo groupadd [用户组]`：添加用户组
+	- `sudo usermod -a -G [用户组名] [用户名]`：将用户追加到用户组里
+		- `-a`为追加，`-G`为不改变用户原来的用户组
+	- `cat /etc/group`：查看所有用户组
+	- `groups [用户名]`：查看用户所属用户组
+	- `getent group [用户组]`：查看用户组有哪些用户
 
 - **userdel命令**：删除用户
   
@@ -148,6 +144,7 @@
     - ```shell
       chown 所有者 文件
       # 查看用户组 cat /etc/group 每行为用户名:x:用户组
+      # 或者通过groups user 
       ```
   - 参数
     - `-R`：改变文件夹及子文件夹的所有文件的所有者
@@ -170,6 +167,9 @@
   - Mem：物理内存；Swap：虚拟内存（存到硬盘）
   - total：总的；used：使用的；free：完全未被使用的；shared：被多个进程共享的内存
   - buff/cache：buffer是数据在磁盘块的形式，cache是给数据/文件做缓冲
+    - 从I/O读入的全放在Page Cache，后续可复用（所以服务器往往有大内存）
+    - 根据使用频次进行淘汰
+    - buff/cache 大小不固定，若free 不够了，可缩小buff/cache
   - available：可立即分配给进程使用的
 
 #### 硬盘
@@ -187,17 +187,36 @@
       |:----:| -------- | --------- | ---- | -------- | ------------------- |:----------:|
       | 设备名称 | 主设备号次设备号 | 1可移动0不可移动 | 大小   | 1只读，0可读写 | disk磁盘part分区rom只读存储 | 挂载点        |
 
-- **du命令**：disk usage，显示磁盘空间的使用情况
-  
-  - `du [-abcDhHklmsSx] [--exclude=<目录或文件>] [--max-depth=<目录层数>] [目录或文件]`
-    - `-a`：分别显示各个文件的大小
-    - `-d 1`：查询的最大深度
-    - `-s`：仅显示总和
-    - `-h`：以K/M/G显示，提升可读性
-    - `--exclude='*/'`：不统计符号链接
-    - `--max-depth=<目标层数>`：指定最大统计层数
+- **du命令**：disk usage，显示磁盘占用量（默认单位为kB）
+	- `du [-abcDhHklmsSx] [--exclude=<目录或文件>] [--max-depth=<目录层数>] [目录或文件]`
+		- `-a`：分别显示各个文件的大小
+		- `-d 1`：查询的最大深度
+		- `-s`：仅显示总大小（默认单独显示每个文件的大小）
+		- `-c`：显示完每个文件的大小后，最后显示总大小
+		- `-h`：以KB / MB / GB显示，提升可读性
+		- `--exclude='*/'`：不统计符号链接
+		- `--max-depth=<目标层数>`：指定最大统计层数
+		- `--apparent-size`：显示逻辑大小，不添加默认是硬盘实际存储量
 
-- **udisksctl命令**：管理硬盘、USB等存储设备
+- **mount命令**：挂载文件系统（硬盘分区、U盘、NAS等）到Linux目录树，需要sudo
+	- `sudo mount [-t 文件系统类型] [-o 选项] 设备源 挂载点`
+		- 文件系统类型：ext4, ntfs, nfs等
+		- 选项：`ro`只读
+		- 设备源
+			- 本地路径：根据`lsblk`查找，例如`/dev/sdh`
+			- NAS：`182.168.4.68:/mnt/data`
+			- 挂载点：本机文件夹，需要先创建该文件夹
+		- 开机自动挂载：在`/etc/fstab`中设置
+			- `192.168.4.68:/mnt/data /mnt/data nfs defaults 0 0`
+		- `mount -a`：将所有写在`/etc/fstab`中且未挂载的设备挂载上
+  
+  - **umount命令**：卸载，`sudo umount 挂载点`
+	  - `-l`：懒惰卸载，断开与文件树连接，等无进程访问时卸载
+  
+  - **showmount命令**：在NAS机头查看正在被哪些服务器挂载
+	  - 或者`ss -tn | grep :2049`：NFS服务默认监听2049
+
+- **udisksctl命令**：管理硬盘、USB等存储设备，面向用户，不需要sudo
   
   - `udisksctl status`：列出所有存储设备
   - `udisksctl info -b /dev/sdb1`：查看设备的详细信息
@@ -206,7 +225,7 @@
   - `udisksctl power-off -b /dev/sdb1`：弹出设备
   - `udisksctl format -b /dev/sdb1`：格式化设备
 
-- **iostat命令**：查看系统的I/O情况
+- **iostat命令**：查看每个设备的I/O情况
   
   - `iostat`
     - `tps`：每秒传输次数（I/O 请求数）
@@ -224,6 +243,95 @@
     - **%util**：设备带宽利用率，接近 100% 表示磁盘接近满负荷运行
   - `iostat -x 2 5`：每2秒刷新一次，共刷新5次
   - `iostat -p sda -p sdb`：查看指定设备的I/O
+  - 其他参数
+    - `-k`：以KB/s为单位；`-m`：以MB/s为单位
+    - `-z`：仅展示有读写的设备
+
+- **iotop命令**：查看所有进程的I/O情况，需要sudo
+  
+  - total disk read：系统整体的I/O速度，包括RAM cache
+    
+    - ```shell
+      sudo sync  # 强制系统缓冲区写入硬盘
+      sudo sh -c "echo 1 > /proc/sys/vm/drop_caches"  # 清除所有页缓存
+      sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"  # 清除所有页缓存+inodes
+      ```
+  
+  - current disk read：实际读硬盘的速度
+
+- **nfsiostat命令**：查看以NFS方式挂载的NAS的I/O情况
+  
+  - `nfsiostat 2`：每2秒更新1次；`nfsiostat 1 2`：每秒更新1次，共更新2次
+  
+  - `nfsiostat /mnt/Data-Server8`：只显示挂载在该路径的NAS
+  
+  - 返回值说明
+    
+    - `ops/s`每秒请求数；`rpc bklog`积压队列长度；`retrans`重传比率
+    
+    - `avg RTT`平均往返时间；`avg exe`平均执行时间（包括重传）
+  
+  - 可通过`/proc/self/mountstats`查看系统层对各个mount上的设备的I/O统计
+
+- **smartctl命令**：查看硬盘健康状态（SMART）
+  
+  - 用法：`smartctl [options] device`，必须指定设备（只能一个一个看）
+    
+    - device 指的是设备文件路径（通过`df -h`或者`lsblk`查看），而非挂载路径
+    
+    - Linux中，所有的硬件设备都表示为`/dev/`目录下的文件，例如`/dev/sda`, `/dev/nvme0`
+      
+      - `/dev/md*`：软件RAID；`/dev/sd*`：硬件RAID
+  
+  - 选项
+    
+    - `-i`：显示设备基本信息；`-H`：显示健康状态
+    
+    - `-a`：显示显示所有SMART信息；`-A`：显示属性表（部分SMART信息）
+    
+    - `-l error`：显示错误日志；`-l selfteset`：显示自检日志
+  
+  - 说明
+    
+    - 对于HDD：`VALUE`当前值，`WORST`历史最低值，`THRESH`阈值。所有值越大越好
+
+##### RAID
+
+- 常用RAID
+  
+  - RAID0：数据按条带交替存储在多块硬盘中，完全无冗余，利用率100%
+    
+    - 写入快，读取快
+  
+  - RAID1：数据全部镜像在2块盘。最少2块，利用率50%
+    
+    - 写入慢（写2个盘）；读取快（可并行读）
+  
+  - RAID5：条带式奇偶校验（分散在不同盘）。最少3块，利用率n/(n-1)
+    
+    - 写入略慢（要计算奇偶校验并写入）；读取快（可并行，但要计算奇偶校验，比RAID1慢）
+
+###### 软件RAID
+
+- 操作系统完成RAID功能
+
+###### 硬件RAID
+
+- `lspci | grep -i raid`：查看硬件RAID是哪个品牌的
+  
+  - LSI / Broadcom / Avago / DELL PERC：使用`storcli`或`megacli`
+  
+  - HP / HPE Smart Array：使用`ssacli`或`hpacucli`
+
+- **storcli命令**
+  
+  - `sudo storcli /c0 /v0 show`：`/c0`指第0个RAID卡，`/v0`指连到RAID卡的第0个RAID阵列
+    
+    - `sudo storcli show`：查看所有RAID卡和RAID阵列
+    
+    - `sudo storcli /c0 show all`：查看第0个RAID卡连着的所有RAID阵列
+  
+  - `sudo storcli /c0 show`：查看第0个RAID卡
 
 #### 显卡
 
@@ -357,11 +465,36 @@
       ps -ef | grep {关键词} | grep -v grep | awk 'print $2' | xargs -i kill -9 {}
       ```
 
+- **pkill命令**：`pkill [选项] <匹配条件>`，无需查找PID的kill
+  
+  - ```shell
+    pkill python  # 杀死所有包含python字符的进程（如python-app），可使用pgrep -l python 先查看会涉及哪些进程
+    pkill -x python3  # 只杀死进程严格等于python3的进程（不匹配python3.8等）
+    pkill -u www  # 杀死用户www的所有进程
+    pkill -u www php-fpm  # 杀死用户www名下的php-fpm进程
+    pkill -P 1234  # 杀死父进程ID为1234的所有子进程
+    ```
+  
+  - 其它参数
+    
+    - `-i`：忽略大小写；`-l`：显示杀死的进程
+
 - **关机重启命令**
   
-  - **shutdown命令**：`sudo shutdown [参数] 时间`关机
-    - 时间：`now`：立刻关机；数字：等多少分钟关机
-  - **reboot命令**：`sudo reboot`，重启
+  - **shutdown命令**：`sudo shutdown [参数] 时间 [警告信息]`
+    - 时间：`now` 立刻关机；`+5` 等5分钟关机；`10:25` 在当天10:25关机
+	    - 跨天则只能按总分钟数来
+    - `-r`：重启；`-c`：取消关机任务
+    - `-H`：关机但不关电源；`-P`：关机且关电源
+    - 说明
+	    - 新的shutdown任务会自动覆写之前的shutdown任务
+	    - 关机前5分钟阻止登录，广播消息
+  - **poweroff命令**：`sudo poweroff`
+    - shutdown会向所有用户广播，等待进程退出
+    - poweroff直接向硬件发送断电信号，适合紧急/测试
+  - **reboot命令**：`sudo reboot`，等价于`sudo shutdown -r`
+    - `sudo reboot -p`等价于`sudo poweroff`
+  - **wall命令**：向所有登录用户广播（一次），`sudo wall "System will reboot at 10:00"`
 
 - **time命令**：记录命令运行时间
   
@@ -376,19 +509,25 @@
 ### 文件相关
 
 - **find命令**：`find [参数] [查找路径] [查找方式]`
-  - 参数
-    - `-P`：不跟随symbolic link（默认）
-    - `-L`：跟随symbolic link
-  - 查找方式
-    - `-type`：按类型查，`-type f`查找所有文件，`-type d`查找所有文件夹
-    - `-name`：按文件名查找，**使用正则表达式时用双引号`""`框起来**
-    - `-iname`：按文件名查找，不区分大小写
-    - `-wholename`：按文件路径查找
-    - `-inum`：按inode查找
-    - `-mindepth`：从mindepth深度开始查找（`.`作为深度1）
-    - `-maxdepth`：查找到maxdepth
-    - `-print`：打印查找结果；`-quit`：找到第1个结果就结束
+	- 参数
+		- `-P`：不跟随symbolic link（默认）
+		- `-L`：跟随symbolic link
+	- 查找方式
+		- `-type`：按类型查，`-type f`查找所有文件，`-type d`查找所有文件夹
+		- `-name`：按文件名查找，**使用正则表达式时用双引号`""`框起来**
+		- `-iname`：按文件名查找，不区分大小写
+		- `-wholename`：按文件路径查找
+		- `-inum`：按inode查找
+		- `-mindepth`：从mindepth深度开始查找（`.`作为深度1）
+		- `-maxdepth`：查找到maxdepth
+		- `-print`：打印查找结果；`-quit`：找到第1个结果就结束
+	- 其它
+		- `--exec [命令] \;`：对找到的文件分别执行
+			- 例：`--exec rm {}`, `--exec du -ch {} \;`
+			- `\;`表示命令结束
+
 - **ln命令**`ln [参数] [目标文件或目录] [链接入口]`，创建link
+  
   - 参数`-s`：使用symbolic link，不加则使用hard link
     - 硬链接：无文件，相同inode（不能跨文件系统）
       - `ls -i`：查看inode编号
@@ -396,17 +535,51 @@
     - 软连接：文件中写目标路径
   - 文件夹必须使用symbolic，且ln自动创建入口文件夹，不能先mkdir再ln
     - 可通过`realpath .`获得链接真实路径
+
 - **less命令**：显示文件，类似vim，比cat更强大，**不打开全部文件**
+
 - 参数：`-N`：显示行号
+  
   - 操作：上下滑动翻页，`g`跳到开头，`G`跳到结尾，`q`退出
+
 - **more命令**：翻页查看输出，例如less命令与`cat xxx | more`命令类似
+  
   - more命令需要先读完整个文件
-- **lsof命令**：查看哪些文件被哪些进程使用
+
+- **fuser命令**：查看某路径正在被哪个进程使用
+  
+  - 参数
+    
+    - `-v`：显示具体信息；`-u`：指定用户
+    
+    - `-m`：查找该路径下**任意子文件&子目录**被使用情况
+    
+    - `-k`：中止所有使用的进程，默认发送SIGKILL；`-i`：交互式删除
+    
+    - `--SIGNAL [signal]`：指定删除信号
+  
+  - **Linux系统一切皆文件**，可使用`fuser`排查设备使用
+    
+    - NVIDIA GPU 挂载在`/dev/nvidia*`
+      
+      - `/dev/nvidia0`：0号卡；`/dev/nvidia1`：1号卡
+      
+      - `/dev/nvidiactl`：总控制入口；`/dev/nvidia-uvm`：让CPU和GPU共享虚拟地址空间
+    
+    - 使用`sudo fuser -u [用户] -v /dev/nvidia*`查找用户所有占用GPU的进程
+      
+      - 可用于父进程被意外结束，但子进程仍未释放GPU，显示no such process
+
+- **lsof命令**：查看文件被哪些进程使用，相比于`fuser`查的更全
+  
   - Linux中的程序都是文件
+    - NVIDIA GPU的路径：`/dev/nvidia{gpu_id}`
   - 参数
     - `-u 用户名`：查看单个用户打开的文件
     - `-i 4`：查看IPv4所有打开的网络文件
+
 - **打包压缩**
+  
   - `tar.gz`：tar用于打包，gzip用于压缩
     - linux系统上最常用的打包压缩工具
     - 打包压缩：`tar -czvf xxx.tar.gz file1 file2 file3`
@@ -425,11 +598,15 @@
       - `unrar l data.rar`：列出文件列表
       - `unrar x data.rar /path/to/destination`：解压缩
       - `unrar x data.part01.rar /path/to/destination`：自动将不同部分一起解压缩
+
 - **比较文件是否相同**
+  
   - `md5sum [file]`：给出文件的md5编码值
   - `sh256sum [file]`：给出文件的sha256编码值
   - `cmp [file1] [file2]`：若相同则无输出，若不同则输出第一个不同字节的位置
+
 - 其它
+  
   - `cd ${dir}/../script`：进入dir上层文件夹中的script文件夹
   - `echo ${file/\.flac/.wav}`：修改文件路径中的扩展名，从flac改成wav
 
@@ -651,7 +828,6 @@ ls -l | grep ^-  # 获得所有文件
         a=100
         awk -v b="$a" '{print $b}'  # 使用外部变量赋值，打印第100项
         ```
-      - 
   - 匹配条件可采用正则表达式，`/正则表达式/`
 
 - 打印

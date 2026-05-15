@@ -36,13 +36,15 @@
 
 - ```python
   fig = plt.figure(figsize=(width, height))
-  ax = fig.subplots(2, 2)
+  ax = fig.subplots(2, 2)  # 如不需要设置图片大小，可通过`fig, ax = plt.subplots(2, 2)`直接设置
   # [行编号, 列编号]
   ax[0, 1].plot(x, y, s=s, c=c, marker='x')  # s是标点的大小，c是颜色
   ax[0, 1].set_xlabel('x')
   ax[0, 1].set_title('...')
   ax[0, 1].set_yscale('log')  # y轴设置为对数坐标
   ax[0, 1].legend()  # 图例
+  ax[0, 1].grid(True)  # 网格
+  fig.suptitle('aaa')  # 设置整个图的标题
   ```
 
 ## librosa & plt

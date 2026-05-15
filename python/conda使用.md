@@ -18,11 +18,17 @@
 
 ## 修改
 
-- `conda install --name env_name package_name` #在指定环境中安装包
 - `conda rename --name old_env_name new_env_name`  # 修改环境名
 - `conda remove --name env_name package` #删除指定环境中的包
 - `conda remove --name env_name --all` # 删除整个环境 
 - `conda remove package` #删除当前环境中的包
+
+## 安装
+
+- `conda install --name env_name package_name` #在指定环境中安装包
+  - `-c conda-forge`：优先从conda-forge 频道下载，不行的话再从默认频道下载
+  - `--dry-run`：模拟安装过程
+  - `--strict-channel-priority`：严格从`-c`指定的频道下载，不会从默认频道下载
 
 ## 导出
 

@@ -12,7 +12,7 @@
 
 ## 语法
 
-### `argparse.ArgumentParser()`
+### argparse.ArgumentParser()
 
 - 例化时可加入参数
   
@@ -45,12 +45,22 @@
   **allow_abbrev** - Allows long options to be abbreviated if the abbreviation is unambiguous. (default: True)
   ```
 
-### `parser.add_argument()`
+### parser.add_argument()
 
 - 提供从命令行中分析的属性
-- `ArgumentParser.add_argument(name or flags...[, action][, nargs][, const][, default][, type][, choices][, required][, help][, metavar][, dest])`
+
+- ```python
+  ArgumentParser.add_argument(
+      name or flags...
+      [, action][, nargs][, const][, default][, type]
+      [, choices][, required][, help][, metavar][, dest]
+  )
+  ```
+  
   - 增加属性时，仅`name or flags`不可缺省，其余均可缺省
+
 - `name or flags`为分析命令行时该属性的名称
+  
   - 不加`-`代表不可缺省的属性（该属性在命令行中不可出现），加`-`或`--`代表可缺省的属性（`-`一般为简写，`--`一般为全名）
   - 不可缺省的属性：
     - 命令行输入时不需要在值前面加上`--属性名`
@@ -58,27 +68,57 @@
     - 引用`--ground-truth`时，采用`args.ground_truth`
   - 可缺省的属性：
     - 命令行输入的格式为**属性名 属性值**
+
 - `action`为用于简单处理命令行参数的内置函数
+  
   - `action='store_true'`：只要出现了可缺省属性的名字，则该属性记为True，一般与`default`配合
   - `action='store_false'`：只要出现了可缺省属性的名字，则该属性记为False
   - `action='append'`：允许某属性出现多次，将多次出现结果合并为列表并返回
   - `action='store_const'`：只要出现了可缺省属性的名字，则该属性赋值为`const`
+
+- `nargs`：接收参数列表
+  
+  - ```python
+    parser.add_argument('--files', nargs='+', help='文件列表')  # 单个参数接收多个值
+    parser.add_argument('--coord', nargs=2, metavar=('X', 'Y'), help='坐标值')  # 固定数量的值
+    # 命令行 python x.py --files a.csv b.csv --coord 1 2  # 空格隔开不同参数
+    ```
+
 - `const`与`action='store_const'`相结合
+
 - `default`为该属性在命令行中缺省时的默认值
+
 - `choices`为该属性所有可取的值，不在其中则报错
+
 - `required`为该参数是否能被省略
+
 - `help`为该属性的功能，使用-h显示帮助时会显示出来
+
 - `dest`为该属性存储在分析结果对象`args`中的名称
+
 - `metavar`：输入-h参数后，变量名使用metavar对应的值替代
+
 - 基础属性`-h`：显示帮助
 
-### `args = parser.parse_args()`
+### args = parser.parse_args()
 
 - 括号缺省则分析命令行，括号内部可填上带有切分成参数的列表，这样就分析这个列表
   - 命令行的构成为`python [文件名] [参数]`，这里跳过前2个参数，直接分析命令行后面的参数
   - 指定参数的例子：`args = parser.parse_args('1 2 3 -foo 4'.split())`
 - `args`为带有分析结果的对象
   - 访问对象中的数据时，直接用`args.dest`，`dest`为之前指定的名称，未指定则用原始的`name or flags`
+
+### 其它
+
+- 互斥参数
+  
+  - ```python
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--json', action='store_true')
+    group.add_argument('--xml', action='store_true')
+    ```
+
+- 报错：`parser.error(报错信息)`
 
 ## 使用
 

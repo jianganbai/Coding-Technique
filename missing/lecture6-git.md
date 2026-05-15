@@ -63,10 +63,19 @@
 #### 具体场景
 
 - 对已有分支修改：先创建新分支，修改后commit，再merge进已有分支，最后删除新分支
+  
   - merge之前不直接修改已有分支，更安全
+
 - 若本地有修改，remote又有人修改
+  
   - 则先把本地commit，然后把remote的代码pull下来
   - 视需求，采用merge或rebase
+
+- 修改并merge别人分支
+  
+  - 先创建临时分支，在临时分支里逐步merge，再修改
+  
+  - 最后`git merge`或者`git merge --squash`回原分支
 
 ## 语法
 
@@ -118,15 +127,18 @@
 #### git checkout
 
 - `git checkout [name]`：切换进名为name的分支
-  - `checkout`将`HEAD`指针移动到某个分支
-  - `git checkout [hash]`：输入某个节点的hash值（可只输入前缀），切换至该节点
-  - `git checkout -b [name]`：创建名为name的分支并切换进
-  - `git checkout -b [name] origin/main`：创建新分支，并从`origin/main`下载代码至该分支
+	- `checkout`将`HEAD`指针移动到某个分支
+	- `git checkout [hash]`：输入某个节点的hash值（可只输入前缀），切换至该节点
+	- `git checkout -b [name]`：以当前分支为基础，创建名为name的分支，并切换进
+	- `git checkout -b [name] [branch_name]`：以指定分支为基础，创建名为name的分支，并切换进
+	- `git checkout -b [name] origin/main`：创建新分支，并从`origin/main`下载代码至该分支
+	- 其它参数
+		- `--orphan`：创建新孤儿分支，无任何历史记录
 - `git checkout [commit hash]`：`HEAD`切换到某commit
-  - 若未修改，`git checkout [分支名]`切换到该分支的头部
+	- 若未修改，`git checkout [分支名]`切换到该分支的头部
 - `git checkout [commit] -- [文件]`：将文件回退至指定commit
-  - 若未指定文件，则回退整个仓库
-  - 若未指定`commit`，则回退至最近的`git commit`或`git add`
+	- 若未指定文件，则回退整个仓库
+	- 若未指定`commit`，则回退至最近的`git commit`或`git add`
 - `git rev-parse [指针名]`：给出该指针指向commit的hash
 
 #### git switch
@@ -144,6 +156,8 @@
 - `git log`：给出文字版的提交记录
   - `git log --all --graph --decorate`
   - `git log --all --graph --decorate --oneline`
+  - `git log main..dev --oneline`：找出dev分支存在，但main分支不存在的commit
+    - 等价于`git log dev --not main --oneline`
 
 #### git diff
 
@@ -169,6 +183,7 @@
     - 缺失`[commit]`则默认为`HEAD`
 - 处理tag
   - `git show [标签名]`：展示该标签对应的commit
+  - `git checkout [标签名]`：将代码回退至指定tag
   - `git tag`：展示所有tag
     - `-n1`：同时展示说明
   - `git push origin [标签名]`：将本地指定标签同步到远程
@@ -181,13 +196,28 @@
 
 #### git worktree
 
-- `git worktree add <路径> <分支名>`：在新路径下打开新分支，不影响当前目录
-  
-  - 路径通常为`../xxx`，与当前目录同层级
+- 功能：不同目录下展示多个分支的代码，但复用1个`.git`
+	- 传统方式下，要对比多个分支，需要分别`git clone`
+	- 问题：多次下载`.git`；必须通过远程才能merge
+	- worktree使得可以在不同目录同时修改多个分支，然后本地直接merge
 
-- `git worktree add <路径> <commit-hash>`：在新路径下检出历史提交
+- `git worktree add <路径> <分支名>`：在新路径下检出指定分支
+	- 检出：找到指定commid hash的压缩包，解压缩出相应文件
+	- 路径通常为`../xxx`，与当前目录同层级
+	- 新路径下的`.git`为旧路径的链接
 
-- `git worktree add -b <新分支> <路径> <基础分支或提交>`：基于基础分支或者提交，在新路径下创建新分支
+- 其它操作
+	- `git worktree add -b <新分支名> <路径> <基于的分支>`：先创建新分支，再检出worktree
+	- `git worktree add --detach <路径> <commit-hash>`：基于特定commit创建
+
+- 同一分支仅能有1个worktree
+	- 若从当前分支检出，则原路径的HEAD指针指向最新commit
+	- 分支名变为"detach from branch A"
+
+- 清理
+	- `git worktree remove <路径>`：清除worktree
+		- 不能使用`rm -rf`，否则原路径下的`.git`始终保留该worktree的信息
+	- `git worktree prune`：若用了`rm -rf`，则需手动prune，清理`.git`文件夹
 
 ### 更新代码
 
@@ -255,8 +285,10 @@
 - `git merge`参数
   
   - `--allow-unrelated-histories`：没有相同父节点的2个分支，默认无法合并；加上后，可合并
-  - `--no-commit`：执行合并操作，但不自动提交
+  - `--no-commit`：修改+暂存，不commit（merge）
+    - 若希望只修改，不暂存，可先`git merge --no-commit`再`git reset`
   - `--no-ff`：禁止fast-forward，强制创建merge commit
+  - `--squash`：将所有commit合在一起merge
 
 - merge commit 与 fast-forward
   
@@ -287,10 +319,12 @@
 
 #### git cherry-pick
 
-- `git cherry-pick [commit]`：将1个分支的部分改动，更新到另1分支
+- `git cherry-pick [commit]`：将1个分支的指定commit，更新到另1分支（不是merge）
   - 将指定commit的改动，更新到当前分支
+    - commit tree上不会显示2个分支发生了merge
   - 若出现冲突，则类似于`git merge`，需要手动解决冲突
     - 解决完后，先`git add [有冲突文件]`，再`git checrry-pick --continue`
+  - `git cherry-pick --no-commit [commit]`：修改放置在暂存区，不commit
 
 ### 本地缓存
 
@@ -315,8 +349,8 @@
 #### git restore
 
 - `git restore`：丢弃unstaged的修改
-  - `git restore [file]`：丢弃file中的修改
-  - `git restore --stage [file]`：将加入staged zone的文件移除
+	- `git restore [file]`：丢弃file中的修改
+	- `git restore --stage [file]`：将加入staged zone的文件移除
 
 ### 提交相关
 
@@ -337,8 +371,12 @@
 #### git commit
 
 - `git commit`：将`staged zone`提交至库中
-  - 若`git add`后又有修改，但没有add，则`git commit`不会提交未stage的修改
-  - `git commit -m "xxx"`：直接将xxx作为提交信息
+	- 若`git add`后又有修改，但没有add，则`git commit`不会提交未stage的修改
+	- `git commit -m "xxx"`：直接将xxx作为提交信息
+
+- `git commit --amend`：修补上一次的commit（未推到远程）
+	- 修正commit信息：执行命令后直接跳转到vim，在vim修改即可
+	- 修改代码：先把所有修改stage，然后执行amend命令
 
 #### git push
 
@@ -354,7 +392,7 @@
 
 - 参数
   
-  - `-f`：使用本地分支强行覆盖远程分支（不推荐）
+  - `-f`或`--force`：使用本地分支强行覆盖远程分支
   - `-u`：推送到远端新分支
   - `--all`：推送所有本地分支，但不推送tags，不删本地没有的远程分支
     - 不加`--all`，只推送当前branch 未push的commit
@@ -373,35 +411,41 @@
 #### git reset
 
 - `git reset [reset类型] [commit] [文件]`：回退到指定commit
-  
-  - 若不指定文件，则回退整个仓库
-  - `git reset --soft HEAD^`：回退至上一次commit
-  - reset类型
-    - `--hard`：删除所有修改，回滚至之前的代码，但不会丢弃未跟踪的文件
-    - `--soft`：保留新代码，相当于撤销commit但不撤销add
-    - `--mixed`：撤销add和commit
+	- 不指定文件，则回退整个分支；不指定commit，则只移动到上一个commit
+	- `git reset --soft HEAD^`：回退至上一次commit
+	- reset类型
+	    - `--hard`：删除所有修改，回滚至之前的代码，但不会丢弃未跟踪的文件
+	    - `--soft`（默认）：保留新代码，相当于撤销commit但不撤销add
+	    - `--mixed`：撤销add和commit
+
+- 常用
+	- `git reset`：将stage zone全部移出
+	- `git reset --merge HEAD~1`：撤销错误的merge
 
 - `git reset`和`git revert`
-  
-  - 相同点：都能回退代码
-  
-  - 不同点
-    
-    - `git reset`：将之前的commit从branch移出
-    
-    - `git revert`：回退后以新commit提交，保留回退的commit
+	- 相同点：都能回退代码
+	- 不同点
+		- `git reset`：将之前的commit从branch移出
+		- `git revert`：回退后以新commit提交，保留回退的commit
 
 #### git revert
 
-- `git revert [commit]`
-  
-  - 将代码回退到指定commit，以新commit提交，保留全部commit历史
-  
-  - 若存在冲突，则手动解决，最后`git revert --continue`
+- `git revert [commit_hash]`
+	- 将代码回退到指定commit，以新commit提交，保留全部commit历史
+	- 若存在冲突，则手动解决，最后`git revert --continue`
+	- `git revert --no-commit`回退但不提交，可手动修改再commit
 
 #### git restore
 
 - `git restore --stage [不想提交的文件]`：将文件从stage区移出，但不修改文件
+
+#### git clean
+
+- 清理工作区
+  
+  - `-f`：删除未跟踪的文件；`-d`：同时删除未跟踪的目录；`-x`：同时删除.gitignore忽略的文件
+  
+  - `-e xxx.txt`：删除指定扩展名的文件
 
 #### 其它
 
@@ -434,7 +478,33 @@
 - reset远程：先在本地reset，然后`git push -f origin [分支名]`
 - 远程的2个分支合并：pull request
 
+### 维护
+
+#### git gc
+
+- `git gc`：回收悬空对象（reset, rebase 时可能会出现）
+  
+  - 通常是git 达到阈值后自行运行
+  
+  - `git gc --force`：强制回收；`git gc --prun=now`：立刻清理
+
 ## 场景
+
+### DCASE协作开发
+
+- 先把2个分支pull 到本地，更新被merge的分支
+
+- 再`git merge --no-commit`，然后取消所有stage，手动修改
+
+### 回退远端
+
+- 法1：本地先`git reset`回退到之前版本，修改并commit，再`git push --force`
+
+- 法2：本地先修改，然后`git commit --amend`将修改与上一次修改合并，再`git push --force`
+
+- 法3：本地`git revert hash`，提交一个撤销上次commit的commit，再修改，commit后直接push
+  
+  - 优点：安全；缺点：永久保留错误提交和revert记录
 
 ### 迁移仓库
 

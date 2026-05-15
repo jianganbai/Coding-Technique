@@ -37,13 +37,15 @@ Hello World!  % 正文放在document环境中
 - htbp
   - `h`：当前位置；`t`：页面最上方；`b`：页面最下方；`p`：文档最后
     - 对`table*`和`figure*`，仅`t`和`p`有效果
+    - 若希望`b`对`table*`和`figure*`有效果，需要引入`\usepackage{stfloats}`
   - ！：忽略其它内部要求；H：准确地放在文本中的位置（`\usepackage{float}`）
     - ht：优先放在当前页面的上部，若不满足则顺延到下页上部
 - 基础技巧
   - 靠左=>靠右：`\usepackage[export]{adjustbox}`，然后在引用图像时加入`[width=0.5\textwidth, right]`
-- 宽度
-  - `\textwidth`: 整行宽；`\pagewidth`：包含页边宽度，比`\textwidth`大
+- 宽度 & 高度
+  - `\textwidth`: 文本区域宽（去掉左右边距）；`\pagewidth`：包含页边宽度，比`\textwidth`大
   - `\linewidth`: 目前环境的宽（在box中就是box的宽度）；`\columnwidth`：栏宽
+  - `\textheight`：文本区域高
 
 ### 图片
 
@@ -79,7 +81,7 @@ Hello World!  % 正文放在document环境中
         \label{fig:sub_b}
     }  % 最后不需要添加\hfill
     \caption{Caption for this figure with two images}
-    \label{fig:image2}
+    \label{fig:image2}  % \label 需要放在\caption 之后
 \end{figure}
 ```
 
@@ -139,8 +141,12 @@ Hello World!  % 正文放在document环境中
     \endgroup
     
     % 进一步压缩行间距，在\begin{table}和\begin{tabular}之间
-    % 保持比例压缩/放大
+    % adjustbox 可进行缩放、旋转、裁剪，依赖于额外的adjustbox包
     \adjustbox{max width=\textwidth}{  % 也可换成width=，强制调整至给定大小
+    \begin{tabular}
+    }
+    % resizebox 仅能用于缩放，依赖于graphicx包
+    \resizebox{\linewidth}{!}{  % 保持长宽比缩放
     \begin{tabular}
     }
     ```
@@ -426,6 +432,7 @@ $E=mc^2$
 
 - `%`：注释
 - 省略号：`\cdots`：横向居中省略号；`\vdots`：竖向省略号；`\ddots`：对角线向省略号
+- 双引号：左引号用\`\`，右引号用''
 
 ### 字体
 
@@ -495,7 +502,6 @@ $E=mc^2$
     \end{minipage}
     ```
   
-  - 
 
 ## 操作
 

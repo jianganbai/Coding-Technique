@@ -10,7 +10,8 @@
 
 - ```python
   import logging
-  logging.basicConfig(filename='example.log', level=logging.DEBUG)
+  logging.basicConfig(filename='example.log', level=logging.DEBUG)  # 写入文件
+  # logging.basicConfig(level=logging.INFO, stream=sys.stdout)  # 写入命令行
   logging.debug('This message should go to the log file')
   logging.info('So should this')
   logging.warning('And this, too')
@@ -28,9 +29,7 @@
   - level: 写入日志的最低级别
     - `logging.DEBUG, logging.INFO, logging.WARNING`
 
-- 仅针对单记录器
-  
-  - 无法同时写入日志和输出流
+- 仅为单记录器，无法同时写入日志和输出流
 
 ## 多记录器
 
@@ -54,3 +53,9 @@
 - formatter：将handler的消息，格式化写入日志
   - `formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')`
     - asctime是时间，name是logger名字，levelname是日志级别，message是消息
+
+## 多进程
+
+- 需要在全局配置好logging
+
+- 所有进程都可写入同一文件

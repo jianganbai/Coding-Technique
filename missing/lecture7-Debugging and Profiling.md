@@ -58,10 +58,22 @@
 
 - 能一行一行地分析性能
 - 安装：`pip install line_profiler`
-- `kernprof`
+- 命令行调用：`kernprof`
   - `kernprof -l -v xxx.py`
     - 分析结果默认写入aaa.py.lprof文件，加入`-v`参数是为了在命令行显示
   - 需要在代码头部写上`@profile`装饰器
+  - 无法使用`-m`以module 形式运行程序，需要通过环境变量告知路径`PYTHONPATH=/home/xxx/yyy`
+- 代码使用
+  - ```python
+    from line_profiler import LineProfiler
+    lp = LineProfiler()
+    @lp  # 通过装饰器包装
+    def a(b, c):
+    # 待分析的函数
+    lp.enable_by_count()
+    a(b, c)  # 调用函数
+    lp.print_stats()
+    ```
 
 ### memory_profiler
 

@@ -7,6 +7,8 @@
   
   for i in tqdm(range(10)):
       # do something
+      # leave=False：进度条完成后自动从输出中清除
+      # mininterval：最短刷新间隔，期间若有修改则不会显示
   ```
 
 - ```python
@@ -22,11 +24,12 @@
       for i in range(100):
           # do something
           pbar.update(1)
+          pbar.n = 5  # 或者可以手动设置进度条
+          pbar.total = 10
+          pbar.refresh()
   ```
 
 - ```python
   pbar0 = tqdm(total=100, position=0)  # 多个进度条，使用position区分位置
   pbar1 = tqdm(total=200, position=1)
   ```
-
-- 

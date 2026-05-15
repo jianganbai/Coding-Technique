@@ -1,0 +1,235 @@
+{
+  "main": {
+    "id": "7e875dbf5997c1e6",
+    "type": "split",
+    "children": [
+      {
+        "id": "e27f25a1a0dcf36a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1475792d5da3c1d6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "code/operation/cc-switch 学习笔记.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "cc-switch 学习笔记"
+            }
+          },
+          {
+            "id": "c80ba1fc016b0860",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "missing/lecture2-shell-tool.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "lecture2-shell-tool"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5ec2c82e9beaf139",
+    "type": "split",
+    "children": [
+      {
+        "id": "1f11067c2719a730",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "63c1e6e5faf21d01",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "8c7eb2d913c64d14",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "728cfec891856572",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 266.5
+  },
+  "right": {
+    "id": "062ecd9fffcfbf0e",
+    "type": "split",
+    "children": [
+      {
+        "id": "3cc5d19e39de7ecb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3cddbfd4f3fa8a66",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "missing/lecture2-shell-tool.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "lecture2-shell-tool 的反向链接列表"
+            }
+          },
+          {
+            "id": "b10e08678e1e5fa7",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "missing/lecture2-shell-tool.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "lecture2-shell-tool 的出链列表"
+            }
+          },
+          {
+            "id": "396d1f79b7a5adad",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "ea23e351d9f21fc3",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "e4b5272c76f389f2",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "missing/lecture2-shell-tool.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "lecture2-shell-tool 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "c80ba1fc016b0860",
+  "lastOpenFiles": [
+    "code/learn-agent/learn-claude-code.md",
+    "code/operation/cc-switch 学习笔记.md",
+    "code/learn-agent",
+    "code/operation/claude code 学习笔记.md",
+    "code/operation",
+    "missing/lecture6-git.md",
+    "missing/lecture2-shell-tool.md",
+    "pytorch/ddp学习笔记.md",
+    "python/pathlib 学习笔记.md",
+    "python/python数据类型管理学习笔记.md",
+    "doc/latex学习笔记.md",
+    "python/python学习笔记.md",
+    "python/python面向对象学习笔记.md",
+    "pytorch/pytorch序列变长处理学习笔记.md",
+    "pytorch",
+    "python/omegaconf学习笔记.md",
+    "linux/linux常用工具.md",
+    "python/pandas学习笔记.md",
+    "python/hydra学习笔记.md",
+    "missing/lecture3-vim.md",
+    "missing/lecture7-Debugging and Profiling.md",
+    "missing/lecture1-shell.md",
+    "linux/docker学习笔记.md",
+    "python/python内存机制学习笔记.md",
+    "missing/lecture5-command_line_env.md",
+    "python/argparse学习笔记.md",
+    "python/多进程与多线程学习笔记.md",
+    "code/operation/codex 学习笔记.md",
+    "code",
+    "python/conda使用.md",
+    "未命名.base"
+  ]
+}

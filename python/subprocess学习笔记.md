@@ -7,6 +7,7 @@
 ## subprocess.run
 
 - 推荐使用
+  - 等子进程完成才继续主进程
 
 ```python
 import subprocess
@@ -18,7 +19,7 @@ print(result.stdout)
 # 带参数的高级用法
 result = subprocess.run(
     ['echo', 'Hello, World!'],
-    stdout=subprocess.PIPE,
+    stdout=subprocess.PIPE,  # 可替换
     stderr=subprocess.PIPE,
     text=True,
     check=True  # 如果命令返回非零退出码，抛出 CalledProcessError
@@ -48,10 +49,14 @@ result = subprocess.run(
   - `check`: 如果为 True，非零退出码会引发异常
   
   - `text`(或 `universal_newlines`): 以文本模式处理输入输出
+  
+  - `capture_output=True`：等价于`stdout=subprocess.PIPE`且`stderr=subprocess.PIPE`
 
 ## subprocess.popen
 
 - 更底层的调用
+  - 立即返回，不阻塞主进程
+  - 可实时交互、管道通信
 
 ```python
 # 启动进程
@@ -72,6 +77,10 @@ else:
     print(f"Command failed with code {process.returncode}")
 ```
 
+- 用法
+  
+  - `process.wait()`：等待子进程结束
+
 - 高级使用
   
   - ```python
@@ -82,5 +91,21 @@ else:
     output = grep.communicate()[0]
     print(output.decode())
     ```
+
+## subprocess.check_output
+
+- 执行命令，获取其输出
+
+- ```python
+  out = subprocess.check_output(args, *, stdin=None, stderr=None, shell=False, 
+                         cwd=None, encoding=None, errors=None, universal_newlines=None,
+                         timeout=None, text=None)
+  ```
   
-  - 
+  - `args`：参数列表
+  
+  - `shell`：是否通过shell 执行（默认为False）
+  
+  - `cwd`：执行命令的工作目录
+  
+  - `text`：是否以文本方式返回

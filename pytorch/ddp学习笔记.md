@@ -23,7 +23,7 @@
   
   - 每个进程对应1个GPU，分别构建网络、数据集
   
-  - sampler将数据集切开，每个进程分别进行前向
+  - sampler将数据集切开，每个进程的数据不相交，分别进行前向
   
   - 所有GPU通过Ring-Reduce机制同步梯度，边计算梯度边传梯度
     
@@ -48,10 +48,11 @@
   # 每个进程单独构建数据集，内存空间不共享。但num_workers > 1时不同worker采用fork方法生成，会复用主进程的内存空间（有修改时才会复制）
   train_sampler = DistributedSampler(data)  # data是例化后的Dataset
   # 再去掉DataLoader中的shuffle=True，改为sampler=train_sampler，保证不同进程的数据不同
-  # DataLoader的batch_size为每个进程的batch_size
+  # DataLoader的batch_size为每个进程的batch_size；同理，num_workers为每个进程的worker个数
   
   # 将BN设置为进程间同步参数
-  net = torch.nn.SyncBatchNorm.convert_sync_batchnorm(net).to(device)
+  net = torch.nn.SyncBatchNorm.convert_sync_batchnorm(net)  # 推理/无可学习参数时，不再需要
+  net = net.to(device)
   net = torch.nn.parallel.DistributedDataParallel(
       net,
       device_ids=[local_rank],
@@ -140,8 +141,10 @@
 - 要求
   
   - 若是张量，只能同步同名同大小
+    
+    - 先同步维度，再同步尺寸，最后同步张量数值
   
-  - 若采用nccl后端，只能同步同名同大小且在GPU的张量，不能调用`dist.gather_object`
+  - 若采用nccl后端，只能通过GPU进行同行，只能同步同名同大小且在GPU的张量
   
   - 张量必须存放在连续的存储空间中，使用`tensor.contiguous()`将其转为连续存储
 
@@ -203,3 +206,27 @@ dist.all_reduce(tensor, op=dist.ReduceOp.SUM)  # 求和，把结果广播到所�
   - 聚合所有可使用pickle序列化的变量，不适合`torch.Tensor`
   
   - 仅gloo后端能调用，nccl后端不能调用。使用方法同`dist.gather()`
+
+## Dataset
+
+### Index-based
+
+- 若`drop_last=False`，则`DistributedSampler`会复制最后几个样本，保证每个GPU分到的样本数相同
+  
+  - 导致最后的特征会被重复提取，需要去除
+
+### IterableDataset
+
+- 实现WebDataset时，需要在Dataset内部做batching
+  
+  - 不再需要collater
+
+- 使用DDP推理时，需要手动处理最后不均等的batch
+  
+  - 有的GPU batch小，有的GPU根本就没有
+  
+  - **需要让没有batch的GPU 推dummy数据，直到所有GPU完成**
+    
+    - 先完成的GPU不能退出，否则`dist.gather`等通信会卡死
+    
+    - 所有GPU必须全部完成1次前向后，才能进行第2次前向，否则`dist`通信也会卡死

@@ -10,6 +10,7 @@ df = pd.DataFrame({'班级': [1, 2, 3],
                    '成绩': [80, 90, 100]})  # dict的每个key都是一列
 # 一般不同列为不同属性，不同行为不同样本
 df = pd.DataFrame({'班级': [], '姓名': []})  # 空DataFrame
+df.head()  # 展示前几行
 ```
 
 ### 读取csv
@@ -21,6 +22,7 @@ df = pd.read_csv(path, sep, header, index_col)
 # sep指定哪个是分隔符
 # header指定哪行是表头，header=None表示没有表头
 # index_col指定哪列是行索引，index_col=False表示没有行索引
+# usecols：只加载指定列
 df.columns = ['name1', 'name2']  # 设置列名
 df.index = [1, 0]  # 访问行名 / 设置行名
 df.set_index(索引列, inplace=True)  # 设置行名。inplace=True代表原地修改
@@ -61,13 +63,19 @@ df.set_index(索引列, inplace=True)  # 设置行名。inplace=True代表原地
     # 创建示例DataFrame
     df = pd.DataFrame({'A': [1, 2, 3], 'B': ['a', 'b', 'c']})
     
-    for index, row in df.iterrows():
+    for row in df.itertuples(index=False):
+        value = row.A + row.B  # 返回namedtuple，可通过属性访问，也可通过下标访问
+        key = row[0] + row[1]
+    
+    for index, row in df.iterrows():  # 需要创建pd.Series对象，效率慢
         print(f"Index: {index}")  # DataFrame的行标签
         print("Data:")
         for column_name, value in row.items():  # 也可通过row['A'], row['B']访问
             print(f"\t{column_name}: {value}")
         print("\n")
     ```
+  
+  - `df.loc[i, key]`和`df.iloc[i, j]`（略快一点）的访问效率都很低，不如字典o(1)
 
 - 访问列
   
@@ -149,7 +157,7 @@ df.set_index(索引列, inplace=True)  # 设置行名。inplace=True代表原地
 
 ### 修改
 
-- loc
+- loc：效率低，尽量采用向量化操作`df['a'] = df['b'] + df['c']`
   
   - ```python
     df.loc[df['name'] == 'a', 'score'] = 100  # 不能使用df.loc[i]['score'] = 100
@@ -287,6 +295,8 @@ for class_name, class_info in group:
 
 ### 其它
 
+- `df.sample(frac)`：按比例随机抽取行
+
 ## Series操作
 
 - Series：一维数组
@@ -332,6 +342,13 @@ a = pd.Series({'a': 1, 'b': 2, 'c': 3})
         xxx
     ```
 
+- 滑动窗口
+	- 对序列进行滑动窗口，可调用`.sum()`, `.min()`, `.max()`等统计
+		- `min_periods`：小于该值的窗则统计值为NaN，默认为窗长
+	- ```python
+	  a = pd.Series({'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5})
+	  a.rolling(window_size, min_periods=1).mean()
+	  ```
 - 其它
   
   - `series.index`：访问所有索引值

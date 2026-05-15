@@ -56,7 +56,7 @@ def func3(a: int, s: str = 'bbb') -> Dict[str, Union[int, str]]:
     # The generator yields values of type int.
     # It does not accept any values sent to it (hence None).
     # When the generator completes, it returns a value of type str.
-    def my_generator() -> Generator[int, None, str]:
+    def my_generator() -> Generator[int, None, str]:  # yield_type, send_type, return_type
         yield 1
         yield 2
         yield 3
